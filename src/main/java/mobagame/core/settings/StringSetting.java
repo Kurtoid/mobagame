@@ -12,7 +12,6 @@ public class StringSetting extends Setting<String> {
 
 	@Override
 	public Component getWidget() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

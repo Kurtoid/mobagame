@@ -11,7 +11,6 @@ public class IntSetting extends Setting<Integer> {
 
 	@Override
 	public Component getWidget() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
