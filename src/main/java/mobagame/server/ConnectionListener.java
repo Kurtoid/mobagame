@@ -20,7 +20,7 @@ public class ConnectionListener extends Thread {
 			while (running) {
 				Socket s = ss.accept();
 				System.out.println("connection");
-				new ClientConnection(s).start();;
+				new ClientConnection(s).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
