@@ -1,4 +1,4 @@
-package Project;
+package mobagame.launcher;
 //Carson Mango 4/24/18
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -33,7 +33,6 @@ public class Login implements ActionListener{
 		forgotPassword.add(question);
 		forgotPassword.add(secureQuestion);
 		forgotPassword.add(getPassword);
-		forgotPassword.setDefaultCloseOperation(0);
 		forgotPassword.setResizable(false);
 		login.setLayout(new GridLayout(2, 1, 5, 5));
 		login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -161,9 +160,6 @@ public class Login implements ActionListener{
 		}else if(ae.getActionCommand().equals("Forgot Password")) {
 			//opens the menu to get your password back
 			forgotPassword.setVisible(true);
-			loginButto.setEnabled(false);
-			fogotButto.setEnabled(false);
-			createAccButto.setEnabled(false);
 			//Enter email and database checks the email and sends that accounts password
 		}else if(ae.getActionCommand().equals("Create Account")) {
 			//Sends user to create account page

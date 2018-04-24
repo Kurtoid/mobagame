@@ -82,8 +82,6 @@ public class SignUp extends JFrame implements ActionListener {
 		pane.add(answerField);
 		pane.add(okButton);
 		add(pane);
-
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
 
