@@ -20,7 +20,7 @@ public class Login implements ActionListener{
 	public JTextField secureQuestion = new JTextField("");
 	Login(){
 		//Creates all of the windows
-		forgotPassword.setLayout(new GridLayout(5,1, 6, 6));
+		forgotPassword.setLayout(new GridLayout(5, 1, 6, 6));
 		forgotPassword.setAlwaysOnTop(true);
 		forgotPassword.setSize(400,250);
 		JLabel emailIndicator = new JLabel("Enter Email");
