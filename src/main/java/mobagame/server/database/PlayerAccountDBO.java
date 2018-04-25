@@ -46,7 +46,7 @@ public class PlayerAccountDBO {
 		// return new PlayerAccount();
 	}
 
-	PlayerAccount loginAccout(String username, String password) {
+	PlayerAccount loginAccount(String username, String password) {
 		try {
 			loginAccount.setString(1, username);
 			MessageDigest mDigest = MessageDigest.getInstance("SHA1");
