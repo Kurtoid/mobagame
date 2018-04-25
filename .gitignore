@@ -1,10 +1,6 @@
 /.gradle/
 /bin/
 
-
-!lib/*.jar
-
-
 ### JAVA ###
 # Compiled class file
 *.class
@@ -20,6 +16,7 @@
 
 # Package Files #
 *.jar
+!lib/*.jar
 *.war
 *.nar
 *.ear
