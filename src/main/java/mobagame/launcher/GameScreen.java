@@ -17,7 +17,7 @@ public class GameScreen extends JFrame implements ActionListener {
 	public static JButton gold = new JButton("$" + goldAmount);
 
 	private static String gameName = "[INSERT AWESOME GAME NAME HERE]";
-	private static String charater;
+	private static String charater;//Wrong spelling
 
 	private static String SHOP = "shop";
 
