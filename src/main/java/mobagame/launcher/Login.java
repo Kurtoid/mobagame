@@ -3,6 +3,7 @@ package mobagame.launcher;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.*;
 public class Login implements ActionListener{
@@ -152,6 +153,11 @@ public class Login implements ActionListener{
 		if(ae.getActionCommand().equals("Login")) {
 			String User = Username.getText();
 			String pass = Password.getText();
+			try {
+				PlayerAccount(User, pass);
+			}catch(SQLException e) {
+				
+			}
 			//to do check database for if this is a valid user and their correct password then if it is valid log them in
 			//and send them to the main menu
 			//Add if statement to check if use is admin

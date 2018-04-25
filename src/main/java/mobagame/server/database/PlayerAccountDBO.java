@@ -28,7 +28,7 @@ public class PlayerAccountDBO {
 	}
 
 	// TODO: return player
-	void createAccount(String username, String password) {
+	public void createAccount(String username, String password) {
 		try {
 
 			MessageDigest mDigest = MessageDigest.getInstance("SHA1");
@@ -46,7 +46,7 @@ public class PlayerAccountDBO {
 		// return new PlayerAccount();
 	}
 
-	PlayerAccount loginAccount(String username, String password) throws SQLException {
+	public  PlayerAccount loginAccount(String username, String password) throws SQLException{
 		try {
 			loginAccount.setString(1, username);
 			MessageDigest mDigest = MessageDigest.getInstance("SHA1");
