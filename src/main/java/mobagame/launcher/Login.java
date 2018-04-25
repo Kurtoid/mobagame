@@ -33,8 +33,8 @@ public class Login implements ActionListener{
 	public JButton loginButto = new JButton("Login");
 	public JButton createAccButto = new JButton("Create Account");
 	public JTextField secureQuestion = new JTextField("");
-	private PlayerAccount temp;
-	PlayerAccountDBO playerDBO = new PlayerAccountDBO();
+	//private PlayerAccount temp;
+	//PlayerAccountDBO playerDBO = new PlayerAccountDBO();
 	Login(){
 		//Creates all of the windows
 		forgotPassword.setLayout(new GridLayout(5, 1, 6, 6));
@@ -169,11 +169,11 @@ public class Login implements ActionListener{
 		if(ae.getActionCommand().equals("Login")) {
 			String User = Username.getText();
 			String pass = Password.getText();
-			try {
+			/*try {
 				temp = playerDBO.loginAccount(User, pass);
 			}catch(SQLException e) {
-				
-			}
+				JOptionPane.showMessageDialog(login, "Invalid Username or Password", "ERROR", JOptionPane.ERROR_MESSAGE);
+			}*/
 			//to do check database for if this is a valid user and their correct password then if it is valid log them in
 			//and send them to the main menu
 			//Add if statement to check if use is admin
