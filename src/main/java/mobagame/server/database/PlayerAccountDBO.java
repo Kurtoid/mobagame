@@ -46,7 +46,7 @@ public class PlayerAccountDBO {
 		// return new PlayerAccount();
 	}
 
-	PlayerAccount loginAccount(String username, String password) {
+	PlayerAccount loginAccount(String username, String password) throws SQLException {
 		try {
 			loginAccount.setString(1, username);
 			MessageDigest mDigest = MessageDigest.getInstance("SHA1");
@@ -60,7 +60,7 @@ public class PlayerAccountDBO {
 			p.level = rs.getInt("level");
 			p.username = rs.getString("username");
 			return p;
-		} catch (SQLException | NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 		return null;
