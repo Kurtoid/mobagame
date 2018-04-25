@@ -10,7 +10,6 @@ public class CharSelect {
 	JPanel charSelectMenu = new JPanel();
 	JPanel redTeamSelect = new JPanel();
 	JPanel charStats = new JPanel();
-	
 	public CharSelect() {
 		selectionScreen.setLayout(new GridLayout(3, 3, 5, 5));
 		selectionScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
