@@ -117,9 +117,11 @@ public class Menu extends JFrame implements ActionListener {
 		String cmd = ae.getActionCommand();
 
 		if (PLAY.equals(cmd)) { // GO TO Selection
-			JOptionPane.showMessageDialog(controllingFrame, "TO Selection", "GO TO", JOptionPane.INFORMATION_MESSAGE);
+			//Needs to have find game stuff still (Will be server stuff)
 			// new Selection(playerName);
-
+			new CharSelect();
+			setVisible(false);
+			
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
 			JOptionPane.showMessageDialog(controllingFrame, "TO Profile", "GO TO", JOptionPane.INFORMATION_MESSAGE);
 			// new Profile(playerName);
