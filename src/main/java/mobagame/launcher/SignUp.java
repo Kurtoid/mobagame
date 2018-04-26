@@ -29,7 +29,7 @@ public class SignUp extends JFrame implements ActionListener {
 	
 	private static Boolean testing = false;
 	
-	private static Font menuFont = new Font("Chiller", Font.PLAIN, fontSize);
+	private static Font menuFont = new Font("Chiller", Font.BOLD, fontSize);
 
 	public SignUp() {
 		super("Sign Up");
