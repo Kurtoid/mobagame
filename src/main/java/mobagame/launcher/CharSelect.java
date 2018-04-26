@@ -23,6 +23,18 @@ public class CharSelect {
 	JPanel red5 = new JPanel();
 	private GridBagConstraints gbc = new GridBagConstraints();
 	public CharSelect() {
+		blueTeamSelect.setSize(750, 400);
+		redTeamSelect.setSize(750, 400);
+		blue1.setSize(150, 400);
+		blue2.setSize(150, 400);
+		blue3.setSize(150, 400);
+		blue4.setSize(150, 400);
+		blue5.setSize(150, 400);
+		red1.setSize(150, 400);
+		red2.setSize(150, 400);
+		red3.setSize(150, 400);
+		red4.setSize(150, 400);
+		red5.setSize(150, 400);
 		ImageIcon placeHolderImage = new ImageIcon("E://ImpressMeProject/Black.png");
 		JLabel blue1CharImage = new JLabel(placeHolderImage);
 		JLabel blue2CharImage = new JLabel(placeHolderImage);
@@ -34,6 +46,16 @@ public class CharSelect {
 		JLabel red3CharImage = new JLabel(placeHolderImage);
 		JLabel red4CharImage = new JLabel(placeHolderImage);
 		JLabel red5CharImage = new JLabel(placeHolderImage);
+		blue1CharImage.setSize(150, 150);
+		blue2CharImage.setSize(150, 150);
+		blue3CharImage.setSize(150, 150);
+		blue4CharImage.setSize(150, 150);
+		blue5CharImage.setSize(150, 150);
+		red1CharImage.setSize(150, 150);
+		red2CharImage.setSize(150, 150);
+		red3CharImage.setSize(150, 150);
+		red4CharImage.setSize(150, 150);
+		red5CharImage.setSize(150, 150);
 		JLabel blue1User = new JLabel("Temp");
 		JLabel blue2User = new JLabel("Temp");
 		JLabel blue3User = new JLabel("Temp");
@@ -100,12 +122,16 @@ public class CharSelect {
 		gbc.gridheight = 2;
 		gbc.gridy = 0;
 		gbc.gridx = 0;
+		gbc.weighty = 1;
 		selectionScreen.add(blueTeamSelect, gbc);
 		gbc.gridx = 1;
 		selectionScreen.add(redTeamSelect, gbc);
 		gbc.gridy = 1;
 		gbc.gridx = 0;
+		gbc.weighty = 2;
 		selectionScreen.add(charSelectMenu, gbc);
+		gbc.gridy = 1;
+		gbc.gridx = 1;
 		selectionScreen.add(charStats);
 		selectionScreen.setVisible(true);
 	}
