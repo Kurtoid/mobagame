@@ -17,7 +17,7 @@ public class GameScreen extends JFrame implements ActionListener {
 	
 
 	public static double goldAmount = 0;
-	public static JLabel gold = new JLabel("$" + goldAmount);
+	public static JLabel gold;
 
 	private static String gameName = "[INSERT AWESOME GAME NAME HERE]";
 	private static String charater;
@@ -37,8 +37,8 @@ public class GameScreen extends JFrame implements ActionListener {
 		setResizable(false);
 
 		// create
-		JButton gold = new JButton("$" + goldAmount);
-		gold.getDisabledIcon();
+		JLabel gold = new JLabel("$" + goldAmount);	
+
 
 		// make layout
 		JPanel pane = new JPanel(new GridBagLayout());
@@ -59,8 +59,9 @@ public class GameScreen extends JFrame implements ActionListener {
 	
 
 		add(pane);
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+//		setDefaultCloseOperation(0);
 		setVisible(true);
 	}
 
