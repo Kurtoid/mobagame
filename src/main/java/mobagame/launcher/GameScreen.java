@@ -1,12 +1,15 @@
 /**
  * Katelynn Morrison
- * Apr 24, 2018
+ * Apr 26, 2018
  */
+
 package mobagame.launcher;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+@SuppressWarnings("serial")
 public class GameScreen extends JFrame implements ActionListener {
 
 	public static int windowHeight = 800;
@@ -14,12 +17,13 @@ public class GameScreen extends JFrame implements ActionListener {
 	
 
 	public static double goldAmount = 0;
-	public static JButton gold = new JButton("$" + goldAmount);
+	public static JLabel gold = new JLabel("$" + goldAmount);
 
 	private static String gameName = "[INSERT AWESOME GAME NAME HERE]";
-	private static String charater;//Wrong spelling
+	private static String charater;
 
 	private static String SHOP = "shop";
+	private static String MENU = "menu";
 
 	private static JFrame controllingFrame; // needed for dialogs
 
@@ -63,7 +67,7 @@ public class GameScreen extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent ae) { // TODO Send to appropriate windows
 		String cmd = ae.getActionCommand();
 
-		if (SHOP.equals(cmd)) { // GO TO Selection
+		if (SHOP.equals(cmd)) { // GO TO Shop
 			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GO TO", JOptionPane.INFORMATION_MESSAGE);
 
 		} else {
@@ -71,6 +75,8 @@ public class GameScreen extends JFrame implements ActionListener {
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
+
+	//Error: Could not find or load main class mobagame.launcher.GameScreen
 
 	public static void main(String[] args) {
 		new GameScreen("Charater");

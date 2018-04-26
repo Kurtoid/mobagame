@@ -1,9 +1,10 @@
-
-/**
+﻿/**
  * Katelynn Morrison
- * Apr 24, 2018
+ * Apr 26, 2018
  */
+
 package mobagame.launcher;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,8 +13,9 @@ import java.util.Arrays;
 @SuppressWarnings("serial")
 public class SignUp extends JFrame implements ActionListener {
 
-	public static int windowHeight = 800;
+	public static int windowHeight = 800; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
+//	public static int fontSize = (int) (windowWidth / 100); // 15 // Font test
 
 	private static String OK = "ok";
 	private static String DROP = "drop";
@@ -25,12 +27,15 @@ public class SignUp extends JFrame implements ActionListener {
 	private JTextField emailField;
 	private JComboBox<String> questionField;
 	private JTextField answerField;
+	
+	private static Boolean testing = false;
 
 	public SignUp() {
 		super("Sign Up");
 		setSize((int) (windowWidth / 3.75), (int) (windowHeight / 1.6));
 		setResizable(false);
-
+//		setFont(new Font(Font.SANS_SERIF, Font.PLAIN, fontSize)); // Font test
+		
 		// Create everything.
 		String[] questions = { "What is the name of the hospital you were born at?",
 				"What was the name of your first pet?", "What is your mother's maiden name?",
@@ -82,6 +87,10 @@ public class SignUp extends JFrame implements ActionListener {
 		pane.add(answerField);
 		pane.add(okButton);
 		add(pane);
+		
+		if (testing) {
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
+		}
 		setVisible(true);
 	}
 
@@ -171,6 +180,7 @@ public class SignUp extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
+		testing = true;
 		new SignUp();
 	}
 }

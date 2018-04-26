@@ -1,9 +1,10 @@
-
 /**
  * Katelynn Morrison
- * Apr 24, 2018
+ * Apr 26, 2018
  */
+
 package mobagame.launcher;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -117,22 +118,24 @@ public class Menu extends JFrame implements ActionListener {
 		String cmd = ae.getActionCommand();
 
 		if (PLAY.equals(cmd)) { // GO TO Selection
-			//Needs to have find game stuff still (Will be server stuff)
-			// new Selection(playerName);
+			// TODO Find available game 
 			new CharSelect();
 			setVisible(false);
-			
+
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
 			JOptionPane.showMessageDialog(controllingFrame, "TO Profile", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-			// new Profile(playerName);
+//			new Profile(playerName);
+//			setVisible(false);
 
 		} else if (SETTINGS.equals(cmd)) { // GO TO Settings
 			JOptionPane.showMessageDialog(controllingFrame, "TO Settings", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-			// new Settings(playerName);
+//			 new Settings(playerName);
+//			 setVisible(false);
 
 		} else if (ADMIN.equals(cmd) && isAdmin) {// GO TO Admin
 			JOptionPane.showMessageDialog(controllingFrame, "TO Admin", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-			// new Admin(playerName);
+//			 new Admin(playerName);
+//			 setVisible(false);
 		} else {
 			JOptionPane.showMessageDialog(controllingFrame, "Something went wrong", "Error Message",
 					JOptionPane.ERROR_MESSAGE);
