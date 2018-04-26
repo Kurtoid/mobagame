@@ -43,6 +43,11 @@ public class CharSelect {
 		JLabel red3User = new JLabel("Temp");
 		JLabel red4User = new JLabel("Temp");
 		JLabel red5User = new JLabel("Temp");
+		red1User.setHorizontalAlignment(JLabel.RIGHT);
+		red2User.setHorizontalAlignment(JLabel.RIGHT);
+		red3User.setHorizontalAlignment(JLabel.RIGHT);
+		red4User.setHorizontalAlignment(JLabel.RIGHT);
+		red5User.setHorizontalAlignment(JLabel.RIGHT);
 		selectionScreen.setLayout(new GridLayout(3, 3, 5, 5));
 		selectionScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		selectionScreen.setSize(1500, 800);
