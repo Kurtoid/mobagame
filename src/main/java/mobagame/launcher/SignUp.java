@@ -16,20 +16,16 @@ public class SignUp extends JFrame implements ActionListener {
 	public static int windowHeight = 800; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
 	
-	private static int fontMultiple = 2; 
-	private static int fontSize = (int) (windowWidth / 100) * fontMultiple; // 30
-	private static String font = "Chiller";
+	private static double fontMultiple = 1.5; 
+	private static int fontSize = (int) ((windowWidth / 100) * fontMultiple); // 30
+	private static String font = "Old English Text MT";
 	public static Font menuFont = new Font(font, Font.PLAIN, fontSize);
 	
 	/*/
- ~~~~~ Fonts I (Katelynn Morrison) like ~~~~~
-	 * Chiller // 2
-	 * Minecraft // 1
-	 * Standard Galactic Alphabet // 2
-	 * Freestyle Script // 2
+ ~~~~~ Fonts  ~~~~~
 	 * Parchment //2.5
-	 * Broadway // 1.5
- ~~~~~ Feel free to add your own ~~~~~~~~~~~~	 .* 
+	 * Old English Text MT // 1.5
+ ~~~~~ Feel free to add your own ~~~~~
 	/*/
 
 	private static String OK = "ok";
@@ -119,8 +115,8 @@ public class SignUp extends JFrame implements ActionListener {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
 		}
 		setVisible(true);
-	}
-
+	}     
+	
 	public void actionPerformed(ActionEvent ae) {
 		String cmd = ae.getActionCommand();
 
@@ -211,3 +207,9 @@ public class SignUp extends JFrame implements ActionListener {
 		new SignUp();
 	}
 }
+
+// * Chiller // 2
+// * Minecraft // 1
+// * Standard Galactic Alphabet // 1
+// * Freestyle Script // 2
+// * Broadway // 1.5 
