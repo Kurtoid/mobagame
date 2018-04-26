@@ -23,6 +23,8 @@ public class Menu extends JFrame implements ActionListener {
 	private static String PROFILE = "profile";
 	private static String SETTINGS = "settings";
 	private static String ADMIN = "admin";
+	
+	private static Boolean testing = false;
 
 	private static JFrame controllingFrame; // needed for dialogs
 
@@ -110,7 +112,9 @@ public class Menu extends JFrame implements ActionListener {
 
 		add(pane);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		if (testing) {
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
+		}
 		setVisible(true);
 	}
 
@@ -143,6 +147,7 @@ public class Menu extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
+		testing = true;
 		new Menu();
 		new Menu("ktaces", true);
 	}

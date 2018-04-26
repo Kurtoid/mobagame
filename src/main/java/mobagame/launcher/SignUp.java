@@ -15,7 +15,7 @@ public class SignUp extends JFrame implements ActionListener {
 
 	public static int windowHeight = 800; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
-//	public static int fontSize = (int) (windowWidth / 100); // 15 // Font test
+	public static int fontSize = (int) (windowWidth / 100); // 15 // Font test
 
 	private static String OK = "ok";
 	private static String DROP = "drop";
@@ -34,8 +34,7 @@ public class SignUp extends JFrame implements ActionListener {
 		super("Sign Up");
 		setSize((int) (windowWidth / 3.75), (int) (windowHeight / 1.6));
 		setResizable(false);
-//		setFont(new Font(Font.SANS_SERIF, Font.PLAIN, fontSize)); // Font test
-		
+		setFont(new Font("Arial", Font.PLAIN, fontSize)); // Font test
 		// Create everything.
 		String[] questions = { "What is the name of the hospital you were born at?",
 				"What was the name of your first pet?", "What is your mother's maiden name?",
