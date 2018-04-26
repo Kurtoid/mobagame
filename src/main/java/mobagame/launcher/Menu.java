@@ -12,8 +12,9 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class Menu extends JFrame implements ActionListener {
 
-	public static int windowHeight = 800;
+	public static int windowHeight = 800; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
+	private static Font menuFont = SignUp.menuFont;
 
 	private static String gameName = "[INSERT AWESOME GAME NAME HERE]";
 	private static boolean isAdmin;
@@ -23,7 +24,7 @@ public class Menu extends JFrame implements ActionListener {
 	private static String PROFILE = "profile";
 	private static String SETTINGS = "settings";
 	private static String ADMIN = "admin";
-	
+
 	private static Boolean testing = false;
 
 	private static JFrame controllingFrame; // needed for dialogs
@@ -63,6 +64,13 @@ public class Menu extends JFrame implements ActionListener {
 
 		JLabel messageLabel = new JLabel("Welcome " + playerName + " to " + gameName);
 
+		//Font Setup
+		profileButton.setFont(menuFont);
+		settingsButton.setFont(menuFont);
+		playButton.setFont(menuFont);
+		adminButton.setFont(menuFont);
+		messageLabel.setFont(menuFont);
+		
 		// make layout
 		JPanel pane = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -113,7 +121,7 @@ public class Menu extends JFrame implements ActionListener {
 		add(pane);
 
 		if (testing) {
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		}
 		setVisible(true);
 	}
@@ -122,7 +130,7 @@ public class Menu extends JFrame implements ActionListener {
 		String cmd = ae.getActionCommand();
 
 		if (PLAY.equals(cmd)) { // GO TO Selection
-			// TODO Find available game 
+			// TODO Find available game
 			new CharSelect();
 			setVisible(false);
 

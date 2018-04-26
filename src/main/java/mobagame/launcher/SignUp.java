@@ -15,12 +15,28 @@ public class SignUp extends JFrame implements ActionListener {
 
 	public static int windowHeight = 800; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
-	public static int fontSize = (int) (windowWidth / 100)*2; // 15
+	
+	private static int fontMultiple = 2; 
+	private static int fontSize = (int) (windowWidth / 100) * fontMultiple; // 30
+	private static String font = "Chiller";
+	public static Font menuFont = new Font(font, Font.PLAIN, fontSize);
+	
+	/*/
+ ~~~~~ Fonts I (Katelynn Morrison) like ~~~~~
+	 * Chiller // 2
+	 * Minecraft // 1
+	 * Standard Galactic Alphabet // 2
+	 * Freestyle Script // 2
+	 * Parchment //2.5
+	 * Broadway // 1.5
+ ~~~~~ Feel free to add your own ~~~~~~~~~~~~	 .* 
+	/*/
 
 	private static String OK = "ok";
 	private static String DROP = "drop";
 
 	private static JFrame controllingFrame; // needed for dialogs
+	
 	private JTextField usernameField;
 	private JPasswordField passwordField;
 	private JTextField emailField;
@@ -29,8 +45,6 @@ public class SignUp extends JFrame implements ActionListener {
 	
 	private static Boolean testing = false;
 	
-	private static Font menuFont = new Font("Chiller", Font.BOLD, fontSize);
-
 	public SignUp() {
 		super("Sign Up");
 		setSize((int) (windowWidth / 3.75), (int) (windowHeight / 1.6));
@@ -81,7 +95,7 @@ public class SignUp extends JFrame implements ActionListener {
 		emailLabel.setFont(menuFont);
 		emailField.setFont(menuFont);
 		questionLabel.setFont(menuFont);
-		questionField.setFont(new Font("Chiller", Font.PLAIN, (int)(fontSize/1.5)));
+		questionField.setFont(new Font(font, Font.PLAIN, (int)(fontSize/1.5)));
 		answerLabel.setFont(menuFont);
 		answerField.setFont(menuFont);
 		okButton.setFont(menuFont);

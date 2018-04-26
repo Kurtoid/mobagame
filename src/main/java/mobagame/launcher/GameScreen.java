@@ -12,15 +12,17 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class GameScreen extends JFrame implements ActionListener {
 
-	public static int windowHeight = 800;
+	public static int windowHeight = 800; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
+	private static Font menuFont = SignUp.menuFont;
 	
-
+	private static Boolean testing = false;
+	
 	public static double goldAmount = 0;
 	public static JLabel gold;
 
 	private static String gameName = "[INSERT AWESOME GAME NAME HERE]";
-	private static String charater;
+	private String charater;
 
 	private static String SHOP = "shop";
 	private static String MENU = "menu";
@@ -37,9 +39,11 @@ public class GameScreen extends JFrame implements ActionListener {
 		setResizable(false);
 
 		// create
-		JLabel gold = new JLabel("$" + goldAmount);	
+		JLabel gold = new JLabel("$" + goldAmount);
 
-
+		//Font Setup
+		gold.setFont(menuFont);
+		
 		// make layout
 		JPanel pane = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -57,9 +61,10 @@ public class GameScreen extends JFrame implements ActionListener {
 
 
 	
-
+		if (testing) {
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
+		}
 		add(pane);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 //		setDefaultCloseOperation(0);
 		setVisible(true);
@@ -80,6 +85,7 @@ public class GameScreen extends JFrame implements ActionListener {
 	//Error: Could not find or load main class mobagame.launcher.GameScreen
 
 	public static void main(String[] args) {
+		testing = true;
 		new GameScreen("Charater");
 		while(true) {
 			goldAmount++;
