@@ -21,6 +21,7 @@ public class CharSelect {
 	JPanel red3 = new JPanel();
 	JPanel red4 = new JPanel();
 	JPanel red5 = new JPanel();
+	private GridBagConstraints gbc = new GridBagConstraints();
 	public CharSelect() {
 		ImageIcon placeHolderImage = new ImageIcon("E://ImpressMeProject/Black.png");
 		JLabel blue1CharImage = new JLabel(placeHolderImage);
@@ -48,7 +49,7 @@ public class CharSelect {
 		red3User.setHorizontalAlignment(JLabel.RIGHT);
 		red4User.setHorizontalAlignment(JLabel.RIGHT);
 		red5User.setHorizontalAlignment(JLabel.RIGHT);
-		selectionScreen.setLayout(new GridLayout(3, 3, 5, 5));
+		selectionScreen.setLayout(new GridBagLayout());
 		selectionScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		selectionScreen.setSize(1500, 800);
 		blueTeamSelect.setLayout(new GridLayout(5, 1, 5, 5));
@@ -96,9 +97,15 @@ public class CharSelect {
 		redTeamSelect.add(red3);
 		redTeamSelect.add(red4);
 		redTeamSelect.add(red5);
-		selectionScreen.add(blueTeamSelect);
-		selectionScreen.add(redTeamSelect);
-		selectionScreen.add(charSelectMenu);
+		gbc.gridheight = 2;
+		gbc.gridy = 0;
+		gbc.gridx = 0;
+		selectionScreen.add(blueTeamSelect, gbc);
+		gbc.gridx = 1;
+		selectionScreen.add(redTeamSelect, gbc);
+		gbc.gridy = 1;
+		gbc.gridx = 0;
+		selectionScreen.add(charSelectMenu, gbc);
 		selectionScreen.add(charStats);
 		selectionScreen.setVisible(true);
 	}
