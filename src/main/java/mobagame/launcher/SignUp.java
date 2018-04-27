@@ -1,9 +1,10 @@
-
-/**
+﻿/**
  * Katelynn Morrison
- * Apr 24, 2018
+ * Apr 26, 2018
  */
+
 package mobagame.launcher;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,25 +13,39 @@ import java.util.Arrays;
 @SuppressWarnings("serial")
 public class SignUp extends JFrame implements ActionListener {
 
-	public static int windowHeight = 800;
+	public static int windowHeight = 800; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
+	
+	private static double fontMultiple = 1.5; 
+	private static int fontSize = (int) ((windowWidth / 100) * fontMultiple); // 30
+	private static String font = "Old English Text MT";
+	public static Font menuFont = new Font(font, Font.PLAIN, fontSize);
+	
+	/*/
+ ~~~~~ Fonts  ~~~~~
+	 * Parchment //2.5
+	 * Old English Text MT // 1.5
+ ~~~~~ Feel free to add your own ~~~~~
+	/*/
 
 	private static String OK = "ok";
 	private static String DROP = "drop";
 
 	private static JFrame controllingFrame; // needed for dialogs
-
+	
 	private JTextField usernameField;
 	private JPasswordField passwordField;
 	private JTextField emailField;
 	private JComboBox<String> questionField;
 	private JTextField answerField;
-
+	
+	private static Boolean testing = false;
+	
 	public SignUp() {
 		super("Sign Up");
 		setSize((int) (windowWidth / 3.75), (int) (windowHeight / 1.6));
 		setResizable(false);
-
+		
 		// Create everything.
 		String[] questions = { "What is the name of the hospital you were born at?",
 				"What was the name of your first pet?", "What is your mother's maiden name?",
@@ -68,6 +83,19 @@ public class SignUp extends JFrame implements ActionListener {
 		JLabel answerLabel = new JLabel("What is your security question answer: ");
 		answerLabel.setLabelFor(answerField);
 
+		//Font Setup
+		usernameLabel.setFont(menuFont);
+		usernameField.setFont(menuFont);
+		passwordLabel.setFont(menuFont);
+		passwordField.setFont(menuFont);
+		emailLabel.setFont(menuFont);
+		emailField.setFont(menuFont);
+		questionLabel.setFont(menuFont);
+		questionField.setFont(new Font(font, Font.PLAIN, (int)(fontSize/1.5)));
+		answerLabel.setFont(menuFont);
+		answerField.setFont(menuFont);
+		okButton.setFont(menuFont);
+		
 		// Lay out everything.
 		JPanel pane = new JPanel(new GridLayout(0, 1, 5, 5));
 		pane.add(usernameLabel);
@@ -77,14 +105,18 @@ public class SignUp extends JFrame implements ActionListener {
 		pane.add(emailLabel);
 		pane.add(emailField);
 		pane.add(questionLabel);
-		pane.add(questionField, BorderLayout.PAGE_START);
+		pane.add(questionField);
 		pane.add(answerLabel);
 		pane.add(answerField);
 		pane.add(okButton);
 		add(pane);
+		
+		if (testing) {
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);			
+		}
 		setVisible(true);
-	}
-
+	}     
+	
 	public void actionPerformed(ActionEvent ae) {
 		String cmd = ae.getActionCommand();
 
@@ -171,6 +203,13 @@ public class SignUp extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
+		testing = true;
 		new SignUp();
 	}
 }
+
+// * Chiller // 2
+// * Minecraft // 1
+// * Standard Galactic Alphabet // 1
+// * Freestyle Script // 2
+// * Broadway // 1.5 

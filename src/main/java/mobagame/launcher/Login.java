@@ -28,7 +28,7 @@ public class Login implements ActionListener{
 	public JPanel boxes = new JPanel();
 	public JTextField Username = new JTextField("");
 	public JTextField Password = new JPasswordField("");
-	GridBagConstraints gbc = new GridBagConstraints();
+	private GridBagConstraints gbc = new GridBagConstraints();
 	public JFrame forgotPassword = new JFrame("Forgot Password");
 	public JTextField email = new JTextField("");
 	public JButton fogotButto = new JButton("Forgot Password");
