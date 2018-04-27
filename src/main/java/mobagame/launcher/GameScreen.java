@@ -10,16 +10,16 @@ import java.awt.*;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
-public class GameScreen extends JFrame implements ActionListener, KeyListener {
+public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener {
 
-	public static int windowHeight = 800; // 800
+	public static int windowHeight = 600; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
 	private static Font menuFont = SignUp.menuFont;
 
 	private static Boolean testing = false;
 
-	private static double goldAmount = 0;
-	private static JLabel gold = new JLabel();
+	private double goldAmount = 0;
+	private JLabel gold = new JLabel();
 	private JTextField textField;
 
 	private static String gameName = Menu.gameName;
@@ -28,7 +28,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener {
 	private static String SHOP = "shop";
 	private static String MENU = "menu";
 
-	private static JFrame controllingFrame; // needed for dialogs
+	private JFrame controllingFrame; // needed for dialogs
 
 	// open menu window for playerName
 	public GameScreen(String charater) {
@@ -42,16 +42,12 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener {
 		// create
 		gold = new JLabel("$" + goldAmount);
 
-		textField = new JTextField(10);
-		textField.addKeyListener(this);
-
 		// Font Setup
 		gold.setFont(menuFont);
 
 		// make layout
 		JPanel pane = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		pane.add(textField);
 
 		c.ipady = 100;
 		c.gridwidth = 1;
@@ -64,18 +60,21 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener {
 
 		if (testing) {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		} else {
+			// make full screen
+			setExtendedState(JFrame.MAXIMIZED_BOTH);
+			setUndecorated(true);
 		}
 		add(pane);
 
-//		setDefaultCloseOperation(0);
+		// setDefaultCloseOperation(0);
 		setVisible(true);
 	}
 
-	/* Handle the key typed event from the text field. */
 	public void keyTyped(KeyEvent ke) {
 		char typed = ke.getKeyChar();
 		System.out.println("KEY TYPED: " + typed);
-		switch (typed) {
+		switch (typed) { // TODO Make keys do something
 		case 'p':
 		case 'P':
 			// GO TO Shop
@@ -129,18 +128,10 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener {
 		}
 	}
 
-	/* Handle the key pressed event from the text field. */
-	public void keyPressed(KeyEvent ke) {
-		char pressed = ke.getKeyChar();
-		System.out.println("KEY PRESSED: " + pressed);
-	}
-
-	/* Handle the key released event from the text field. */
-	public void keyReleased(KeyEvent ke) {
-		char released = ke.getKeyChar();
-		System.out.println("KEY RELEASED: " + released);
-	}
-
+    public void mouseClicked(MouseEvent me) {
+    	System.out.println("Mouse clicked (# of clicks: "
+    			+ me.getClickCount() + ")");
+    }
 	public void actionPerformed(ActionEvent ae) { // TODO Send to appropriate windows
 		String cmd = ae.getActionCommand();
 
@@ -159,10 +150,37 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener {
 	public static void main(String[] args) {
 		testing = true;
 		GameScreen gs = new GameScreen("Charater");
+		gs.addKeyListener(gs);
+		gs.addMouseListener(gs);
 		while (true) {
-			goldAmount++;
-			gs.gold.setText("$" + goldAmount);
+			gs.goldAmount++;
+			gs.gold.setText("$" + gs.goldAmount);
 			gs.gold.repaint();
 		}
 	}
+	
+	// Not used interface methods
+	public void keyPressed(KeyEvent ke) {
+//		char pressed = ke.getKeyChar();
+//		System.out.println("KEY PRESSED: " + pressed);
+	}
+	public void keyReleased(KeyEvent ke) {
+//		char released = ke.getKeyChar();
+//		System.out.println("KEY RELEASED: " + released);
+	}	
+	public void mousePressed(MouseEvent me) {
+//		System.out.println("Mouse pressed; # of clicks: "
+//	                    + me.getClickCount());
+	}
+	public void mouseReleased(MouseEvent me) {
+//    	System.out.println("Mouse released; # of clicks: "
+//    			+ me.getClickCount());
+	 }
+	public void mouseEntered(MouseEvent me) {
+//		System.out.println("Mouse entered");
+	}
+	public void mouseExited(MouseEvent me) {
+//    	System.out.println("Mouse exited");
+    }
+	
 }
