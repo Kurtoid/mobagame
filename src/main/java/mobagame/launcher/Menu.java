@@ -16,7 +16,7 @@ public class Menu extends JFrame implements ActionListener {
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
 	private static Font menuFont = SignUp.menuFont;
 
-	private static String gameName = "[INSERT AWESOME GAME NAME HERE]";
+	public static String gameName = "[INSERT AWESOME GAME NAME HERE]";
 	private static boolean isAdmin;
 	private static String playerName;
 
