@@ -15,12 +15,15 @@ import java.util.Iterator;
 import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.Packet;
 import mobagame.core.networking.packets.SignupPacket;
+import mobagame.server.database.PlayerAccountDBO;
 
 public class ConnectionListener extends Thread {
     ByteBuffer chunkBuf;
+    PlayerAccountDBO dbo;
 
     public ConnectionListener() {
         try {
+            dbo = new PlayerAccountDBO();
             chunkBuf = ByteBuffer.allocate(512);
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(false);
@@ -40,6 +43,7 @@ public class ConnectionListener extends Thread {
 
     @Override
     public void run() {
+
         super.run();
         try {
             // TODO: convert to settings API when we've made it
@@ -77,7 +81,7 @@ public class ConnectionListener extends Thread {
         ByteArrayOutputStream byteStore = new ByteArrayOutputStream();
         chunkBuf.clear();
         chunkBuf.position(0);
-        while(ch.read(chunkBuf)>0){
+        while (ch.read(chunkBuf) > 0) {
             byteStore.write(chunkBuf.array());
             chunkBuf.clear();
             chunkBuf.position(0);
@@ -88,7 +92,7 @@ public class ConnectionListener extends Thread {
         int length = 0;
         try {
             length = chunkBuf.getInt();
-        }catch(BufferUnderflowException e){
+        } catch (BufferUnderflowException e) {
             ch.close();
         }
         if (length > 0) {
@@ -96,7 +100,9 @@ public class ConnectionListener extends Thread {
 
             byte packetID = Packet.getPacketID(chunkBuf);
             if (packetID == Packet.PK_ID_AUTH_LOGIN) {
-                System.out.println(new LoginPacket(chunkBuf));
+//                System.out.println(new LoginPacket(chunkBuf));
+                LoginPacket p = new LoginPacket(chunkBuf);
+                System.out.println(p.toString());
             } else if (packetID == Packet.PK_ID_AUTH_SIGNUP) {
                 System.out.println(new SignupPacket(chunkBuf));
             } else if (packetID == Packet.PK_ID_INIT) {
@@ -121,6 +127,7 @@ public class ConnectionListener extends Thread {
         // we'd like to be notified when there's data waiting to be read
         socketChannel.register(this.selector, SelectionKey.OP_READ);
     }
+
     public static void main(String[] args) {
         // test driver
         ConnectionListener cl = new ConnectionListener();

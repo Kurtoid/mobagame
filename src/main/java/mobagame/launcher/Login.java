@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
@@ -18,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import mobagame.core.networking.packets.LoginPacket;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 public class Login implements ActionListener{
@@ -33,9 +35,20 @@ public class Login implements ActionListener{
 	public JButton loginButto = new JButton("Login");
 	public JButton createAccButto = new JButton("Create Account");
 	public JTextField secureQuestion = new JTextField("");
+	ClientState state;
+	ServerConnection conn;
 	//private PlayerAccount temp;
 	//PlayerAccountDBO playerDBO = new PlayerAccountDBO();
 	Login(){
+		state = ClientState.getInstance();
+		if(state.isServerEnabled){
+			conn = new ServerConnection();
+			try {
+				conn.initConnect("localhost", 8666);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		//Creates all of the windows
 		forgotPassword.setLayout(new GridLayout(5, 1, 6, 6));
 		forgotPassword.setAlwaysOnTop(true);
@@ -169,6 +182,10 @@ public class Login implements ActionListener{
 		if(ae.getActionCommand().equals("Login")) {
 			String User = Username.getText();
 			String pass = Password.getText();
+			if(state.isServerEnabled) {
+				LoginPacket p = new LoginPacket(User, pass);
+				conn.queuePacket(p);
+			}
 			/*try {
 				temp = playerDBO.loginAccount(User, pass);
 			}catch(SQLException e) {
