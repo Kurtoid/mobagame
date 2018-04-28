@@ -6,7 +6,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,9 +18,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import mobagame.core.DebugSettings;
 import mobagame.core.networking.packets.LoginPacket;
-import mobagame.server.database.PlayerAccount;
-import mobagame.server.database.PlayerAccountDBO;
+
 public class Login implements ActionListener{
 	public JFrame login = new JFrame("Welcome to _______________________");
 	public JPanel picture = new JPanel();
@@ -35,12 +34,12 @@ public class Login implements ActionListener{
 	public JButton loginButto = new JButton("Login");
 	public JButton createAccButto = new JButton("Create Account");
 	public JTextField secureQuestion = new JTextField("");
-	ClientState state;
+	DebugSettings state;
 	ServerConnection conn;
 	//private PlayerAccount temp;
 	//PlayerAccountDBO playerDBO = new PlayerAccountDBO();
 	Login(){
-		state = ClientState.getInstance();
+		state = DebugSettings.getInstance();
 		if(state.isServerEnabled){
 			conn = new ServerConnection();
 			try {

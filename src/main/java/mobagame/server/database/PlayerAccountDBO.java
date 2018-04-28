@@ -28,7 +28,7 @@ public class PlayerAccountDBO {
 	}
 
 	// TODO: return player
-	public void createAccount(String username, String password) {
+	public void createAccount(String username, String password, String emailAddress, byte securityQuestionID, String securityQuestionAnswer) {
 		try {
 
 			MessageDigest mDigest = MessageDigest.getInstance("SHA1");
@@ -68,6 +68,6 @@ public class PlayerAccountDBO {
 
 	public static void main(String[] args) {
 		PlayerAccountDBO dbo = new PlayerAccountDBO();
-		dbo.createAccount("hgeugfiw", "hfeiow");
+		dbo.createAccount("hgeugfiw", "hfeiow",null, (byte)0x00, null);
 	}
 }

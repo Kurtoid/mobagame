@@ -53,4 +53,19 @@ public class LoginPacket extends Packet {
 		password = getStringFromBuffer(buff, buff.position(), MAX_PASSWORD_LENGTH);
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }

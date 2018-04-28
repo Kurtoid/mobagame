@@ -1,5 +1,6 @@
 package mobagame.server;
 
+import java.awt.image.DataBuffer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -9,20 +10,35 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Iterator;
 
 import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.Packet;
 import mobagame.core.networking.packets.SignupPacket;
+import mobagame.core.DebugSettings;
+import mobagame.server.database.DatabaseConnectionManager;
+import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
+
+import javax.xml.crypto.Data;
 
 public class ConnectionListener extends Thread {
     ByteBuffer chunkBuf;
     PlayerAccountDBO dbo;
-
+    DebugSettings state;
+    DatabaseConnectionManager db;
     public ConnectionListener() {
         try {
+            state = DebugSettings.getInstance();
+            if (state.isServerEnabled) {
+                try {
+                    db = DatabaseConnectionManager.getInstance();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
             dbo = new PlayerAccountDBO();
             chunkBuf = ByteBuffer.allocate(512);
             serverSocketChannel = ServerSocketChannel.open();
@@ -102,9 +118,22 @@ public class ConnectionListener extends Thread {
             if (packetID == Packet.PK_ID_AUTH_LOGIN) {
 //                System.out.println(new LoginPacket(chunkBuf));
                 LoginPacket p = new LoginPacket(chunkBuf);
+                if (state.isServerEnabled) {
+                    PlayerAccountDBO dbo = new PlayerAccountDBO();
+                    try {
+                        dbo.loginAccount(p.getUsername(), p.getPassword());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 System.out.println(p.toString());
             } else if (packetID == Packet.PK_ID_AUTH_SIGNUP) {
-                System.out.println(new SignupPacket(chunkBuf));
+                //System.out.println(new SignupPacket(chunkBuf));
+                SignupPacket packet = new SignupPacket(chunkBuf);
+                PlayerAccountDBO dbo = new PlayerAccountDBO();
+                dbo.createAccount(packet.getUsername(), packet.getPassword(), packet.getEmailAddress(), packet.getSecurityQuestionID(), packet.getSecurityQuestionAnswer());
+
             } else if (packetID == Packet.PK_ID_INIT) {
                 System.out.println("Connection init");
             } else {

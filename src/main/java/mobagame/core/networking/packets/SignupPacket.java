@@ -71,4 +71,43 @@ public class SignupPacket extends Packet {
 
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
+	public byte getSecurityQuestionID() {
+		return securityQuestionID;
+	}
+
+	public void setSecurityQuestionID(byte securityQuestionID) {
+		this.securityQuestionID = securityQuestionID;
+	}
+
+	public String getSecurityQuestionAnswer() {
+		return securityQuestionAnswer;
+	}
+
+	public void setSecurityQuestionAnswer(String securityQuestionAnswer) {
+		this.securityQuestionAnswer = securityQuestionAnswer;
+	}
 }
