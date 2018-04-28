@@ -11,6 +11,7 @@ import mobagame.core.networking.packets.SignupPacket;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.Arrays;
 
 @SuppressWarnings("serial")
@@ -36,13 +37,21 @@ public class SignUp extends JFrame implements ActionListener {
 	private JTextField answerField;
 
 	private static boolean testing = false;
-	
+
 	DebugSettings state;
 	ServerConnection conn;
 
 	public SignUp() {
 		super("Sign Up");
 		state = DebugSettings.getInstance();
+        if(state.isServerEnabled){
+            conn = new ServerConnection();
+            try {
+                conn.initConnect("localhost", 8666);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }		
 		setSize((int) (windowWidth / 3.75), (int) (windowHeight / 1.6));
 		setResizable(false);
 
@@ -135,12 +144,12 @@ public class SignUp extends JFrame implements ActionListener {
 				if (isAvalable(username, "Username")) {
 					if (isEmailValid(email)) {
 						if (isAvalable(email, "Email")) {
-							JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: "
-									+ password + " Email: " + email + " Question: " + question + " Answer: " + answer);
-							if(state.isServerEnabled) {
-								SignupPacket p = new SignupPacket(username, password, email, question, answer);;
+							if (state.isServerEnabled) {
+								SignupPacket p = new SignupPacket(username, password, email, question, answer);
 								conn.queuePacket(p);
 							}
+							JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: "
+									+ password + " Email: " + email + " Question: " + question + " Answer: " + answer);
 						}
 					}
 				}
