@@ -5,7 +5,7 @@ public class DebugSettings {
 
 
     // DEBUG PROPERTIES
-   public boolean isServerEnabled = false;
+   public boolean isServerEnabled = true;
     private DebugSettings() {
     }
 
