@@ -6,6 +6,7 @@ package mobagame.launcher;
 
 import javax.swing.*;
 
+import mobagame.core.DebugSettings;
 import mobagame.core.networking.packets.SignupPacket;
 
 import java.awt.*;
@@ -36,7 +37,7 @@ public class SignUp extends JFrame implements ActionListener {
 
 	private static boolean testing = false;
 	
-	ClientState state;
+	DebugSettings state;
 	ServerConnection conn;
 
 	public SignUp() {
@@ -135,10 +136,10 @@ public class SignUp extends JFrame implements ActionListener {
 						if (isAvalable(email, "Email")) {
 							JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: "
 									+ password + " Email: " + email + " Question: " + question + " Answer: " + answer);
-//							if(state.isServerEnabled) {
+							if(state.isServerEnabled) {
 								SignupPacket p = new SignupPacket(username, password, email, question, answer);;
 								conn.queuePacket(p);
-//							}							
+							}
 						}
 					}
 				}
