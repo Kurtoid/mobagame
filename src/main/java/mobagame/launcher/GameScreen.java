@@ -67,89 +67,91 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		add(pane);
 
 		// setDefaultCloseOperation(0);
+
 		setVisible(true);
 	}
 
-	public void keyTyped(KeyEvent ke) {
-		char typed = Character.toUpperCase(ke.getKeyChar());
-//		System.out.println("KEY TYPED: " + typed);
-		switch (typed) { // TODO Make keys do proper things
-		case 'P':
+	public void keyPressed(KeyEvent ke) {
+		int pressed = ke.getKeyCode();
+		System.out.println("KEY PRESSED: " + pressed);
+		pressed = Character.toUpperCase(pressed);
+		switch (pressed) { // TODO Make keys do proper things
+		case KeyEvent.VK_P:
 			// GOTO Shop
 			System.out.println("GOTO Shop");
 			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 			break;
-		case 'M':
+		case KeyEvent.VK_M:
 			// GOTO In-Game
 			System.out.println("GOTO In-Game");
 			JOptionPane.showMessageDialog(controllingFrame, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 			break;
-		case 'Q':
+		case KeyEvent.VK_Q:
 			// USE Q ability
 			System.out.println("USE Q ability");
 			// charater.UseAbility(Q);
 			break;
-		case 'W':
+		case KeyEvent.VK_W:
 			// USE W ability
 			System.out.println("USE W ability");
 			// charater.UseAbility(W);
 			break;
-		case 'E':
+		case KeyEvent.VK_E:
 			// USE E ability
 			System.out.println("USE E ability");
 			// charater.UseAbility(E);
 			break;
-		case 'R':
+		case KeyEvent.VK_R:
 			// USE R ability
 			System.out.println("USE R ability");
 			// charater.UseAbility(R);
 			break;
-		case 'D':
+		case KeyEvent.VK_D:
 			// USE D ability
 			System.out.println("USE D ability");
 			// charater.UseAbility(D);
 			break;
-		case 'F':
+		case KeyEvent.VK_F:
 			// USE F ability
 			System.out.println("USE F ability");
 			// charater.UseAbility(F);
 			break;
-		case '1':
+		case KeyEvent.VK_1:
 			// USE inventory slot 1
 			System.out.println("USE inventory slot 1");
 			// charater.UseItem(1);
 			break;
-		case '2':
+		case KeyEvent.VK_2:
 			// USE inventory slot 2
 			System.out.println("USE inventory slot 2");
 			// charater.UseItem(2);
 			break;
-		case '3':
+		case KeyEvent.VK_3:
 			// USE inventory slot 3
 			System.out.println("USE inventory slot 3");
 			// charater.UseItem(3);
 			break;
-		case '4':
+		case KeyEvent.VK_4:
 			// USE inventory slot 4
 			System.out.println("USE inventory slot 4");
 			// charater.UseItem(4);
 			break;
-		case '5':
+		case KeyEvent.VK_5:
 			// USE inventory slot 5
 			System.out.println("USE inventory slot 5");
 			// charater.UseItem(5);
 			break;
-		case '6':
+		case KeyEvent.VK_6:
 			// USE inventory slot 6
 			System.out.println("USE inventory slot 6");
 			// charater.UseItem(6);
 			break;
-		case '7':
+		case KeyEvent.VK_7:
 			// USE inventory slot 7
 			System.out.println("USE inventory slot 7");
 			// charater.UseItem(7);
 			break;
-		case '8':
+		case KeyEvent.VK_8:
 			// USE inventory slot 8
 			System.out.println("USE inventory slot 8");
 			// charater.UseItem(8);
@@ -187,9 +189,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	}
 
 	// Not used interface methods
-	public void keyPressed(KeyEvent ke) {
+	public void keyTyped(KeyEvent ke) {
 		// char pressed = ke.getKeyChar();
-		// System.out.println("KEY PRESSED: " + pressed);
+		// System.out.println("KEY TYPED: " + pressed);
 	}
 
 	public void keyReleased(KeyEvent ke) {
