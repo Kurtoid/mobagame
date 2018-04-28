@@ -8,7 +8,6 @@ import javax.swing.*;
 
 import mobagame.core.DebugSettings;
 import mobagame.core.networking.packets.SignupPacket;
-import mobagame.core.settings.SettingManager;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -145,7 +144,6 @@ public class SignUp extends JFrame implements ActionListener {
 					}
 				}
 			}
-
 			// Zero out the possible password, for security.
 			Arrays.fill(passwordChar, '0');
 
