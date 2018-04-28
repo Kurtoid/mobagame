@@ -136,14 +136,13 @@ public class SignUp extends JFrame implements ActionListener {
 							JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: "
 									+ password + " Email: " + email + " Question: " + question + " Answer: " + answer);
 //							if(state.isServerEnabled) {
-//								SignupPacket p = new SignupPacket(username, password, email, question, answer);;
-//								conn.queuePacket(p);
+								SignupPacket p = new SignupPacket(username, password, email, question, answer);;
+								conn.queuePacket(p);
 //							}							
 						}
 					}
 				}
 			}
-
 			// Zero out the possible password, for security.
 			Arrays.fill(passwordChar, '0');
 

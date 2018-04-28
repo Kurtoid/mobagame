@@ -66,8 +66,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		}
 		add(pane);
 
-		// setDefaultCloseOperation(0);
-
 		setVisible(true);
 	}
 
