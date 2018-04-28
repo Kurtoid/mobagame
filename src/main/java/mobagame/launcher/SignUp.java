@@ -42,6 +42,7 @@ public class SignUp extends JFrame implements ActionListener {
 
 	public SignUp() {
 		super("Sign Up");
+		state = DebugSettings.getInstance();
 		setSize((int) (windowWidth / 3.75), (int) (windowHeight / 1.6));
 		setResizable(false);
 
