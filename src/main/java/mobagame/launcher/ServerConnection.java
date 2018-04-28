@@ -17,8 +17,8 @@ public class ServerConnection extends Thread {
     boolean running = true;
 
     public void initConnect(String hostname, int port) throws IOException {
-        SocketChannel echoSocket = SocketChannel.open();
-        echoSocket.connect(new InetSocketAddress(hostname, port));
+        c = SocketChannel.open();
+        c.connect(new InetSocketAddress(hostname, port));
     }
 
     public ServerConnection() {
@@ -36,7 +36,9 @@ public class ServerConnection extends Thread {
         try {
             while (running) {
                 Packet p = packetsToSend.take();
-                c.write(p.getBytes());
+                // TODO: remove this lag-causing message
+                System.out.println("Sending");
+                c.write(p.getBytes().flip());
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
