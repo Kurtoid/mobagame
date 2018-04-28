@@ -5,7 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class CharSelect {
+public class CharSelect implements Runnable{
+	private JLabel timer = new JLabel("90");
 	JFrame selectionScreen = new JFrame("Character Select");
 	JPanel blueTeamSelect = new JPanel();
 	JPanel charSelectMenu = new JPanel();
@@ -21,6 +22,22 @@ public class CharSelect {
 	JPanel red3 = new JPanel();
 	JPanel red4 = new JPanel();
 	JPanel red5 = new JPanel();
+	public void run(){
+		String temp = "90";
+		for(int i = 90; i >= 0; i--) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+			}
+			temp = Integer.toString(i);
+			timer.setText(temp);
+			selectionScreen.setVisible(true);
+		}
+	}
+	public void start() {
+		Thread t = new Thread(this);
+		t.start();
+	}
 	private GridBagConstraints gbc = new GridBagConstraints();
 	public CharSelect() {
 		blueTeamSelect.setSize(750, 400);
@@ -119,20 +136,26 @@ public class CharSelect {
 		redTeamSelect.add(red3);
 		redTeamSelect.add(red4);
 		redTeamSelect.add(red5);
-		gbc.gridheight = 2;
 		gbc.gridy = 0;
+		gbc.gridx = 0;
+		gbc.gridwidth = 2;
+		selectionScreen.add(timer, gbc);
+		gbc.gridheight = 2;
+		gbc.gridwidth = 1;
+		gbc.gridy = 1;
 		gbc.gridx = 0;
 		gbc.weighty = 1;
 		selectionScreen.add(blueTeamSelect, gbc);
 		gbc.gridx = 1;
 		selectionScreen.add(redTeamSelect, gbc);
-		gbc.gridy = 1;
+		gbc.gridy = 2;
 		gbc.gridx = 0;
 		gbc.weighty = 2;
 		selectionScreen.add(charSelectMenu, gbc);
-		gbc.gridy = 1;
+		gbc.gridy = 2;
 		gbc.gridx = 1;
 		selectionScreen.add(charStats);
 		selectionScreen.setVisible(true);
+		start();
 	}
 }

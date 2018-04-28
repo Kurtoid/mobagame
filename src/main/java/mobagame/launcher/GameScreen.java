@@ -1,6 +1,5 @@
 /**
  * Katelynn Morrison
- * Apr 26, 2018
  */
 
 package mobagame.launcher;
@@ -16,7 +15,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
 	private static Font menuFont = SignUp.menuFont;
 
-	private static Boolean testing = false;
+	private static boolean testing = false;
+	private static boolean usePadAndBar = false;
 
 	private double goldAmount = 0;
 	private JLabel gold = new JLabel();
@@ -74,8 +74,14 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public void keyPressed(KeyEvent ke) {
 		int pressed = ke.getKeyCode();
 		System.out.println("KEY PRESSED: " + pressed);
-		pressed = Character.toUpperCase(pressed);
+		if (pressed >= 97 && pressed <= 105 && usePadAndBar) {
+			pressed -= 48;
+		}
 		switch (pressed) { // TODO Make keys do proper things
+		case KeyEvent.VK_TAB:
+			// TAB???
+			System.out.println("TAB???");
+			break;
 		case KeyEvent.VK_P:
 			// GOTO Shop
 			System.out.println("GOTO Shop");
@@ -156,13 +162,15 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			System.out.println("USE inventory slot 8");
 			// charater.UseItem(8);
 			break;
+		case KeyEvent.VK_9:
+			// Key 9 pressed
+			System.out.println("Key 9 pressed");
+			break;
 		}
 	}
-
 	public void mouseClicked(MouseEvent me) { // TODO Click to move
 		System.out.println("Mouse clicked (# of clicks: " + me.getClickCount() + ")");
 	}
-
 	public void actionPerformed(ActionEvent ae) { // TODO Send to appropriate windows
 		String cmd = ae.getActionCommand();
 
@@ -177,6 +185,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	}
 
 	public static void main(String[] args) {
+		usePadAndBar = true;
 		testing = true;
 		GameScreen gs = new GameScreen("Charater");
 		gs.addKeyListener(gs);
@@ -193,28 +202,22 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		// char pressed = ke.getKeyChar();
 		// System.out.println("KEY TYPED: " + pressed);
 	}
-
 	public void keyReleased(KeyEvent ke) {
 		// char released = ke.getKeyChar();
 		// System.out.println("KEY RELEASED: " + released);
 	}
-
 	public void mousePressed(MouseEvent me) {
 		// System.out.println("Mouse pressed; # of clicks: "
 		// + me.getClickCount());
 	}
-
 	public void mouseReleased(MouseEvent me) {
 		// System.out.println("Mouse released; # of clicks: "
 		// + me.getClickCount());
 	}
-
 	public void mouseEntered(MouseEvent me) {
 		// System.out.println("Mouse entered");
 	}
-
 	public void mouseExited(MouseEvent me) {
 		// System.out.println("Mouse exited");
 	}
-
 }
