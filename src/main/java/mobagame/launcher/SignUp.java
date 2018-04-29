@@ -44,15 +44,18 @@ public class SignUp extends JFrame implements ActionListener {
 
 	public SignUp() {
 		super("Sign Up");
+
 		state = DebugSettings.getInstance();
-        if(state.isServerEnabled){
-            conn = new ServerConnection();
-            try {
-                conn.initConnect("localhost", 8666);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }		
+		if(state.isServerEnabled){
+			conn = new ServerConnection();
+			try {
+				conn.initConnect("localhost", 8666);
+				conn.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		setSize((int) (windowWidth / 3.75), (int) (windowHeight / 1.6));
 		setResizable(false);
 

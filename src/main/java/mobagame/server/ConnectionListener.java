@@ -131,6 +131,7 @@ public class ConnectionListener extends Thread {
             } else if (packetID == Packet.PK_ID_AUTH_SIGNUP) {
                 //System.out.println(new SignupPacket(chunkBuf));
                 SignupPacket packet = new SignupPacket(chunkBuf);
+                System.out.println(packet);
                 PlayerAccountDBO dbo = new PlayerAccountDBO();
                 dbo.createAccount(packet.getUsername(), packet.getPassword(), packet.getEmailAddress(), packet.getSecurityQuestionID(), packet.getSecurityQuestionAnswer());
 

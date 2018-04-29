@@ -38,7 +38,7 @@ public class LoginPacket extends Packet {
 		setPacketType(dataBuffer, PK_ID_AUTH_LOGIN);
 
 		setString(dataBuffer, username, 5, MAX_USERNAME_LENGTH);
-		setString(dataBuffer, username, dataBuffer.position(), MAX_PASSWORD_LENGTH);
+		setString(dataBuffer, password, dataBuffer.position(), MAX_PASSWORD_LENGTH);
 
 //		System.out.println(dataSize);
 //		System.out.println(dataBuffer.getInt(0));

@@ -44,6 +44,7 @@ public class Login implements ActionListener{
 			conn = new ServerConnection();
 			try {
 				conn.initConnect("localhost", 8666);
+				conn.start();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

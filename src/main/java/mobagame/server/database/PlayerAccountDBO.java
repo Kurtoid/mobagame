@@ -56,7 +56,7 @@ public class PlayerAccountDBO {
 			ResultSet rs = loginAccount.getResultSet();
 			rs.next();
 			PlayerAccount p = new PlayerAccount();
-			p.id = rs.getInt("playerId");
+			p.id = rs.getInt("id");
 			p.level = rs.getInt("level");
 			p.username = rs.getString("username");
 			return p;
