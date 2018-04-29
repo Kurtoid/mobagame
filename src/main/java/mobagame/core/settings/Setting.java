@@ -5,53 +5,73 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Setting<E> {
-	String name;
-	E value;
-	Setting<?> parent;
-	Set<Setting<? extends Setting<?>>> children;
+    String name;
+    E value;
+    Setting<?> parent;
+    Set<Setting> children;
 
-	public Setting() {
-		children = new HashSet<>();
-	}
-	public Setting<?> getParent() {
-		return parent;
-	}
+    public Setting() {
+        children = new HashSet<>();
+    }
 
-	public void setParent(Setting<?> parent) {
-		this.parent = parent;
-	}
+    public Setting<?> getParent() {
+        return parent;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setParent(Setting<?> parent) {
+        this.parent = parent;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setValue(E v) {
-		value = v;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public E getValue() {
-		return value;
-	}
+    public void setValue(E v) {
+        value = v;
+    }
 
-	public abstract Component getWidget();
+    public E getValue() {
+        return value;
+    }
 
-	String getHeritage(){
-		if(parent != null){
-			return parent.getHeritage() + " " + name;
-		}
-		return name;
-	}
+    public abstract Component getWidget();
 
-	@Override
-	public String toString() {
-		return "Setting [getName()=" + getName() + ", getValue()=" + getValue() + ", getWidget()=" + getWidget() + "]";
-	}
+    String getHeritage() {
+        if (parent != null) {
+            return parent.getHeritage() + " " + name;
+        }
+        return name;
+    }
 
-	public static void main(String[] args) {
-		System.out.println(new IntSetting("Age", 4).toString());
-	}
+    @Override
+    public String toString() {
+        return "Setting{" +
+                "name='" + name + '\'' +
+                ", value=" + value +
+                ", parent=" + parent.name +
+                ", children=" + children +
+                '}';
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new IntSetting("Age", 4).toString());
+    }
+
+    private String getNameChain() {
+//        if(name.equals("root")){
+//            return null;
+//        }
+        if (parent != null) {
+            return parent.getNameChain() + "." + name;
+        }
+        return name;
+    }
+
+    public String getSettingLine() {
+        return getNameChain() + "=" + value;
+    }
 }

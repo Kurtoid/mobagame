@@ -1,6 +1,7 @@
 package mobagame.core.settings;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -8,8 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
 
 public class SettingManager {
     Setting root;
@@ -24,15 +24,18 @@ public class SettingManager {
         file = p;
     }
 
-    public void readSettings() throws IOException {
+    public void readSettings() {
         Charset charset = StandardCharsets.UTF_8;
         try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
             String line = null;
             int l = 0;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                System.out.println("line: " + line);
                 String[] parts = line.split("=");
-                System.out.println(Arrays.toString(parts));
+                if (parts.length < 2) {
+                    continue;
+                }
+                System.out.println("Parts: " + Arrays.toString(parts));
 
                 if (parts.length > 2) {
                     System.out.println("setting error on line " + l);
@@ -40,7 +43,7 @@ public class SettingManager {
                 }
 
                 String[] keyNames = parts[0].split("\\.");
-                System.out.println(Arrays.toString(keyNames));
+                System.out.println("keys: " + Arrays.toString(keyNames));
                 String settingName = keyNames[keyNames.length - 1];
 
                 Setting s;
@@ -52,36 +55,34 @@ public class SettingManager {
                 }
 
                 int settingKeys = keyNames.length - 1;
-                Setting tmp = root;
+                Setting nodeParent = root;
                 if (settingKeys > 0) {
-                    Setting tmpParent = root;
-                    Setting tmpHolder = null;
                     for (int i = 0; i < settingKeys; i++) {
-                        Iterator iter = tmpParent.children.iterator();
+                        Setting parentSearch = null;
+                        Iterator iter = nodeParent.children.iterator();
                         System.out.println("looking for " + keyNames[i]);
                         while (iter.hasNext()) {
-                            tmpHolder = (Setting) iter.next();
-                            if (tmpHolder.name.equals(keyNames[i])) {
-                                System.out.println("found " + tmpHolder.getHeritage());
+                           Setting tmp = (Setting) iter.next();
+                            if (tmp.name.equals(keyNames[i])) {
+                                System.out.println("found " + tmp.getHeritage());
+                                parentSearch = tmp;
                                 break;
                             }
                         }
-                        if (tmpHolder == null) {
-                            tmpHolder = new EmptySetting();
-                            tmpHolder.name = keyNames[i];
-                            tmpHolder.parent = tmpParent;
-                            tmpParent.children.add(tmp);
-                            System.out.println("created node: " + tmp.getHeritage());
+                        if (parentSearch == null) {
+                            parentSearch = new EmptySetting();
+                            parentSearch.name = keyNames[i];
+                            parentSearch.parent = nodeParent;
+                            nodeParent.children.add(parentSearch);
+                            System.out.println("created node: " + parentSearch.getHeritage());
                         }
-                        tmpParent = tmpHolder;
-                        tmp = tmpHolder;
-                        tmpHolder = null;
+                        nodeParent = parentSearch;
                     }
 
                 }
-                tmp.children.add(s);
-                s.parent = tmp;
-                System.out.println(s.getHeritage());
+                nodeParent.children.add(s);
+                s.parent = nodeParent;
+                System.out.println("line done: " + s.getSettingLine());
                 l++;
             }
         } catch (IOException x) {
@@ -89,11 +90,45 @@ public class SettingManager {
         }
     }
 
+    public void writeSettings() {
+        try {
+            BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
+            Queue<Setting> parentQueue = new ArrayDeque<>();
+            Set<Setting> settings = new HashSet();
+            parentQueue.add(root);
+            while (!parentQueue.isEmpty()) {
+                Setting s = parentQueue.poll();
+                System.out.println("Checking " + s.getHeritage());
+                Iterator<Setting> children = s.children.iterator();
+                while (children.hasNext()) {
+                    Setting child = children.next();
+                    parentQueue.add(child);
+                    System.out.println("Adding " + child.getHeritage());
+                }
+
+                if(s.value!=null){
+                    writer.write(s.getSettingLine()+"\n");
+                }
+            }
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args) {
         SettingManager m = new SettingManager();
         try {
+            System.out.println("OPENING FILE");
             m.openFile(Paths.get("settings.conf"));
+            System.out.println("\nREADING");
             m.readSettings();
+            System.out.println("RESULT");
+            System.out.println(Arrays.toString(m.root.children.toArray()));
+            System.out.println("\n WRITING");
+            m.writeSettings();
 
         } catch (IOException e) {
             // TODO Auto-generated catch block

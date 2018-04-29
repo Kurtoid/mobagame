@@ -9,4 +9,5 @@ public class EmptySetting extends Setting<Object>{
 		return null;
 	}
 
+
 }
