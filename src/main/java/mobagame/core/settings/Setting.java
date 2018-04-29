@@ -39,7 +39,12 @@ public abstract class Setting<E> {
 
 	public abstract Component getWidget();
 
-
+	String getHeritage(){
+		if(parent != null){
+			return parent.getHeritage() + " " + name;
+		}
+		return name;
+	}
 
 	@Override
 	public String toString() {
