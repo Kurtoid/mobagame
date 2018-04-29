@@ -4,6 +4,7 @@ import mobagame.core.networking.packets.Packet;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -11,8 +12,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class ServerConnection extends Thread {
-    SocketChannel c;
+class ServerConnection extends Thread {
+    private SocketChannel c;
     private BlockingQueue<Packet> packetsToSend;
     boolean running = true;
 
@@ -38,7 +39,9 @@ public class ServerConnection extends Thread {
                 Packet p = packetsToSend.take();
                 // TODO: remove this lag-causing message
                 System.out.println("Sending");
-                c.write(p.getBytes().flip());
+                ByteBuffer b = p.getBytes();
+                b.flip();
+                c.write(b);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
