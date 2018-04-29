@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import mobagame.core.DebugSettings;
 import mobagame.core.networking.packets.SignupPacket;
+import mobagame.server.ConnectionListener;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -215,6 +216,7 @@ public class SignUp extends JFrame implements ActionListener {
 
 	public static void main(String[] args) {
 		testing = true;
+		new ConnectionListener();
 		new SignUp();
 	}
 }
