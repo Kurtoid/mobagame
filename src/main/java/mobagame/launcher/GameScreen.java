@@ -32,7 +32,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	// open menu window for playerName
 	public GameScreen() {
 		super(gameName);
-
+		
 		setSize(windowWidth, windowHeight);
 		setResizable(false);
 
@@ -179,6 +179,11 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		case KeyEvent.VK_9:
 			// Key 9 pressed
 			System.out.println("Key 9 pressed");
+			break;
+		case KeyEvent.VK_ESCAPE:
+			// Escape pressed
+			System.out.println("Escape pressed");
+			System.exit(0);
 			break;
 		}
 	}
