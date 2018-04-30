@@ -29,7 +29,6 @@ public class ConnectionListener extends Thread {
     PlayerAccountDBO dbo;
     DebugSettings state;
     DatabaseConnectionManager db;
-
     public ConnectionListener() {
         try {
             state = DebugSettings.getInstance();
@@ -117,7 +116,7 @@ public class ConnectionListener extends Thread {
 
             byte packetID = Packet.getPacketID(chunkBuf);
             if (packetID == Packet.PK_ID_AUTH_LOGIN) {
-                // System.out.println(new LoginPacket(chunkBuf));
+//                System.out.println(new LoginPacket(chunkBuf));
                 LoginPacket p = new LoginPacket(chunkBuf);
                 if (state.isServerEnabled) {
                     PlayerAccountDBO dbo = new PlayerAccountDBO();
@@ -130,12 +129,11 @@ public class ConnectionListener extends Thread {
 
                 System.out.println(p.toString());
             } else if (packetID == Packet.PK_ID_AUTH_SIGNUP) {
-                // System.out.println(new SignupPacket(chunkBuf));
+                //System.out.println(new SignupPacket(chunkBuf));
                 SignupPacket packet = new SignupPacket(chunkBuf);
                 System.out.println(packet);
                 PlayerAccountDBO dbo = new PlayerAccountDBO();
-                dbo.createAccount(packet.getUsername(), packet.getPassword(), packet.getEmailAddress(),
-                        packet.getSecurityQuestionID(), packet.getSecurityQuestionAnswer());
+                dbo.createAccount(packet.getUsername(), packet.getPassword(), packet.getEmailAddress(), packet.getSecurityQuestionID(), packet.getSecurityQuestionAnswer());
 
             } else if (packetID == Packet.PK_ID_INIT) {
                 System.out.println("Connection init");
