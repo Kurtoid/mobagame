@@ -33,7 +33,7 @@ public class CharSelect implements Runnable{
 			timer.setText(temp);
 			selectionScreen.setVisible(true);
 		}
-		selectionScreen.setVisible(true);
+		selectionScreen.setVisible(false);
 		new GameScreen();
 	}
 	public void start() {
