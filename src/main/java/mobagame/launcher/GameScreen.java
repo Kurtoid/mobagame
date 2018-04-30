@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
-public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable{
+public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable {
 
 	public static int windowHeight = 800; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
@@ -32,14 +32,14 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	// open menu window for playerName
 	public GameScreen() {
 		super(gameName);
-		
+
 		setSize(windowWidth, windowHeight);
 		setResizable(false);
 
 		// create
 		gold = new JLabel("$" + goldAmount);
 
-		// Font Setup
+		// font setup
 		gold.setFont(menuFont);
 
 		// make layout
@@ -65,21 +65,23 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		add(pane);
 
 		setVisible(true);
-			start();
+		start();
 	}
+
 	public void run() {
-		while(true) {
+		while (true) {			
 			try {
-				Thread.sleep(1000/goldPerSecond);
-			} catch (InterruptedException e) {
-				// NOPE
+				Thread.sleep(1000 / goldPerSecond);
+			} catch (InterruptedException e) {String message = "You dun " + (char)684 +  " up"; // (char)102 + (char)117 + (char)99 + (char)107 + (char)101 + (char)100 
+				JOptionPane.showMessageDialog(controllingFrame, message, "ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 			goldAmount += 1;
 			gold.setText("$" + goldAmount);
 			setVisible(true);
 		}
-		
+
 	}
+
 	public void start() {
 		Thread t = new Thread(this);
 		t.start();
@@ -187,9 +189,11 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			break;
 		}
 	}
+
 	public void mouseClicked(MouseEvent me) { // TODO Click to move
 		System.out.println("Mouse clicked (# of clicks: " + me.getClickCount() + ")");
 	}
+
 	public void actionPerformed(ActionEvent ae) { // TODO Send to appropriate windows
 		String cmd = ae.getActionCommand();
 
@@ -216,21 +220,26 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		// char pressed = ke.getKeyChar();
 		// System.out.println("KEY TYPED: " + pressed);
 	}
+
 	public void keyReleased(KeyEvent ke) {
 		// char released = ke.getKeyChar();
 		// System.out.println("KEY RELEASED: " + released);
 	}
+
 	public void mousePressed(MouseEvent me) {
 		// System.out.println("Mouse pressed; # of clicks: "
 		// + me.getClickCount());
 	}
+
 	public void mouseReleased(MouseEvent me) {
 		// System.out.println("Mouse released; # of clicks: "
 		// + me.getClickCount());
 	}
+
 	public void mouseEntered(MouseEvent me) {
 		// System.out.println("Mouse entered");
 	}
+
 	public void mouseExited(MouseEvent me) {
 		// System.out.println("Mouse exited");
 	}
