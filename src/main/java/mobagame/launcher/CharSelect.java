@@ -33,13 +33,15 @@ public class CharSelect implements Runnable{
 			timer.setText(temp);
 			selectionScreen.setVisible(true);
 		}
+		selectionScreen.setVisible(false);
+		new GameScreen();
 	}
 	public void start() {
 		Thread t = new Thread(this);
 		t.start();
 	}
 	private GridBagConstraints gbc = new GridBagConstraints();
-	public CharSelect() { 
+	public CharSelect() {
 		blueTeamSelect.setSize(750, 400);
 		redTeamSelect.setSize(750, 400);
 		blue1.setSize(150, 400);
