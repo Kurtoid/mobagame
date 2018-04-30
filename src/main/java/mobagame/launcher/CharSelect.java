@@ -26,7 +26,7 @@ public class CharSelect implements Runnable{
 		String temp = "90";
 		for(int i = 90; i >= 0; i--) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
 			}
 			temp = Integer.toString(i);
@@ -150,6 +150,7 @@ public class CharSelect implements Runnable{
 		selectionScreen.add(blueTeamSelect, gbc);
 		gbc.gridx = 1;
 		selectionScreen.add(redTeamSelect, gbc);
+		gbc.gridheight = 1;
 		gbc.gridy = 2;
 		gbc.gridx = 0;
 		gbc.weighty = 2;
