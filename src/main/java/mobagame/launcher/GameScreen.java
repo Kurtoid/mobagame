@@ -15,7 +15,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
 	private static Font menuFont = SignUp.menuFont;
 
-	private static boolean testing = false;
+	private static boolean testing = true;
 	private static boolean usePadAndBar = false;
 
 	private int goldAmount = 0;
@@ -32,6 +32,10 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	// open menu window for playerName
 	public GameScreen() {
 		super(gameName);
+		
+		// listeners
+		this.addKeyListener(this);
+		this.addMouseListener(this);
 
 		setSize(windowWidth, windowHeight);
 		setResizable(false);
@@ -86,7 +90,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		Thread t = new Thread(this);
 		t.start();
 	}
-
+	
 	public void keyPressed(KeyEvent ke) {
 		int pressed = ke.getKeyCode();
 		System.out.println("KEY PRESSED: " + pressed);
@@ -208,11 +212,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	}
 
 	public static void main(String[] args) {
-		usePadAndBar = true;
-		testing = true;
-		GameScreen gs = new GameScreen();
-		gs.addKeyListener(gs);
-		gs.addMouseListener(gs);
+		new GameScreen();
 	}
 
 	// Not used interface methods
