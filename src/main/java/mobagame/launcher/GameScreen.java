@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
-public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener {
+public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable{
 
 	public static int windowHeight = 200; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
@@ -18,7 +18,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private static boolean testing = false;
 	private static boolean usePadAndBar = false;
 
-	private double goldAmount = 0;
+	private int goldAmount = 0;
+	private int goldPerSecond = 4;
 	private JLabel gold = new JLabel();
 
 	private static String gameName = Menu.gameName;
@@ -67,6 +68,24 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		add(pane);
 
 		setVisible(true);
+			start();
+	}
+	public void run() {
+		while(true) {
+			try {
+				Thread.sleep(1000/goldPerSecond);
+			} catch (InterruptedException e) {
+				// NOPE
+			}
+			goldAmount += 1;
+			gold.setText("$" + goldAmount);
+			setVisible(true);
+		}
+		
+	}
+	public void start() {
+		Thread t = new Thread(this);
+		t.start();
 	}
 
 	public void keyPressed(KeyEvent ke) {
@@ -188,11 +207,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		GameScreen gs = new GameScreen("Charater");
 		gs.addKeyListener(gs);
 		gs.addMouseListener(gs);
-		while (true) {
-			gs.goldAmount++;
-			gs.gold.setText("$" + gs.goldAmount);
-			gs.gold.repaint();
-		}
 	}
 
 	// Not used interface methods
