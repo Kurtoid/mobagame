@@ -1,77 +1,36 @@
 package mobagame.core.settings;
 
 import java.awt.Component;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class Setting<E> {
-    String name;
-    E value;
-    Setting<?> parent;
-    Set<Setting> children;
+public abstract class Setting<E> extends EmptySetting {
+	E value;
 
-    public Setting() {
-        children = new HashSet<>();
-    }
+	// TODO: store as map
+	// Set<Setting> children;
 
-    public Setting<?> getParent() {
-        return parent;
-    }
+	public void setValue(E v) {
+		value = v;
+	}
 
-    public void setParent(Setting<?> parent) {
-        this.parent = parent;
-    }
+	public E getValue() {
+		return value;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public abstract Component getWidget();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	@Override
+	public String toString() {
+		return "Setting{" + "name='" + name + '\'' + ", value=" + value + ", parent=" + parent.name + ", children="
+				+ children + '}';
+	}
 
-    public void setValue(E v) {
-        value = v;
-    }
+	public static void main(String[] args) {
+		System.out.println(new IntSetting("Age", 4).toString());
+	}
 
-    public E getValue() {
-        return value;
-    }
-
-    public abstract Component getWidget();
-
-    String getHeritage() {
-        if (parent != null) {
-            return parent.getHeritage() + " " + name;
-        }
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return "Setting{" +
-                "name='" + name + '\'' +
-                ", value=" + value +
-                ", parent=" + parent.name +
-                ", children=" + children +
-                '}';
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new IntSetting("Age", 4).toString());
-    }
-
-    private String getNameChain() {
-//        if(name.equals("root")){
-//            return null;
-//        }
-        if (parent != null) {
-            return parent.getNameChain() + "." + name;
-        }
-        return name;
-    }
-
-    public String getSettingLine() {
-        return getNameChain() + "=" + value;
-    }
+	public String getSettingLine() {
+		return getNameChain() + "=" + value;
+	}
 }
