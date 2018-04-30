@@ -20,7 +20,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	private int goldAmount = 0;
 	private int goldPerSecond = 4;
-	private JLabel gold = new JLabel();
+	private JButton gold;
 
 	private static String gameName = Menu.gameName;
 
@@ -41,7 +41,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		setResizable(false);
 
 		// create
-		gold = new JLabel("$" + goldAmount);
+		gold = new JButton("$" + goldAmount);
+		gold.setActionCommand(SHOP);
+		gold.addActionListener(this);
 
 		// font setup
 		gold.setFont(menuFont);
