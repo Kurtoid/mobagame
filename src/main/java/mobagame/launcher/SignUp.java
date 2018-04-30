@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import mobagame.core.DebugSettings;
 import mobagame.core.networking.packets.SignupPacket;
+import mobagame.server.ConnectionListener;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -37,7 +38,7 @@ public class SignUp extends JFrame implements ActionListener {
 	private JTextField answerField;
 
 	private static boolean testing = false;
-	
+
 	DebugSettings state;
 	ServerConnection conn;
 
@@ -147,11 +148,10 @@ public class SignUp extends JFrame implements ActionListener {
 				if (isAvalable(username, "Username")) {
 					if (isEmailValid(email)) {
 						if (isAvalable(email, "Email")) {
-							if(state.isServerEnabled) {
+							if (state.isServerEnabled) {
 								SignupPacket p = new SignupPacket(username, password, email, question, answer);
 								conn.queuePacket(p);
 							}
-
 							JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: "
 									+ password + " Email: " + email + " Question: " + question + " Answer: " + answer);
 						}
@@ -219,6 +219,7 @@ public class SignUp extends JFrame implements ActionListener {
 
 	public static void main(String[] args) {
 		testing = true;
+		new ConnectionListener();
 		new SignUp();
 	}
 }
