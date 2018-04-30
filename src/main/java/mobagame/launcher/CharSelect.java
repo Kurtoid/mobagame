@@ -39,7 +39,7 @@ public class CharSelect implements Runnable{
 		t.start();
 	}
 	private GridBagConstraints gbc = new GridBagConstraints();
-	public CharSelect() {
+	public CharSelect() { 
 		blueTeamSelect.setSize(750, 400);
 		redTeamSelect.setSize(750, 400);
 		blue1.setSize(150, 400);

@@ -11,7 +11,7 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable{
 
-	public static int windowHeight = 200; // 800
+	public static int windowHeight = 800; // 800
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
 	private static Font menuFont = SignUp.menuFont;
 
@@ -23,7 +23,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private JLabel gold = new JLabel();
 
 	private static String gameName = Menu.gameName;
-	private String charater;
 
 	private static String SHOP = "shop";
 	private static String MENU = "menu";
@@ -31,10 +30,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private JFrame controllingFrame; // needed for dialogs
 
 	// open menu window for playerName
-	public GameScreen(String charater) {
+	public GameScreen() {
 		super(gameName);
-
-		this.charater = charater;
 
 		setSize(windowWidth, windowHeight);
 		setResizable(false);
@@ -204,7 +201,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public static void main(String[] args) {
 		usePadAndBar = true;
 		testing = true;
-		GameScreen gs = new GameScreen("Charater");
+		GameScreen gs = new GameScreen();
 		gs.addKeyListener(gs);
 		gs.addMouseListener(gs);
 	}
