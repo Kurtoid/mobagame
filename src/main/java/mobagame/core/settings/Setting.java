@@ -5,32 +5,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Setting<E> extends EmptySetting {
-	E value;
+    E value;
 
-	// TODO: store as map
-	// Set<Setting> children;
+    // TODO: store as map
+    // Set<Setting> children;
 
-	public void setValue(E v) {
-		value = v;
-	}
+    public void setValue(E v) {
+        value = v;
+    }
 
-	public E getValue() {
-		return value;
-	}
+    public E getValue() {
+        return value;
+    }
 
-	public abstract Component getWidget();
+    public abstract Component getWidget();
 
-	@Override
-	public String toString() {
-		return "Setting{" + "name='" + name + '\'' + ", value=" + value + ", parent=" + parent.name + ", children="
-				+ children + '}';
-	}
+    @Override
+    public String toString() {
+        return "Setting{" + "name='" + name + '\'' + ", value=" + value + ", parent=" + parent.name + ", children="
+                + children + '}';
+    }
 
-	public static void main(String[] args) {
-		System.out.println(new IntSetting("Age", 4).toString());
-	}
+    public static void main(String[] args) {
+        System.out.println(new IntSetting("Age", 4).toString());
+    }
 
-	public String getSettingLine() {
-		return getNameChain() + "=" + value;
-	}
+    public String getSettingLine() {
+        return getNameChain() + "=" + value;
+    }
 }

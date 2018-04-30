@@ -16,7 +16,7 @@ public class UserLoginTester {
             echoSocket.connect(new InetSocketAddress("localhost", 8666));
 
             LoginPacket p = new LoginPacket("Kurtoid", "Password");
-//		echoSocket.write(new InitPacket().getBytes());
+            // echoSocket.write(new InitPacket().getBytes());
             ByteBuffer buff = p.getBytes();
             buff.flip();
             System.out.println(Arrays.toString(buff.array()));
@@ -27,8 +27,9 @@ public class UserLoginTester {
             buff.flip();
             System.out.println(Arrays.toString(buff.array()));
             echoSocket.write(buff);
-            //c.doLogin("Kurtoid", "Password");
-            //c.doSignup("Kurtoid", "PASS", "Kurt4wilson@gmail.com", (byte) 4, "gdbefhblw");
+            // c.doLogin("Kurtoid", "Password");
+            // c.doSignup("Kurtoid", "PASS", "Kurt4wilson@gmail.com", (byte) 4,
+            // "gdbefhblw");
             Thread.sleep(3000);
             echoSocket.close();
         } catch (IOException e) {
