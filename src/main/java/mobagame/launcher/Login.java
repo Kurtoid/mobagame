@@ -39,16 +39,16 @@ public class Login implements ActionListener{
 	//private PlayerAccount temp;
 	//PlayerAccountDBO playerDBO = new PlayerAccountDBO();
 	Login(){
-		state = DebugSettings.getInstance();
-		if(state.isServerEnabled){
-			conn = new ServerConnection();
-			try {
-				conn.initConnect("localhost", 8666);
-				conn.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+//		state = DebugSettings.getInstance();
+//		if(state.isServerEnabled){
+//			conn = new ServerConnection();
+//			try {
+//				conn.initConnect("localhost", 8666);
+//				conn.start();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
 		//Creates all of the windows
 		forgotPassword.setLayout(new GridLayout(5, 1, 6, 6));
 		forgotPassword.setAlwaysOnTop(true);
@@ -75,7 +75,7 @@ public class Login implements ActionListener{
 		fogotButto.addActionListener(this);
 		loginButto.addActionListener(this);
 		createAccButto.addActionListener(this);
-		ImageIcon icon1 = new ImageIcon("E://ImpressMeProject/pixil-frame-0.png");
+		ImageIcon icon1 = new ImageIcon("F://ImpressMeProject/pixil-frame-0.png");
 		JLabel a = new JLabel("Username:");
 		JLabel b = new JLabel("Password:");
 		JLabel e = new JLabel("");
@@ -182,10 +182,10 @@ public class Login implements ActionListener{
 		if(ae.getActionCommand().equals("Login")) {
 			String User = Username.getText();
 			String pass = Password.getText();
-			if(state.isServerEnabled) {
-				LoginPacket p = new LoginPacket(User, pass);
-				conn.queuePacket(p);
-			}
+			//if(state.isServerEnabled) {
+				//LoginPacket p = new LoginPacket(User, pass);
+				//conn.queuePacket(p);
+			//}
 			/*try {
 				temp = playerDBO.loginAccount(User, pass);
 			}catch(SQLException e) {

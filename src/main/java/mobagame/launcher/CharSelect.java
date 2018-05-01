@@ -26,7 +26,7 @@ public class CharSelect implements Runnable{
 		String temp = "90";
 		for(int i = 90; i >= 0; i--) {
 			try {
-				Thread.sleep(1);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
 			temp = Integer.toString(i);
@@ -54,7 +54,7 @@ public class CharSelect implements Runnable{
 		red3.setSize(150, 400);
 		red4.setSize(150, 400);
 		red5.setSize(150, 400);
-		ImageIcon placeHolderImage = new ImageIcon("E://ImpressMeProject/Black.png");
+		ImageIcon placeHolderImage = new ImageIcon("F://ImpressMeProject/Black.png");
 		JLabel blue1CharImage = new JLabel(placeHolderImage);
 		JLabel blue2CharImage = new JLabel(placeHolderImage);
 		JLabel blue3CharImage = new JLabel(placeHolderImage);
@@ -155,7 +155,6 @@ public class CharSelect implements Runnable{
 		gbc.gridx = 0;
 		gbc.weighty = 2;
 		selectionScreen.add(charSelectMenu, gbc);
-		gbc.gridy = 2;
 		gbc.gridx = 1;
 		selectionScreen.add(charStats);
 		selectionScreen.setVisible(true);
