@@ -9,7 +9,6 @@ public class SignupPacket extends Packet {
 	String emailAddress;
 	byte securityQuestionID;
 	String securityQuestionAnswer;
-
 	@Override
 	public String toString() {
 		return "SignupPacket{" +

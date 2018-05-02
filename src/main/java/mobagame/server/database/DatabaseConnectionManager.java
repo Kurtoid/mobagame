@@ -1,5 +1,7 @@
 package mobagame.server.database;
 
+import java.io.FileNotFoundException;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -7,18 +9,34 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.TimeZone;
 
+import mobagame.core.settings.SettingManager;
+
 public class DatabaseConnectionManager {
-	private static final String dbURL = "jdbc:mysql://johnny.heliohost.org/kurt4wil_mobagame?serverTimezone=UTC";
 	private Connection con;
 	private static DatabaseConnectionManager dbObject = null;
-	private static final String user = "kurt4wil_appserv";
-	private static final String pass = "mrpoopybutthole";
-	private Statement s;
 
 	private DatabaseConnectionManager() throws SQLException {
+		SettingManager manager = new SettingManager();
+		try {
+			manager.openFile(Paths.get("default_server_settings.conf"));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		manager.readSettings();
+		boolean useConnectionString = Boolean.parseBoolean(manager.getSetting("server.useconnectionstring").getValue());
+		String connString = manager.getSetting("server.dbconnectionstring").getValue();
 
-		System.out.println("Connecting");
-		con = DriverManager.getConnection(dbURL, user, pass);
+		if (useConnectionString) {
+			System.out.println("Connecting with only string");
+			con = DriverManager.getConnection(connString);
+		} else {
+			String username = manager.getSetting("server.dbusername").getValue();
+			String password = manager.getSetting("server.dbpassword").getValue();
+			System.out.println("Connecting with username and password");
+			con = DriverManager.getConnection(connString, username, password);
+
+		}
 		System.out.println("Connected");
 		try {
 			if (con != null) {
@@ -28,7 +46,6 @@ public class DatabaseConnectionManager {
 				System.out.println("Product name: " + dm.getDatabaseProductName());
 				System.out.println("Product version: " + dm.getDatabaseProductVersion());
 			}
-			s = con.createStatement();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
