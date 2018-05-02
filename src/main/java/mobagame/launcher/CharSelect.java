@@ -145,7 +145,7 @@ public class CharSelect implements Runnable{
 		charStats.add(test2);
 		gbc.gridy = 0;
 		gbc.gridx = 0;
-		gbc.gridwidth = 2;
+		gbc.gridwidth = 3;
 		selectionScreen.add(timer, gbc);
 		gbc.gridheight = 2;
 		gbc.gridwidth = 1;
@@ -158,8 +158,9 @@ public class CharSelect implements Runnable{
 		gbc.gridx = 1;
 		gbc.weightx = 2;
 		selectionScreen.add(charSelectMenu, gbc);
-		gbc.gridy = 50;
+		gbc.gridy = 3;
 		gbc.gridx = 0;
+		gbc.weightx = 1;
 		selectionScreen.add(charStats);
 		selectionScreen.setVisible(true);
 		start();
