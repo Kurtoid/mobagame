@@ -34,10 +34,10 @@ public class Login implements ActionListener{
 	public JButton loginButto = new JButton("Login");
 	public JButton createAccButto = new JButton("Create Account");
 	public JTextField secureQuestion = new JTextField("");
-	DebugSettings state;
-	ServerConnection conn;
-	//private PlayerAccount temp;
-	//PlayerAccountDBO playerDBO = new PlayerAccountDBO();
+//	DebugSettings state;
+//	ServerConnection conn;
+//	private PlayerAccount temp;
+//	PlayerAccountDBO playerDBO = new PlayerAccountDBO();
 	Login(){
 //		state = DebugSettings.getInstance();
 //		if(state.isServerEnabled){
@@ -75,7 +75,7 @@ public class Login implements ActionListener{
 		fogotButto.addActionListener(this);
 		loginButto.addActionListener(this);
 		createAccButto.addActionListener(this);
-		ImageIcon icon1 = new ImageIcon("F://ImpressMeProject/pixil-frame-0.png");
+		ImageIcon icon1 = new ImageIcon("E://ImpressMeProject/pixil-frame-0.png");
 		JLabel a = new JLabel("Username:");
 		JLabel b = new JLabel("Password:");
 		JLabel e = new JLabel("");
