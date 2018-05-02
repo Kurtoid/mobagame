@@ -9,8 +9,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 
 public class SettingManager {
 	EmptySetting root;
@@ -23,6 +26,7 @@ public class SettingManager {
 
 	public void openFile(Path p) throws FileNotFoundException {
 		file = p;
+
 	}
 
 	public void readSettings() {
@@ -32,11 +36,15 @@ public class SettingManager {
 			int l = 0;
 			while ((line = reader.readLine()) != null) {
 				System.out.println("line: " + line);
-				String[] parts = line.split("=");
-				if (parts.length < 2) {
+				int splitPosition = line.indexOf('=');
+				if (splitPosition <= 0) {
 					continue;
 				}
-				writeSetting(parts[0], parts[1]);
+				String firstPart = line.substring(0, splitPosition);
+				String secondPart = line.substring(splitPosition + 1, line.length());
+//				System.out.println(firstPart);
+//				System.out.println(secondPart);
+				writeSetting(firstPart, secondPart);
 				// System.out.println("line done: " + s.getSettingLine());
 				l++;
 			}
@@ -71,26 +79,25 @@ public class SettingManager {
 
 	}
 
-	void writeSetting(String name, String value) {
+	public void writeSetting(String name, String value) {
 		writeSetting(name, value, true);
 	}
 
-	void writeSetting(String name, String value, boolean replace) {
+	public void writeSetting(String name, String value, boolean replace) {
 		if (doesSettingExist(name)) {
-
+			EmptySetting s = getSetting(name);
+			if (s instanceof Setting) {
+				((Setting) s).setValue(value);
+			}
+			return;
 		}
 
 		String[] keyNames = name.split("\\.");
-		System.out.println("keys: " + Arrays.toString(keyNames));
+//		System.out.println("keys: " + Arrays.toString(keyNames));
 		String settingName = keyNames[keyNames.length - 1];
 
 		Setting s;
-		try {
-			int val = Integer.parseInt(value);
-			s = new IntSetting(settingName, val);
-		} catch (NumberFormatException e) {
-			s = new StringSetting(settingName, value);
-		}
+		s = new Setting(settingName, value);
 
 		int settingKeys = keyNames.length - 1;
 		EmptySetting nodeParent = root;
@@ -102,7 +109,7 @@ public class SettingManager {
 					parentSearch.name = keyNames[i];
 					parentSearch.parent = nodeParent;
 					nodeParent.children.put(parentSearch.name, parentSearch);
-					System.out.println("created node: " + parentSearch.getHeritage());
+//					System.out.println("created node: " + parentSearch.getHeritage());
 				}
 				nodeParent = parentSearch;
 			}
@@ -110,13 +117,13 @@ public class SettingManager {
 		}
 		nodeParent.children.put(s.name, s);
 		s.parent = nodeParent;
-		System.out.println("node done: " + s.getSettingLine());
+//		System.out.println("node done: " + s.getSettingLine());
 
 	}
 
-	EmptySetting getSetting(String name) {
+	public Setting getSetting(String name) {
 		String[] keyNames = name.split("\\.");
-		System.out.println("keys: " + Arrays.toString(keyNames));
+//		System.out.println("keys: " + Arrays.toString(keyNames));
 		EmptySetting s = root;
 		for (int i = 0; i < keyNames.length; i++) {
 			// System.out.println("eval " + keyNames[i]);
@@ -126,13 +133,15 @@ public class SettingManager {
 			}
 			s = tmp;
 		}
-		return s;
-
+		if (s instanceof Setting)
+			return (Setting) s;
+		else
+			return null;
 	}
 
 	boolean doesSettingExist(String name) {
 		String[] keyNames = name.split("\\.");
-		System.out.println("keys: " + Arrays.toString(keyNames));
+		// System.out.println("keys: " + Arrays.toString(keyNames));
 		String settingName = keyNames[keyNames.length - 1];
 		EmptySetting s = root;
 		for (int i = 0; i < keyNames.length; i++) {

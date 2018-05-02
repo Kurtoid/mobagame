@@ -10,31 +10,34 @@ import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.SignupPacket;
 
 public class UserLoginTester {
-    public static void main(String[] args) {
-        try {
-            SocketChannel echoSocket = SocketChannel.open();
-            echoSocket.connect(new InetSocketAddress("localhost", 8666));
+	public static void main(String[] args) {
+		try {
+			SocketChannel echoSocket = SocketChannel.open();
+			echoSocket.connect(new InetSocketAddress("localhost", 8666));
 
-            LoginPacket p = new LoginPacket("Kurtoid", "Password");
-//		echoSocket.write(new InitPacket().getBytes());
-            ByteBuffer buff = p.getBytes();
-            buff.flip();
-            System.out.println(Arrays.toString(buff.array()));
+			SignupPacket sp = new SignupPacket("Kurtoid", "PASS", "Kurt4wilson@gmail.com", (byte) 4, "gdbefhblw");
+			ByteBuffer buff = sp.getBytes();
+			buff.flip();
+			System.out.println(Arrays.toString(buff.array()));
+			echoSocket.write(buff);
 
-            echoSocket.write(buff);
-            SignupPacket sp = new SignupPacket("Kurtoid", "PASS", "Kurt4wilson@gmail.com", (byte) 4, "gdbefhblw");
-            buff = sp.getBytes();
-            buff.flip();
-            System.out.println(Arrays.toString(buff.array()));
-            echoSocket.write(buff);
-            //c.doLogin("Kurtoid", "Password");
-            //c.doSignup("Kurtoid", "PASS", "Kurt4wilson@gmail.com", (byte) 4, "gdbefhblw");
-            Thread.sleep(3000);
-            echoSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+			LoginPacket p = new LoginPacket("Kurtoid", "PASS");
+			// echoSocket.write(new InitPacket().getBytes());
+			buff = p.getBytes();
+			buff.flip();
+			System.out.println(Arrays.toString(buff.array()));
+
+			echoSocket.write(buff);
+
+			// c.doLogin("Kurtoid", "Password");
+			// c.doSignup("Kurtoid", "PASS", "Kurt4wilson@gmail.com", (byte) 4,
+			// "gdbefhblw");
+			Thread.sleep(3000);
+			echoSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }

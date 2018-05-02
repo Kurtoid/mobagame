@@ -4,21 +4,28 @@ import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Setting<E> extends EmptySetting {
-	E value;
+public class Setting extends EmptySetting {
+	String value;
+	Component widget;
 
 	// TODO: store as map
 	// Set<Setting> children;
+	public Setting(String name, String value) {
+		this.value = value;
+		this.name = name;
+	}
 
-	public void setValue(E v) {
+	public void setValue(String v) {
 		value = v;
 	}
 
-	public E getValue() {
+	public String getValue() {
 		return value;
 	}
 
-	public abstract Component getWidget();
+	public Component getWidget() {
+		return widget;
+	}
 
 	@Override
 	public String toString() {
@@ -27,7 +34,7 @@ public abstract class Setting<E> extends EmptySetting {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(new IntSetting("Age", 4).toString());
+		// System.out.println(new IntSetting("Age", 4).toString());
 	}
 
 	public String getSettingLine() {

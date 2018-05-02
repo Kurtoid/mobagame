@@ -17,8 +17,8 @@ public class PlayerAccountDBO {
 	public PlayerAccountDBO() {
 		try {
 			db = DatabaseConnectionManager.getInstance();
-			createAccount = db.getConnection()
-					.prepareStatement("INSERT INTO PlayerAccount (username, password, level) VALUES (?, ?, ?)");
+			createAccount = db.getConnection().prepareStatement(
+					"INSERT INTO PlayerAccount (username, password, email, questionID, questionAnswer, xp, level) VALUES (?, ?, ?, ?, ?, ?, ?)");
 			loginAccount = db.getConnection()
 					.prepareStatement("SELECT * FROM PlayerAccount WHERE username = ? AND password = ?");
 		} catch (SQLException e) {
@@ -28,7 +28,8 @@ public class PlayerAccountDBO {
 	}
 
 	// TODO: return player
-	public void createAccount(String username, String password, String emailAddress, byte securityQuestionID, String securityQuestionAnswer) {
+	public void createAccount(String username, String password, String emailAddress, byte securityQuestionID,
+			String securityQuestionAnswer) {
 		try {
 
 			MessageDigest mDigest = MessageDigest.getInstance("SHA1");
@@ -36,7 +37,11 @@ public class PlayerAccountDBO {
 
 			createAccount.setString(1, username);
 			createAccount.setBytes(2, result);
-			createAccount.setInt(3, 1);
+			createAccount.setString(3, emailAddress);
+			createAccount.setInt(4, securityQuestionID);
+			createAccount.setString(5, securityQuestionAnswer);
+			createAccount.setInt(6, 0);
+			createAccount.setInt(7, 1);
 			createAccount.executeUpdate();
 
 		} catch (SQLException | NoSuchAlgorithmException e) {
@@ -46,7 +51,7 @@ public class PlayerAccountDBO {
 		// return new PlayerAccount();
 	}
 
-	public  PlayerAccount loginAccount(String username, String password) throws SQLException{
+	public PlayerAccount loginAccount(String username, String password) throws SQLException {
 		try {
 			loginAccount.setString(1, username);
 			MessageDigest mDigest = MessageDigest.getInstance("SHA1");
@@ -68,6 +73,6 @@ public class PlayerAccountDBO {
 
 	public static void main(String[] args) {
 		PlayerAccountDBO dbo = new PlayerAccountDBO();
-		dbo.createAccount("hgeugfiw", "hfeiow",null, (byte)0x00, null);
+		dbo.createAccount("hgeugfiw", "hfeiow", null, (byte) 0x00, null);
 	}
 }
