@@ -1,5 +1,6 @@
 package mobagame.core;
 
+@Deprecated
 public class DebugSettings {
     private static DebugSettings instance;
 

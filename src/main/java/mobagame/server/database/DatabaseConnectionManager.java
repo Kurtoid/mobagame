@@ -11,10 +11,20 @@ import java.util.TimeZone;
 
 import mobagame.core.settings.SettingManager;
 
+/**
+ * singleton to manage connection to server's database
+ *
+ * @author Kurt Wilson
+ */
 public class DatabaseConnectionManager {
 	private Connection con;
 	private static DatabaseConnectionManager dbObject = null;
 
+	/**
+	 * connects to server defined in default_server_settings.conf
+	 *
+	 * @throws SQLException
+	 */
 	private DatabaseConnectionManager() throws SQLException {
 		SettingManager manager = new SettingManager();
 		try {
@@ -52,6 +62,13 @@ public class DatabaseConnectionManager {
 
 	}
 
+	/**
+	 * get the instance of this singleton connects to server defined in<br>
+	 * default_server_settings.conf
+	 *
+	 * @return the only instance of DataBaseConnectionManager
+	 * @throws SQLException
+	 */
 	public static DatabaseConnectionManager getInstance() throws SQLException {
 		if (dbObject == null) {
 			dbObject = new DatabaseConnectionManager();

@@ -6,6 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * manages login and signup of users securely
+ *
+ * @author Kurt Wilson
+ *
+ */
 public class PlayerAccountDBO {
 	private static int ITERATIONS = 10000;
 	private static final int KEY_LENGTH = 128;
@@ -28,8 +34,20 @@ public class PlayerAccountDBO {
 	}
 
 	// TODO: return player
+	/**
+	 * signs up a user to check if the signup is successful, sign the user in if it
+	 * fails, returns a SQLException
+	 *
+	 * @param username
+	 * @param password
+	 * @param emailAddress
+	 * @param securityQuestionID
+	 * @param securityQuestionAnswer
+	 * @throws SQLException
+	 *             if user cant be created
+	 */
 	public void createAccount(String username, String password, String emailAddress, byte securityQuestionID,
-			String securityQuestionAnswer) {
+			String securityQuestionAnswer) throws SQLException {
 		try {
 
 			MessageDigest mDigest = MessageDigest.getInstance("SHA1");
@@ -44,13 +62,20 @@ public class PlayerAccountDBO {
 			createAccount.setInt(7, 1);
 			createAccount.executeUpdate();
 
-		} catch (SQLException | NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		// return new PlayerAccount();
 	}
 
+	/**
+	 * logs in an account, and returns it
+	 * @param username
+	 * @param password
+	 * @return the player, or null if it fails
+	 * @throws SQLException
+	 */
 	public PlayerAccount loginAccount(String username, String password) throws SQLException {
 		try {
 			loginAccount.setString(1, username);
@@ -73,6 +98,11 @@ public class PlayerAccountDBO {
 
 	public static void main(String[] args) {
 		PlayerAccountDBO dbo = new PlayerAccountDBO();
-		dbo.createAccount("hgeugfiw", "hfeiow", null, (byte) 0x00, null);
+		try {
+			dbo.createAccount("hgeugfiw", "hfeiow", null, (byte) 0x00, null);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

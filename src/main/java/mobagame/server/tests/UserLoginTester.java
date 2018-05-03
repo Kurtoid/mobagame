@@ -9,6 +9,11 @@ import java.util.Arrays;
 import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.SignupPacket;
 
+/**
+ * For internal testing use, do not distribute
+ * @author Kurt Wilson
+ *
+ */
 public class UserLoginTester {
 	public static void main(String[] args) {
 		try {

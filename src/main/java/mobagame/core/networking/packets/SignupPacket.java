@@ -2,7 +2,11 @@ package mobagame.core.networking.packets;
 
 import java.nio.ByteBuffer;
 
-
+/**
+ * Packet sent from client to server to request a new user to be created
+ * @author Kurt Wilson
+ *
+ */
 public class SignupPacket extends Packet {
 	String username;
 	String password;

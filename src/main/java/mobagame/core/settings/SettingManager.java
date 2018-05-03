@@ -15,6 +15,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 
+/**
+ * used to read and write local settings, IE default server, window size etc
+ * @author Kurt Wilson
+ *
+ */
 public class SettingManager {
 	EmptySetting root;
 	private Path file;
@@ -29,6 +34,9 @@ public class SettingManager {
 
 	}
 
+	/**
+	 * using the file set by openFile(Path), read it, and assign the settings to root
+	 */
 	public void readSettings() {
 		Charset charset = StandardCharsets.UTF_8;
 		try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
@@ -42,8 +50,8 @@ public class SettingManager {
 				}
 				String firstPart = line.substring(0, splitPosition);
 				String secondPart = line.substring(splitPosition + 1, line.length());
-//				System.out.println(firstPart);
-//				System.out.println(secondPart);
+				// System.out.println(firstPart);
+				// System.out.println(secondPart);
 				writeSetting(firstPart, secondPart);
 				// System.out.println("line done: " + s.getSettingLine());
 				l++;
@@ -53,6 +61,9 @@ public class SettingManager {
 		}
 	}
 
+	/**
+	 * writes all settings under root to file set by openFile(Path)
+	 */
 	public void writeSettings() {
 		try {
 			BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8);
@@ -79,11 +90,18 @@ public class SettingManager {
 
 	}
 
+	/**
+	 * saves a single setting, and creates parents if needed
+	 * doesnt actually right to file, so call writeSettings later
+	 * @param name
+	 * @param value
+	 */
 	public void writeSetting(String name, String value) {
 		writeSetting(name, value, true);
 	}
 
-	public void writeSetting(String name, String value, boolean replace) {
+
+	private void writeSetting(String name, String value, boolean replace) {
 		if (doesSettingExist(name)) {
 			EmptySetting s = getSetting(name);
 			if (s instanceof Setting) {
@@ -93,7 +111,7 @@ public class SettingManager {
 		}
 
 		String[] keyNames = name.split("\\.");
-//		System.out.println("keys: " + Arrays.toString(keyNames));
+		// System.out.println("keys: " + Arrays.toString(keyNames));
 		String settingName = keyNames[keyNames.length - 1];
 
 		Setting s;
@@ -109,7 +127,7 @@ public class SettingManager {
 					parentSearch.name = keyNames[i];
 					parentSearch.parent = nodeParent;
 					nodeParent.children.put(parentSearch.name, parentSearch);
-//					System.out.println("created node: " + parentSearch.getHeritage());
+					// System.out.println("created node: " + parentSearch.getHeritage());
 				}
 				nodeParent = parentSearch;
 			}
@@ -117,13 +135,19 @@ public class SettingManager {
 		}
 		nodeParent.children.put(s.name, s);
 		s.parent = nodeParent;
-//		System.out.println("node done: " + s.getSettingLine());
+		// System.out.println("node done: " + s.getSettingLine());
 
 	}
 
+	/**
+	 * grab a setting using a fully qualified name
+	 * call <b>after<b> writeSetting or readSettings
+	 * @param name
+	 * @return
+	 */
 	public Setting getSetting(String name) {
 		String[] keyNames = name.split("\\.");
-//		System.out.println("keys: " + Arrays.toString(keyNames));
+		// System.out.println("keys: " + Arrays.toString(keyNames));
 		EmptySetting s = root;
 		for (int i = 0; i < keyNames.length; i++) {
 			// System.out.println("eval " + keyNames[i]);

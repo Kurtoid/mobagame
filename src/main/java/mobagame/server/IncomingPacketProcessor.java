@@ -2,32 +2,54 @@ package mobagame.server;
 
 import java.nio.ByteBuffer;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import mobagame.core.networking.packets.LoginPacket;
+import mobagame.core.networking.packets.LoginStatusPacket;
 import mobagame.core.networking.packets.Packet;
 import mobagame.core.networking.packets.SignupPacket;
+import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 
+/**
+ * Handles new messages from clients runs as a thread, and waits for new
+ * additions to BlockingQueue&lt;OutMessage&gt; packets
+ *
+ * @author Kurt Wilson
+ */
 public class IncomingPacketProcessor extends Thread {
 	boolean serverEnabled;
-	BlockingQueue<ByteBuffer> packets;
+	BlockingQueue<OutMessage> packets;
+	ConnectionListener l;
 
-	public IncomingPacketProcessor() {
-		packets = new LinkedBlockingQueue<ByteBuffer>();
+	/**
+	 * initializes class
+	 *
+	 * @param l
+	 */
+	public IncomingPacketProcessor(ConnectionListener l) {
+		packets = new LinkedBlockingQueue<>();
+		this.l = l;
 	}
+
+	/**
+	 * sets whether the thread should try to use
+	 * {@link mobagame.server.database.DatabaseConnectionManager} or not
+	 *
+	 * @param serverEnabled
+	 */
 	public void setServerEnabled(boolean serverEnabled) {
 		this.serverEnabled = serverEnabled;
 	}
+
 	@Override
 	public void run() {
 		super.run();
 		while (true) {
 			try {
-				ByteBuffer chunkBuf = packets.take();
-
+				OutMessage m = packets.take();
+				ByteBuffer chunkBuf = m.buff;
 				byte packetID = Packet.getPacketID(chunkBuf);
 				if (packetID == Packet.PK_ID_AUTH_LOGIN) {
 					// System.out.println(new LoginPacket(chunkBuf));
@@ -35,7 +57,10 @@ public class IncomingPacketProcessor extends Thread {
 					if (serverEnabled) {
 						PlayerAccountDBO dbo = new PlayerAccountDBO();
 						try {
-							dbo.loginAccount(p.getUsername(), p.getPassword());
+							PlayerAccount player = dbo.loginAccount(p.getUsername(), p.getPassword());
+							LoginStatusPacket loginPak = new LoginStatusPacket();
+							loginPak.success = player != null;
+							l.messages.get(m.socketID).add(new OutMessage(m.socketID, loginPak.getBytes()));
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -58,12 +83,20 @@ public class IncomingPacketProcessor extends Thread {
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		}
 	}
 
-	void addToQueue(ByteBuffer b) {
-		packets.add(b);
+	/**
+	 * adds a message to process to send to clients
+	 *
+	 * @param bytes
+	 */
+	void addToQueue(OutMessage bytes) {
+		packets.add(bytes);
 	}
 }

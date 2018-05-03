@@ -3,25 +3,45 @@ package mobagame.core.networking.packets;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-
+/**
+ * sent from the client to a server to request authentication
+ *
+ * @author Kurt Wilson
+ */
 public class LoginPacket extends Packet {
 
+	/**
+	 * the username to attempt to log in as
+	 */
 	private String username;
+	/**
+	 * the (unhashed) password to use
+	 */
 	private String password;
 
-	public LoginPacket(String string, String string2) {
-		username = string;
-		password = string2;
+	/**
+	 * create a loginpacket, but not assign the bytes yet
+	 *
+	 * @param uname
+	 *            username
+	 * @param passwd
+	 *            password
+	 */
+	public LoginPacket(String uname, String passwd) {
+		username = uname;
+		password = passwd;
 	}
 
 	@Override
 	public String toString() {
-		return "LoginPacket{" +
-				"username='" + username + '\'' +
-				", password='" + password + '\'' +
-				'}';
+		return "LoginPacket{" + "username='" + username + '\'' + ", password='" + password + '\'' + '}';
 	}
 
+	/**
+	 * create a LoginPacket for parsing
+	 *
+	 * @param bf
+	 */
 	public LoginPacket(ByteBuffer bf) {
 		readData(bf);
 	}
@@ -40,10 +60,10 @@ public class LoginPacket extends Packet {
 		setString(dataBuffer, username, 5, MAX_USERNAME_LENGTH);
 		setString(dataBuffer, password, dataBuffer.position(), MAX_PASSWORD_LENGTH);
 
-//		System.out.println(dataSize);
-//		System.out.println(dataBuffer.getInt(0));
 		// System.out.println(dataSize);
-//		 System.out.println(Arrays.toString(dataBuffer.array()));
+		// System.out.println(dataBuffer.getInt(0));
+		// System.out.println(dataSize);
+		// System.out.println(Arrays.toString(dataBuffer.array()));
 		return dataBuffer;
 	}
 
