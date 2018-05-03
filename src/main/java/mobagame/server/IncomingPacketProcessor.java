@@ -2,6 +2,7 @@ package mobagame.server;
 
 import java.nio.ByteBuffer;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -50,8 +51,11 @@ public class IncomingPacketProcessor extends Thread {
 			try {
 				OutMessage m = packets.take();
 				ByteBuffer chunkBuf = m.buff;
+				System.out.println(Arrays.toString(chunkBuf.array()));
 				byte packetID = Packet.getPacketID(chunkBuf);
+				System.out.println(packetID);
 				if (packetID == Packet.PK_ID_AUTH_LOGIN) {
+					System.out.println("login");
 					// System.out.println(new LoginPacket(chunkBuf));
 					LoginPacket p = new LoginPacket(chunkBuf);
 					if (serverEnabled) {
@@ -69,6 +73,7 @@ public class IncomingPacketProcessor extends Thread {
 					System.out.println(p.toString());
 				} else if (packetID == Packet.PK_ID_AUTH_SIGNUP) {
 					// System.out.println(new SignupPacket(chunkBuf));
+					System.out.println("Signup");
 					SignupPacket packet = new SignupPacket(chunkBuf);
 					System.out.println(packet);
 					PlayerAccountDBO dbo = new PlayerAccountDBO();
@@ -77,6 +82,9 @@ public class IncomingPacketProcessor extends Thread {
 
 				} else if (packetID == Packet.PK_ID_INIT) {
 					System.out.println("Connection init");
+				}else if(packetID == Packet.PK_ID_CONN_DISCONNECT) {
+					System.out.println("disconnect");
+					l.connectionsToClose.add(m.socketID);
 				} else {
 					System.out.println("bad pkt");
 				}

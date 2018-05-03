@@ -11,10 +11,12 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
@@ -38,8 +40,9 @@ public class ConnectionListener extends Thread {
 	DatabaseConnectionManager db;
 	IncomingPacketProcessor packetProc;
 	SettingManager settingManager;
-	Map<SelectionKey, Long> socketMap;
+	Map<SocketChannel, Long> socketMap;
 	Map<Long, Queue<OutMessage>> messages;
+	List<Long> connectionsToClose;
 	long nextSocketID = 0;
 
 	/**
@@ -72,6 +75,8 @@ public class ConnectionListener extends Thread {
 			packetProc.setDaemon(true);
 			socketMap = new HashMap<>();
 			// setDaemon(true);
+
+			connectionsToClose = new ArrayList<>();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,6 +95,7 @@ public class ConnectionListener extends Thread {
 			// TODO: convert to settings API when we've made it
 
 			serverSocketChannel.socket().bind(new InetSocketAddress(8666));
+			boolean skip = false;
 			while (running) {
 
 				Iterator<SelectionKey> iter;
@@ -103,12 +109,25 @@ public class ConnectionListener extends Thread {
 						if (!key.isValid()) {
 							continue;
 						}
-						if (key.isAcceptable())
-							this.handleAccept(key);
-						if (key.isReadable())
-							this.handleRead(key);
-						if (key.isWritable()) {
-							this.handleWrite(key);
+						if (key.channel() instanceof SocketChannel) {
+							Long sockID = socketMap.get((SocketChannel) key.channel());
+							if (connectionsToClose.contains(sockID)) {
+								key.cancel();
+								connectionsToClose.remove(new Long(sockID));
+								System.out.println("closed connection");
+								skip = true;
+							}
+						}
+						if (!skip) {
+							if (key.isValid() && key.isAcceptable())
+								this.handleAccept(key);
+							if (key.isValid() && key.isReadable())
+								this.handleRead(key);
+							if (key.isValid() && key.isWritable()) {
+								this.handleWrite(key);
+							}
+						} else {
+							skip = false;
 						}
 					}
 				}
@@ -127,11 +146,12 @@ public class ConnectionListener extends Thread {
 	 * @param key
 	 */
 	private void handleWrite(SelectionKey key) {
-		if (socketMap.containsKey(key)) {
-			long keyID = socketMap.get(key);
+		SocketChannel ch = (SocketChannel) key.channel();
+
+		if (socketMap.containsKey(ch)) {
+			long keyID = socketMap.get(ch);
 			OutMessage m = messages.get(keyID).poll();
 			if (m != null) {
-				SocketChannel ch = (SocketChannel) key.channel();
 				try {
 					ch.write(m.buff);
 				} catch (IOException e) {
@@ -153,6 +173,7 @@ public class ConnectionListener extends Thread {
 	private void handleRead(SelectionKey key) throws IOException {
 		SocketChannel ch = (SocketChannel) key.channel();
 		ByteArrayOutputStream byteStore = new ByteArrayOutputStream();
+		chunkBuf = ByteBuffer.allocate(512);
 		chunkBuf.clear();
 		chunkBuf.position(0);
 		while (ch.read(chunkBuf) > 0) {
@@ -170,9 +191,9 @@ public class ConnectionListener extends Thread {
 			ch.close();
 		}
 		if (length > 0) {
-			System.out.println(socketMap.size());
-			long keyID = socketMap.get(key);
-			System.out.println(Arrays.toString(byteStore.toByteArray()));
+			// System.out.println(socketMap.size());
+			long keyID = socketMap.get(ch);
+			// System.out.println(Arrays.toString(byteStore.toByteArray()));
 			packetProc.addToQueue(new OutMessage(keyID, chunkBuf));
 		}
 
@@ -196,7 +217,7 @@ public class ConnectionListener extends Thread {
 		// Register the new SocketChannel with our Selector, indicating
 		// we'd like to be notified when there's data waiting to be read
 		socketChannel.register(this.selector, SelectionKey.OP_READ);
-		socketMap.put(key, nextSocketID);
+		socketMap.put(socketChannel, nextSocketID);
 		messages.put(nextSocketID, new LinkedList<>());
 		nextSocketID++;
 	}

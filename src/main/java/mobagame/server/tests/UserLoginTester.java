@@ -6,11 +6,13 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 
+import mobagame.core.networking.packets.DisconnectPacket;
 import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.SignupPacket;
 
 /**
  * For internal testing use, do not distribute
+ *
  * @author Kurt Wilson
  *
  */
@@ -31,13 +33,16 @@ public class UserLoginTester {
 			buff = p.getBytes();
 			buff.flip();
 			System.out.println(Arrays.toString(buff.array()));
-
 			echoSocket.write(buff);
 
 			// c.doLogin("Kurtoid", "Password");
 			// c.doSignup("Kurtoid", "PASS", "Kurt4wilson@gmail.com", (byte) 4,
 			// "gdbefhblw");
 			Thread.sleep(3000);
+			buff = new DisconnectPacket().getBytes();
+			buff.flip();
+			echoSocket.write(buff);
+			Thread.sleep(1000);
 			echoSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();

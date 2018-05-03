@@ -22,6 +22,7 @@ public abstract class Packet {
 
 	public static byte PK_ID_AUTH_SIGNUP = 0x03;
 	public static byte PK_ID_AUTH_STATUS = 0x04;
+	public static byte PK_ID_CONN_DISCONNECT =  0x05;
 
 	public static int BYTES_PER_CHARACTER = 1;
 	public static int PACKET_ID_SIZE = 1;
