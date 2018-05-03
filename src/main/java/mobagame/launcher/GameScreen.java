@@ -32,7 +32,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	// open menu window for playerName
 	public GameScreen() {
 		super(gameName);
-		
+
 		// listeners
 		this.addKeyListener(this);
 		this.addMouseListener(this);
@@ -70,20 +70,26 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		}
 		add(pane);
 
+		System.out.println(getToolkit().getScreenSize());
 		setVisible(true);
+		// next line to be deleted when fixed
+		JOptionPane.showMessageDialog(controllingFrame, "Pressing tab brakes everything", "Warning",
+				JOptionPane.WARNING_MESSAGE);
+		requestFocus();
 		start();
 	}
 
 	public void run() {
-		while (true) {			
+		while (true) {
 			try {
 				Thread.sleep(1000 / goldPerSecond);
-			} catch (InterruptedException e) {String message = "You dun " + (char)684 +  " up"; // (char)102 + (char)117 + (char)99 + (char)107 + (char)101 + (char)100 
+			} catch (InterruptedException e) {
+				String message = "You dun " + (char) 684 + " up"; // (char)102 + (char)117 + (char)99 + (char)107 +
+																	// (char)101 + (char)100
 				JOptionPane.showMessageDialog(controllingFrame, message, "ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 			goldAmount += 1;
 			gold.setText("$" + goldAmount);
-			setVisible(true);
 		}
 
 	}
@@ -92,7 +98,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		Thread t = new Thread(this);
 		t.start();
 	}
-	
+
 	public void keyPressed(KeyEvent ke) {
 		int pressed = ke.getKeyCode();
 		System.out.println("KEY PRESSED: " + pressed);
@@ -197,7 +203,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	}
 
 	public void mouseClicked(MouseEvent me) { // TODO Click to move
-		System.out.println("Mouse clicked (# of clicks: " + me.getClickCount() + ")");
+		System.out.println("Mouse Point (" + me.getX() + ", " + me.getY() + ")");
 	}
 
 	public void actionPerformed(ActionEvent ae) { // TODO Send to appropriate windows
