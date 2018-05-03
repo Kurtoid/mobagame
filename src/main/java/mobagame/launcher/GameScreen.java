@@ -5,6 +5,8 @@
 package mobagame.launcher;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -15,12 +17,13 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
 	private static Font menuFont = SignUp.menuFont;
 
-	private static boolean testing = true;
+	private static boolean testing = false;
 	private static boolean usePadAndBar = false;
 
 	private int goldAmount = 0;
 	private int goldPerSecond = 4;
 	private JButton gold;
+	private JLabel temp;
 
 	private static String gameName = Menu.gameName;
 
@@ -32,7 +35,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	// open menu window for playerName
 	public GameScreen() {
 		super(gameName);
-		
+
 		// listeners
 		this.addKeyListener(this);
 		this.addMouseListener(this);
@@ -45,21 +48,32 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		gold.setActionCommand(SHOP);
 		gold.addActionListener(this);
 
+		temp = new JLabel("gameName");
+
 		// font setup
 		gold.setFont(menuFont);
+		temp.setFont(menuFont);
 
-		// make layout
+		// make border
+		Border colored = BorderFactory.createLineBorder(Color.GREEN, 10);
+		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+		Border loweredbevel = BorderFactory.createLoweredBevelBorder();
+		Border frame = BorderFactory.createCompoundBorder(raisedbevel, loweredbevel);
+
+		// make layout		
 		JPanel pane = new JPanel(new GridBagLayout());
+		JPanel inventory = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
-		c.ipady = 100;
-		c.gridwidth = 1;
-		c.anchor = GridBagConstraints.PAGE_END;
-		c.weightx = 0.5;
+		c.anchor = GridBagConstraints.NORTH;
+		pane.add(temp, c);
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.weighty = 1;
+		c.anchor = GridBagConstraints.SOUTH;
 		c.gridy = 1;
-
 		c.gridx = 0;
-		pane.add(gold, c);
+		inventory.add(gold, c);
+		inventory.setBorder(frame);
 
 		if (testing) {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,22 +82,35 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			setExtendedState(JFrame.MAXIMIZED_BOTH);
 			setUndecorated(true);
 		}
+
+		c.anchor = GridBagConstraints.SOUTH;
+		c.gridy = 1;
+		c.gridx = 4;
+		pane.add(inventory, c);
+		pane.setBorder(colored);
 		add(pane);
 
+		// System.out.println(getToolkit().getScreenSize());
 		setVisible(true);
+		// next line to be deleted when fixed
+		// JOptionPane.showMessageDialog(controllingFrame, "Pressing tab brakes
+		// everything", "Warning",
+		// JOptionPane.WARNING_MESSAGE);
+		requestFocus();
 		start();
 	}
 
 	public void run() {
-		while (true) {			
+		while (true) {
 			try {
 				Thread.sleep(1000 / goldPerSecond);
-			} catch (InterruptedException e) {String message = "You dun " + (char)684 +  " up"; // (char)102 + (char)117 + (char)99 + (char)107 + (char)101 + (char)100 
+			} catch (InterruptedException e) {
+				String message = "You dun " + (char) 684 + " up"; // (char)102 + (char)117 + (char)99 + (char)107 +
+																	// (char)101 + (char)100
 				JOptionPane.showMessageDialog(controllingFrame, message, "ERROR", JOptionPane.ERROR_MESSAGE);
 			}
 			goldAmount += 1;
 			gold.setText("$" + goldAmount);
-			setVisible(true);
 		}
 
 	}
@@ -92,7 +119,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		Thread t = new Thread(this);
 		t.start();
 	}
-	
+
 	public void keyPressed(KeyEvent ke) {
 		int pressed = ke.getKeyCode();
 		System.out.println("KEY PRESSED: " + pressed);
@@ -197,7 +224,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	}
 
 	public void mouseClicked(MouseEvent me) { // TODO Click to move
-		System.out.println("Mouse clicked (# of clicks: " + me.getClickCount() + ")");
+		System.out.println("Mouse Point (" + me.getX() + ", " + me.getY() + ")");
 	}
 
 	public void actionPerformed(ActionEvent ae) { // TODO Send to appropriate windows
