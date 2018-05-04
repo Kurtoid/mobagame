@@ -26,7 +26,7 @@ public class LoginStatusPacket extends Packet {
 	}
 
 	@Override
-	void readData(ByteBuffer buff) {
+	public void readData(ByteBuffer buff) {
 		success = buff.get(5) > 0 ? true : false;
 	}
 

@@ -64,7 +64,9 @@ public class IncomingPacketProcessor extends Thread {
 							PlayerAccount player = dbo.loginAccount(p.getUsername(), p.getPassword());
 							LoginStatusPacket loginPak = new LoginStatusPacket();
 							loginPak.success = player != null;
-							l.messages.get(m.socketID).add(new OutMessage(m.socketID, loginPak.getBytes()));
+							OutMessage out = new OutMessage(m.socketID, loginPak.getBytes());
+							l.messages.get(m.socketID).add(out);
+							System.out.println(Arrays.toString(out.buff.array()));
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}

@@ -149,11 +149,16 @@ public class ConnectionListener extends Thread {
 		SocketChannel ch = (SocketChannel) key.channel();
 
 		if (socketMap.containsKey(ch)) {
+			// System.out.println("found channel");
 			long keyID = socketMap.get(ch);
 			OutMessage m = messages.get(keyID).poll();
 			if (m != null) {
 				try {
-					ch.write(m.buff);
+					System.out.println("found a message to write");
+					System.out.println(Arrays.toString(m.buff.array()));
+					m.buff.rewind();
+					while (m.buff.hasRemaining())
+						System.out.println(ch.write(m.buff));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -216,7 +221,8 @@ public class ConnectionListener extends Thread {
 
 		// Register the new SocketChannel with our Selector, indicating
 		// we'd like to be notified when there's data waiting to be read
-		socketChannel.register(this.selector, SelectionKey.OP_READ);
+		socketChannel.register(this.selector, SelectionKey.OP_READ + SelectionKey.OP_WRITE);
+
 		socketMap.put(socketChannel, nextSocketID);
 		messages.put(nextSocketID, new LinkedList<>());
 		nextSocketID++;
