@@ -1,9 +1,6 @@
 package mobagame.core.settings;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,10 +14,19 @@ import java.util.Queue;
 
 /**
  * used to read and write local settings, IE default server, window size etc
- * @author Kurt Wilson
  *
+ * @author Kurt Wilson
  */
 public class SettingManager {
+	final public static String DEFAULT_SERVER_SETTINGS_FILE = "default_server_settings.conf";
+	final public static String DEFAULT_CLIENT_SETTINGS_FILE = "default_client_settings.conf";
+
+	public enum SettingFile {
+		CLIENT_SETTINGS, SERVER_SETTINGS
+	}
+
+
+
 	EmptySetting root;
 	private Path file;
 
@@ -29,9 +35,27 @@ public class SettingManager {
 		root.setName("root");
 	}
 
-	public void openFile(Path p) throws FileNotFoundException {
-		file = p;
+	public SettingManager(SettingFile mode) throws FileNotFoundException{
+		switch (mode) {
+			case CLIENT_SETTINGS:
+				file = Paths.get(DEFAULT_CLIENT_SETTINGS_FILE);
+				break;
+			case SERVER_SETTINGS:
+				file = Paths.get(DEFAULT_SERVER_SETTINGS_FILE);
+				break;
+		}
+		File f = file.toFile();
+		if(!f.isFile()){
+			throw new FileNotFoundException();
+		}
 
+		root = new EmptySetting();
+		root.setName("root");
+		readSettings();
+	}
+
+	public void openFile(Path p)  {
+		file = p;
 	}
 
 	/**
@@ -93,6 +117,7 @@ public class SettingManager {
 	/**
 	 * saves a single setting, and creates parents if needed
 	 * doesnt actually right to file, so call writeSettings later
+	 *
 	 * @param name
 	 * @param value
 	 */
@@ -142,6 +167,7 @@ public class SettingManager {
 	/**
 	 * grab a setting using a fully qualified name
 	 * call <b>after<b> writeSetting or readSettings
+	 *
 	 * @param name
 	 * @return
 	 */
@@ -161,6 +187,11 @@ public class SettingManager {
 			return (Setting) s;
 		else
 			return null;
+	}
+
+	public boolean getBoolean(String name){
+		Setting s = getSetting(name);
+		return Boolean.parseBoolean(s.value);
 	}
 
 	boolean doesSettingExist(String name) {
@@ -186,9 +217,8 @@ public class SettingManager {
 
 	public static void main(String[] args) {
 		SettingManager m = new SettingManager();
-		try {
 			System.out.println("OPENING FILE");
-			m.openFile(Paths.get("settings.conf"));
+			m.openFile(Paths.get("settinds.conf"));
 			System.out.println("\nREADING");
 			m.readSettings();
 
@@ -199,10 +229,6 @@ public class SettingManager {
 			System.out.println("\n WRITING");
 			m.writeSettings();
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 }

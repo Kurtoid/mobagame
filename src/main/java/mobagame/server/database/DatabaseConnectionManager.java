@@ -26,9 +26,10 @@ public class DatabaseConnectionManager {
 	 * @throws SQLException
 	 */
 	private DatabaseConnectionManager() throws SQLException {
-		SettingManager manager = new SettingManager();
+		SettingManager manager = null;
+
 		try {
-			manager.openFile(Paths.get("default_server_settings.conf"));
+			manager = new SettingManager(SettingManager.SettingFile.SERVER_SETTINGS);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

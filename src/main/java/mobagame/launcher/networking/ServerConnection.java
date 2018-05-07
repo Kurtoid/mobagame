@@ -13,16 +13,17 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * Used by the client, and represents a single connection to a server
- * @author Kurt Wilson
  *
+ * @author Kurt Wilson
  */
-class ServerConnection extends Thread {
+public class ServerConnection extends Thread {
 	private SocketChannel c;
 	private BlockingQueue<Packet> packetsToSend;
 	boolean running = true;
 
 	/**
 	 * connects to a server at hostname:port, and keeps it alive
+	 *
 	 * @param hostname
 	 * @param port
 	 * @throws IOException if it cant connect
@@ -30,6 +31,11 @@ class ServerConnection extends Thread {
 	public void initConnect(String hostname, int port) throws IOException {
 		c = SocketChannel.open();
 		c.connect(new InetSocketAddress(hostname, port));
+		c.configureBlocking(true);
+	}
+
+	public ServerConnection(String hostname, int port) throws IOException {
+		initConnect(hostname, port);
 	}
 
 	public ServerConnection() {

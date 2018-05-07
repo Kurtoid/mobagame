@@ -4,16 +4,29 @@
 
 package mobagame.launcher;
 
-import javax.swing.*;
-
-import mobagame.core.DebugSettings;
-import mobagame.core.networking.packets.SignupPacket;
-import mobagame.server.ConnectionListener;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Arrays;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import org.omg.CORBA.portable.OutputStream;
+import org.omg.CORBA.portable.ResponseHandler;
+
+import mobagame.core.networking.packets.SignupPacket;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection2;
 
 @SuppressWarnings("serial")
 public class SignUp extends JFrame implements ActionListener {
@@ -39,23 +52,15 @@ public class SignUp extends JFrame implements ActionListener {
 
 	private static boolean testing = false;
 
-	DebugSettings state;
-	ServerConnection conn;
+	ServerConnection2 conn;
 
 	public SignUp() {
 		super("Sign Up");
-
-		state = DebugSettings.getInstance();
-		if(state.isServerEnabled){
-			conn = new ServerConnection();
-			try {
-				conn.initConnect("localhost", 8666);
-				conn.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try {
+			conn = ServerConnection2.getInstance("localhost", 8666);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
 		setSize((int) (windowWidth / 3.75), (int) (windowHeight / 1.6));
 		setResizable(false);
 
@@ -148,9 +153,13 @@ public class SignUp extends JFrame implements ActionListener {
 				if (isAvalable(username, "Username")) {
 					if (isEmailValid(email)) {
 						if (isAvalable(email, "Email")) {
-							if (state.isServerEnabled) {
-								SignupPacket p = new SignupPacket(username, password, email, question, answer);
-								conn.queuePacket(p);
+							SignupPacket p = new SignupPacket(username, password, email, question, answer);
+							RspHandler h = new RspHandler();
+							try {
+								conn.send(p.getBytes().array(), h);
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
 							JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: "
 									+ password + " Email: " + email + " Question: " + question + " Answer: " + answer);
@@ -219,7 +228,6 @@ public class SignUp extends JFrame implements ActionListener {
 
 	public static void main(String[] args) {
 		testing = true;
-		new ConnectionListener();
 		new SignUp();
 	}
 }
