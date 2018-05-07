@@ -13,17 +13,16 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable {
 
-	public static int windowHeight = 800; // 800
-	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
 	private static Font menuFont = SignUp.menuFont;
 
-	private static boolean testing = false;
+	private static boolean testing = true;
 	private static boolean usePadAndBar = false;
 
 	private int goldAmount = 0;
 	private int goldPerSecond = 4;
 	private JButton gold;
-	private JLabel temp;
+
+	public ImageIcon placeHolderImage = new ImageIcon("F://ImpressMeProject/Black.png");
 
 	private static String gameName = Menu.gameName;
 
@@ -40,62 +39,98 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		this.addKeyListener(this);
 		this.addMouseListener(this);
 
-		setSize(windowWidth, windowHeight);
-		setResizable(false);
-
 		// create
 		gold = new JButton("$" + goldAmount);
 		gold.setActionCommand(SHOP);
 		gold.addActionListener(this);
 
-		temp = new JLabel("gameName");
+		JLabel title = new JLabel("gameName");
+		JLabel mapImage = new JLabel(placeHolderImage);
+		JLabel temp2 = new JLabel("chat");
+		JLabel temp3 = new JLabel("stats");
 
 		// font setup
-		gold.setFont(menuFont);
-		temp.setFont(menuFont);
+//		gold.setFont(menuFont);
+//		title.setFont(menuFont);
+//		temp2.setFont(menuFont);
+//		temp3.setFont(menuFont);
 
 		// make border
-		Border colored = BorderFactory.createLineBorder(Color.GREEN, 10);
-		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
-		Border loweredbevel = BorderFactory.createLoweredBevelBorder();
-		Border frame = BorderFactory.createCompoundBorder(raisedbevel, loweredbevel);
+		Border red = BorderFactory.createLineBorder(Color.RED, 1);
+		Border orange = BorderFactory.createLineBorder(Color.ORANGE, 1);
+		Border yellow = BorderFactory.createLineBorder(Color.YELLOW, 1);
+		Border green = BorderFactory.createLineBorder(Color.GREEN, 1);
+		Border blue = BorderFactory.createLineBorder(Color.BLUE, 1);
+		Border purple = BorderFactory.createLineBorder(Color.MAGENTA, 1);
+		Border raisedBevel = BorderFactory.createRaisedBevelBorder();
+		Border loweredBevel = BorderFactory.createLoweredBevelBorder();
+		Border frame = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
 
-		// make layout		
-		JPanel pane = new JPanel(new GridBagLayout());
-		JPanel inventory = new JPanel(new GridBagLayout());
+		// make layouts
+		GridBagLayout gbl = new GridBagLayout();
+
+		// make panels
+		JLayeredPane layered = new JLayeredPane();
+		JPanel pane = new JPanel(gbl);
+		JPanel chat = new JPanel(gbl);
+		JPanel stats = new JPanel(gbl);
+		JPanel inventory = new JPanel(gbl);
+		JPanel map = new JPanel(gbl);
+		map.setSize(10000,10000);
+
 		GridBagConstraints c = new GridBagConstraints();
 
+		// set layout
 		c.anchor = GridBagConstraints.NORTH;
-		pane.add(temp, c);
-		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.weighty = 1;
+		c.weightx = 1;
+		c.gridy = 0;
+		c.gridx = 0;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		pane.add(title, c);
+		c.anchor = GridBagConstraints.SOUTH;
+		c.gridy = 0;
+		c.gridx = 0;
+		inventory.add(gold, c);
+
+		map.add(mapImage);
+		chat.add(temp2);
+		stats.add(temp3, c);
+		
+
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setUndecorated(true);
+		if (testing) {
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		}
+
+		c.gridwidth = 1;
 		c.anchor = GridBagConstraints.SOUTH;
 		c.gridy = 1;
 		c.gridx = 0;
-		inventory.add(gold, c);
-		inventory.setBorder(frame);
-
-		if (testing) {
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		} else {
-			// make full screen
-			setExtendedState(JFrame.MAXIMIZED_BOTH);
-			setUndecorated(true);
-		}
-
-		c.anchor = GridBagConstraints.SOUTH;
-		c.gridy = 1;
-		c.gridx = 4;
+		pane.add(chat, c);
+		chat.setBorder(yellow);
+		c.gridx = 2;
+		pane.add(stats, c);
+		stats.setBorder(red);
+		c.gridx = 3;
 		pane.add(inventory, c);
-		pane.setBorder(colored);
-		add(pane);
+		inventory.setBorder(blue);
+		c.gridx = 4;
+		pane.add(map, c);
+		map.setBorder(green);
+		map.setBounds(0, 0, 100, 100);
+		pane.setBorder(frame);
+		pane.setSize(getToolkit().getScreenSize());
+		layered.add(pane, new Integer(1), 0);
+		add(layered);
 
 		// System.out.println(getToolkit().getScreenSize());
 		setVisible(true);
+		changeFontRecursive(this, menuFont);
 		// next line to be deleted when fixed
-		// JOptionPane.showMessageDialog(controllingFrame, "Pressing tab brakes
-		// everything", "Warning",
-		// JOptionPane.WARNING_MESSAGE);
+//		JOptionPane.showMessageDialog(controllingFrame, "Pressing tab breaks everything", "Warning",
+//				JOptionPane.WARNING_MESSAGE);
 		requestFocus();
 		start();
 	}
@@ -104,10 +139,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		while (true) {
 			try {
 				Thread.sleep(1000 / goldPerSecond);
-			} catch (InterruptedException e) {
-				String message = "You dun " + (char) 684 + " up"; // (char)102 + (char)117 + (char)99 + (char)107 +
-																	// (char)101 + (char)100
-				JOptionPane.showMessageDialog(controllingFrame, message, "ERROR", JOptionPane.ERROR_MESSAGE);
+			} catch (InterruptedException e) {				
 			}
 			goldAmount += 1;
 			gold.setText("$" + goldAmount);
@@ -115,6 +147,15 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	}
 
+	private void changeFontRecursive(Container root, Font font) {
+	    for (Component c : root.getComponents()) {
+	        c.setFont(font);
+	        if (c instanceof Container) {
+	            changeFontRecursive((Container) c, font);
+	        }
+	    }
+	}
+	
 	public void start() {
 		Thread t = new Thread(this);
 		t.start();
