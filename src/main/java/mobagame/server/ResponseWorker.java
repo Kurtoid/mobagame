@@ -17,7 +17,7 @@ import mobagame.server.database.PlayerAccountDBO;
 public class ResponseWorker implements Runnable {
 	private List queue = new LinkedList();
 	
-	public void processData(ConnectionListener2 server, SocketChannel socket, byte[] data, int count) {
+	public void processData(ConnectionListener server, SocketChannel socket, byte[] data, int count) {
 		byte[] dataCopy = new byte[count];
 		System.arraycopy(data, 0, dataCopy, 0, count);
 		synchronized(queue) {

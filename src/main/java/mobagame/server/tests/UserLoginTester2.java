@@ -7,7 +7,7 @@ import java.util.Arrays;
 import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.SignupPacket;
 import mobagame.launcher.networking.RspHandler;
-import mobagame.launcher.networking.ServerConnection2;
+import mobagame.launcher.networking.ServerConnection;
 
 /**
  * For internal testing use, do not distribute
@@ -17,9 +17,9 @@ import mobagame.launcher.networking.ServerConnection2;
  */
 public class UserLoginTester2 {
 	public static void main(String[] args) {
-		ServerConnection2 sc;
+		ServerConnection sc;
 		try {
-			sc = ServerConnection2.getInstance("localhost", 8666);
+			sc = ServerConnection.getInstance("localhost", 8666);
 			Thread t = new Thread(sc);
 			t.setDaemon(true);
 			t.start();

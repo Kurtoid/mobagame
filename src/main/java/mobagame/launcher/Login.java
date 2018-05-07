@@ -25,7 +25,7 @@ import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.LoginStatusPacket;
 import mobagame.core.settings.SettingManager;
 import mobagame.launcher.networking.RspHandler;
-import mobagame.launcher.networking.ServerConnection2;
+import mobagame.launcher.networking.ServerConnection;
 
 public class Login implements ActionListener {
 	public JFrame login = new JFrame("Welcome to _______________________");
@@ -40,7 +40,7 @@ public class Login implements ActionListener {
 	public JButton loginButto = new JButton("Login");
 	public JButton createAccButto = new JButton("Create Account");
 	public JTextField secureQuestion = new JTextField("");
-	ServerConnection2 server;
+	ServerConnection server;
 	SettingManager settings;
 
 	Login() {
@@ -55,7 +55,7 @@ public class Login implements ActionListener {
 			String ip = settings.getSetting("client.server.ip").getValue();
 			int port = Integer.parseInt(settings.getSetting("client.server.port").getValue());
 			System.out.println("connecting to " + ip + ":" + port);
-			server = ServerConnection2.getInstance(ip, port);
+			server = ServerConnection.getInstance(ip, port);
 			server.start();
 		} catch (IOException e) {
 			e.printStackTrace();

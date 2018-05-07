@@ -26,7 +26,7 @@ import org.omg.CORBA.portable.ResponseHandler;
 
 import mobagame.core.networking.packets.SignupPacket;
 import mobagame.launcher.networking.RspHandler;
-import mobagame.launcher.networking.ServerConnection2;
+import mobagame.launcher.networking.ServerConnection;
 
 @SuppressWarnings("serial")
 public class SignUp extends JFrame implements ActionListener {
@@ -52,12 +52,12 @@ public class SignUp extends JFrame implements ActionListener {
 
 	private static boolean testing = false;
 
-	ServerConnection2 conn;
+	ServerConnection conn;
 
 	public SignUp() {
 		super("Sign Up");
 		try {
-			conn = ServerConnection2.getInstance("localhost", 8666);
+			conn = ServerConnection.getInstance("localhost", 8666);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
