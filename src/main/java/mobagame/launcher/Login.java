@@ -49,7 +49,7 @@ public class Login implements ActionListener{
 //				e.printStackTrace();
 //			}
 //		}
-		//Creates all of the windows
+		//Create forgot password window
 		forgotPassword.setLayout(new GridLayout(5, 1, 6, 6));
 		forgotPassword.setAlwaysOnTop(true);
 		forgotPassword.setSize(400,250);
@@ -64,6 +64,7 @@ public class Login implements ActionListener{
 		forgotPassword.add(secureQuestion);
 		forgotPassword.add(getPassword);
 		forgotPassword.setResizable(false);
+		//Creating login screen
 		login.setLayout(new GridLayout(2, 1, 5, 5));
 		login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		login.setSize(1500, 800);
