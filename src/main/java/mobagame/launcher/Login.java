@@ -1,11 +1,14 @@
 package mobagame.launcher;
 //Carson Mango 4/24/18
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,10 +21,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import mobagame.core.DebugSettings;
 import mobagame.core.networking.packets.LoginPacket;
+import mobagame.core.networking.packets.LoginStatusPacket;
+import mobagame.core.settings.SettingManager;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection;
 
-public class Login implements ActionListener{
+public class Login implements ActionListener {
 	public JFrame login = new JFrame("Welcome to _______________________");
 	public JPanel picture = new JPanel();
 	public JPanel boxes = new JPanel();
@@ -34,25 +40,35 @@ public class Login implements ActionListener{
 	public JButton loginButto = new JButton("Login");
 	public JButton createAccButto = new JButton("Create Account");
 	public JTextField secureQuestion = new JTextField("");
-//	DebugSettings state;
-//	ServerConnection conn;
-//	private PlayerAccount temp;
-//	PlayerAccountDBO playerDBO = new PlayerAccountDBO();
-	Login(){
-//		state = DebugSettings.getInstance();
-//		if(state.isServerEnabled){
-//			conn = new ServerConnection();
-//			try {
-//				conn.initConnect("localhost", 8666);
-//				conn.start();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-		//Creates all of the windows
+	ServerConnection server;
+	SettingManager settings;
+
+	Login() {
+
+		try {
+			settings = new SettingManager(SettingManager.SettingFile.CLIENT_SETTINGS);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Error opening settings file", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+		try {
+			String ip = settings.getSetting("client.server.ip").getValue();
+			int port = Integer.parseInt(settings.getSetting("client.server.port").getValue());
+			System.out.println("connecting to " + ip + ":" + port);
+			server = ServerConnection.getInstance(ip, port);
+			server.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,
+					"Error contacting server.\nCheck your connection, or change the client settings file", "Error",
+					JOptionPane.ERROR_MESSAGE);
+
+		}
+
+		// Creates all of the windows
 		forgotPassword.setLayout(new GridLayout(5, 1, 6, 6));
 		forgotPassword.setAlwaysOnTop(true);
-		forgotPassword.setSize(400,250);
+		forgotPassword.setSize(400, 250);
 		JLabel emailIndicator = new JLabel("Enter Email");
 		emailIndicator.setHorizontalAlignment(SwingConstants.CENTER);
 		JLabel question = new JLabel("Security Question");
@@ -64,6 +80,7 @@ public class Login implements ActionListener{
 		forgotPassword.add(secureQuestion);
 		forgotPassword.add(getPassword);
 		forgotPassword.setResizable(false);
+		//Creating login screen
 		login.setLayout(new GridLayout(2, 1, 5, 5));
 		login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		login.setSize(1500, 800);
@@ -178,34 +195,46 @@ public class Login implements ActionListener{
 		login.add(boxes);
 		login.setVisible(true);
 	}
+
 	public void actionPerformed(ActionEvent ae) {
-		if(ae.getActionCommand().equals("Login")) {
+		if (ae.getActionCommand().equals("Login")) {
 			String User = Username.getText();
 			String pass = Password.getText();
-			//if(state.isServerEnabled) {
-				//LoginPacket p = new LoginPacket(User, pass);
-				//conn.queuePacket(p);
-			//}
-			/*try {
-				temp = playerDBO.loginAccount(User, pass);
-			}catch(SQLException e) {
-				JOptionPane.showMessageDialog(login, "Invalid Username or Password", "ERROR", JOptionPane.ERROR_MESSAGE);
-			}*/
-			//to do check database for if this is a valid user and their correct password then if it is valid log them in
-			//and send them to the main menu
-			//Add if statement to check if use is admin
+
+			// to do check database for if this is a valid user and their correct password
+			// then if it is valid log them in
+			// and send them to the main menu
+			RspHandler h = new RspHandler();
+			try {
+
+				server.send(new LoginPacket(User, pass).getBytes().array(), h);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			h.waitForResponse();
+			LoginStatusPacket status = new LoginStatusPacket(h.getResponse());
+			if (status.success) {
+				// user logged in
+				new Menu();
+			} else {
+
+			}
+
+			// Add if statement to check if use is admin
 			new Menu(User, true);
 			login.setVisible(false);
-		}else if(ae.getActionCommand().equals("Forgot Password")) {
-			//opens the menu to get your password back
+		} else if (ae.getActionCommand().equals("Forgot Password")) {
+			// opens the menu to get your password back
 			forgotPassword.setVisible(true);
-			//Enter email and database checks the email and sends that accounts password
-		}else if(ae.getActionCommand().equals("Create Account")) {
-			//Sends user to create account page
+			// Enter email and database checks the email and sends that accounts password
+		} else if (ae.getActionCommand().equals("Create Account")) {
+			// Sends user to create account page
 			new SignUp();
-		}else if(ae.getActionCommand().equals("Get Password")) {
-			//If password is valid send password to email display message that the email has been sent and then go to login menu
-			//if password is invalid say it is invalid then close to the login menu
+		} else if (ae.getActionCommand().equals("Get Password")) {
+			// If password is valid send password to email display message that the email
+			// has been sent and then go to login menu
+			// if password is invalid say it is invalid then close to the login menu
 			JOptionPane.showMessageDialog(forgotPassword, "Invalid Email", "ERROR", JOptionPane.ERROR_MESSAGE);
 			email.setText("");
 			loginButto.setEnabled(true);
@@ -214,6 +243,7 @@ public class Login implements ActionListener{
 			forgotPassword.setVisible(false);
 		}
 	}
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

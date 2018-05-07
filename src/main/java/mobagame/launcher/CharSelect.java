@@ -25,7 +25,7 @@ public class CharSelect implements Runnable {
 	JPanel red5 = new JPanel();
 	public ImageIcon placeHolderImage = new ImageIcon("E://ImpressMeProject/Black.png");
 	public ImageIcon reaperCharPic = new ImageIcon("E://ImpressMeProject/Reaper.png");
-
+	//thread to run the countdown timer
 	public void run() {
 		String temp = "90";
 		for (int i = 90; i >= 0; i--) {
@@ -40,7 +40,7 @@ public class CharSelect implements Runnable {
 		selectionScreen.setVisible(false);
 		 new GameScreen();
 	}
-
+	//Meathod to start countdown timer thread
 	public void start() {
 		Thread t = new Thread(this);
 		t.start();
@@ -49,6 +49,7 @@ public class CharSelect implements Runnable {
 	private GridBagConstraints gbc = new GridBagConstraints();
 
 	public CharSelect() {
+		//Setting up character select menu
 		blueTeamSelect.setSize(750, 400);
 		redTeamSelect.setSize(750, 400);
 		blue1.setSize(150, 400);
@@ -128,7 +129,7 @@ public class CharSelect implements Runnable {
 		red1.add(red1CharImage);
 		red2.add(red2CharImage);
 		red3.add(red3CharImage);
-		red4.add(red4CharImage);
+	 	red4.add(red4CharImage);
 		red5.add(red5CharImage);
 		blue1.add(blue1User);
 		blue2.add(blue2User);
@@ -157,20 +158,21 @@ public class CharSelect implements Runnable {
 		gbc.gridy = 1;
 		gbc.gridx = 0;
 		gbc.weighty = 1;
+		gbc.anchor = GridBagConstraints.WEST;
 		selectionScreen.add(blueTeamSelect, gbc);
 		gbc.gridx = 2;
+		gbc.anchor = GridBagConstraints.EAST;
 		selectionScreen.add(redTeamSelect, gbc);
 		gbc.gridx = 1;
-		gbc.weightx = 2;
+		//Don't question the majestic number it was needed to center the char select menu
+		gbc.weightx = 23401051;
+		gbc.anchor = GridBagConstraints.CENTER;
 		selectionScreen.add(charSelectMenu, gbc);
 		gbc.gridy = 3;
 		gbc.gridx = 0;
 		gbc.weightx = 1;
-		// Found your problem Carson, you were not using the constraint. KEM
-		// selectionScreen.add(charStats); old line
 		selectionScreen.add(charStats, gbc); // new line
 		selectionScreen.setVisible(true);
 		start();
-		System.out.println(gbc.gridy);
 	}
 }
