@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.TimeZone;
 
 import mobagame.core.settings.SettingManager;
 
@@ -27,12 +25,7 @@ public class DatabaseConnectionManager {
 	 */
 	private DatabaseConnectionManager() throws SQLException {
 		SettingManager manager = new SettingManager();
-		try {
-			manager.openFile(Paths.get("default_server_settings.conf"));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		manager.openFile(Paths.get("default_server_settings.conf"));
 		manager.readSettings();
 		boolean useConnectionString = Boolean.parseBoolean(manager.getSetting("server.useconnectionstring").getValue());
 		String connString = manager.getSetting("server.dbconnectionstring").getValue();

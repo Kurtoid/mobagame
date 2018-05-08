@@ -11,6 +11,14 @@ import java.nio.ByteBuffer;
 public class LoginStatusPacket extends Packet {
 	public boolean success = false;
 
+	public LoginStatusPacket() {
+		
+	}
+	
+	public LoginStatusPacket(ByteBuffer bs) {
+		readData(bs);
+	}
+	
 	@Override
 	public ByteBuffer getBytes() {
 		int datasize = PACKET_SIZE_SIZE + PACKET_SIZE_SIZE + 1;

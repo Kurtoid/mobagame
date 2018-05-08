@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.InetAddress;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -80,7 +79,6 @@ public class Login implements ActionListener {
 		forgotPassword.add(secureQuestion);
 		forgotPassword.add(getPassword);
 		forgotPassword.setResizable(false);
-		//Creating login screen
 		login.setLayout(new GridLayout(2, 1, 5, 5));
 		login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		login.setSize(1500, 800);
