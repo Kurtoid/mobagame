@@ -17,6 +17,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	private static boolean testing = true;
 	private static boolean usePadAndBar = false;
+	private static boolean lefty = false;
 
 	private int goldAmount = 0;
 	private int goldPerSecond = 4;
@@ -49,12 +50,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		JLabel temp2 = new JLabel("chat");
 		JLabel temp3 = new JLabel("stats");
 
-		// font setup
-//		gold.setFont(menuFont);
-//		title.setFont(menuFont);
-//		temp2.setFont(menuFont);
-//		temp3.setFont(menuFont);
-
 		// make border
 		Border red = BorderFactory.createLineBorder(Color.RED, 1);
 		Border orange = BorderFactory.createLineBorder(Color.ORANGE, 1);
@@ -81,20 +76,21 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		GridBagConstraints c = new GridBagConstraints();
 
 		// set layout
-		c.anchor = GridBagConstraints.NORTH;
+		
+		// inventory
+		c.gridwidth = 1;
 		c.weighty = 1;
 		c.weightx = 1;
-		c.gridy = 0;
-		c.gridx = 0;
-		c.gridwidth = GridBagConstraints.REMAINDER;
-		pane.add(title, c);
 		c.anchor = GridBagConstraints.SOUTH;
 		c.gridy = 0;
 		c.gridx = 0;
 		inventory.add(gold, c);
 
+		// map
 		map.add(mapImage);
+		// chat
 		chat.add(temp2);
+		// stats
 		stats.add(temp3, c);
 		
 
@@ -104,22 +100,40 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		}
 
-		c.gridwidth = 1;
-		c.anchor = GridBagConstraints.SOUTH;
 		c.gridy = 1;
-		c.gridx = 0;
-		pane.add(chat, c);
-		chat.setBorder(yellow);
-		c.gridx = 2;
+//		c.gridx = 0;
+//		pane.add(chat, c);
+//		chat.setBorder(yellow);
+		c.gridx = 1;
 		pane.add(stats, c);
 		stats.setBorder(red);
-		c.gridx = 3;
-		pane.add(inventory, c);
-		inventory.setBorder(blue);
-		c.gridx = 4;
-		pane.add(map, c);
-		map.setBorder(green);
-		map.setBounds(0, 0, 100, 100);
+		
+		// top
+		if (lefty) {
+			c.anchor = GridBagConstraints.NORTHWEST;
+			c.gridy = 0;
+			c.gridx = 0;
+			pane.add(inventory, c);
+			inventory.setBorder(blue);
+			c.anchor = GridBagConstraints.NORTHEAST;
+			c.gridx = 2;
+			pane.add(map, c);
+			map.setBorder(green);
+			map.setBounds(0, 0, 100, 100);
+		} else {
+			c.anchor = GridBagConstraints.NORTHEAST;
+			c.gridy = 0;
+			c.gridx = 2;
+			pane.add(inventory, c);
+			inventory.setBorder(blue);
+			c.anchor = GridBagConstraints.NORTHWEST;
+			c.gridx = 0;
+			pane.add(map, c);
+			map.setBorder(green);
+			map.setBounds(0, 0, 100, 100);
+		}
+		
+		
 		pane.setBorder(frame);
 		pane.setSize(getToolkit().getScreenSize());
 		layered.add(pane, new Integer(1), 0);
@@ -144,10 +158,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			goldAmount += 1;
 			gold.setText("$" + goldAmount);
 		}
-
 	}
 
-	private void changeFontRecursive(Container root, Font font) {
+	public void changeFontRecursive(Container root, Font font) {
 	    for (Component c : root.getComponents()) {
 	        c.setFont(font);
 	        if (c instanceof Container) {
