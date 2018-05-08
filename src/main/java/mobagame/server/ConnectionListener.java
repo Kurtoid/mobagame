@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import mobagame.launcher.networking.ChangeRequest;
+
 //http://rox-xmlrpc.sourceforge.net/niotut/#The client
 public class ConnectionListener implements Runnable {
 	// The host:port combination to listen on
@@ -79,7 +80,10 @@ public class ConnectionListener implements Runnable {
 						switch (change.type) {
 						case ChangeRequest.CHANGEOPS:
 							SelectionKey key = change.socket.keyFor(this.selector);
-							key.interestOps(change.ops);
+							if (key != null) {
+								key.interestOps(change.ops);
+							} else {
+							}
 						}
 					}
 					this.pendingChanges.clear();
@@ -195,7 +199,7 @@ public class ConnectionListener implements Runnable {
 		InetSocketAddress isa = new InetSocketAddress(this.hostAddress, this.port);
 		serverChannel.socket().bind(isa);
 
-		// Register the server socket channel, indicating an interest in 
+		// Register the server socket channel, indicating an interest in
 		// accepting new connections
 		serverChannel.register(socketSelector, SelectionKey.OP_ACCEPT);
 

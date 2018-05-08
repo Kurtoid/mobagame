@@ -10,6 +10,7 @@ import java.util.List;
 import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.LoginStatusPacket;
 import mobagame.core.networking.packets.Packet;
+import mobagame.core.networking.packets.SendRandomDataPacket;
 import mobagame.core.networking.packets.SignupPacket;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
@@ -79,7 +80,14 @@ public class ResponseWorker implements Runnable {
 			}else if(packetID == Packet.PK_ID_CONN_DISCONNECT) {
 				System.out.println("disconnect");
 				
-			} else {
+			}else if(packetID == Packet.PK_ID_RANDOM_BS_PACKET) {
+				System.out.println("BULLSHIT MODE");
+				dataEvent.server.send(dataEvent.socket, new SendRandomDataPacket().getBytes().array());
+				dataEvent.server.send(dataEvent.socket, new SendRandomDataPacket().getBytes().array());
+				dataEvent.server.send(dataEvent.socket, new SendRandomDataPacket().getBytes().array());
+
+			}
+			else {
 				System.out.println("bad pkt");
 			}
 
