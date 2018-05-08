@@ -23,8 +23,8 @@ public class CharSelect implements Runnable {
 	JPanel red3 = new JPanel();
 	JPanel red4 = new JPanel();
 	JPanel red5 = new JPanel();
-	public ImageIcon placeHolderImage = new ImageIcon("E://ImpressMeProject/Black.png");
-	public ImageIcon reaperCharPic = new ImageIcon("E://ImpressMeProject/Reaper.png");
+	public ImageIcon placeHolderImage = new ImageIcon("resources//Black.png");
+	public ImageIcon reaperCharPic = new ImageIcon("resources//Reaper.png");
 	//thread to run the countdown timer
 	public void run() {
 		String temp = "90";

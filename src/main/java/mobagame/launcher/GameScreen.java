@@ -23,7 +23,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private int goldPerSecond = 4;
 	private JButton gold;
 
-	public ImageIcon placeHolderImage = new ImageIcon("F://ImpressMeProject/Black.png");
+	public ImageIcon placeHolderImage = new ImageIcon("resources/Black.png");
 
 	private static String gameName = Menu.gameName;
 
@@ -102,9 +102,11 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 		c.gridy = 1;
 //		c.gridx = 0;
+//		c.anchor = GridBagConstraints.SOUTHWEST;
 //		pane.add(chat, c);
 //		chat.setBorder(yellow);
 		c.gridx = 1;
+//		c.anchor = GridBagConstraints.SOUTHWEST;
 		pane.add(stats, c);
 		stats.setBorder(red);
 		
