@@ -47,6 +47,7 @@ public class ServerConnection extends Thread {
 		this.hostAddress = hostAddress;
 		this.port = port;
 		this.selector = this.initSelector();
+		this.start();
 	}
 
 	public void send(byte[] data, RspHandler handler) throws IOException {
