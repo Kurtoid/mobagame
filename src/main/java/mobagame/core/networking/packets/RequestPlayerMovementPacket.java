@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
  * @author Kurt Wilson
  *
  */
-public class PlayerMovementRequest extends Packet {
+public class RequestPlayerMovementPacket extends Packet {
 	double dx;
 	double dy;
 
@@ -31,7 +31,7 @@ public class PlayerMovementRequest extends Packet {
 	}
 
 	public static void main(String[] args) {
-		PlayerMovementRequest r = new PlayerMovementRequest();
+		RequestPlayerMovementPacket r = new RequestPlayerMovementPacket();
 		r.dx = 5.2;
 		r.dy = 10.7;
 		r.readData(r.getBytes());
