@@ -7,6 +7,9 @@ package mobagame.launcher;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import snippet.JScrollPane;
+import snippet.JTextArea;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -18,12 +21,30 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private static boolean testing = true;
 	private static boolean usePadAndBar = false;
 	private static boolean lefty = false;
+	
+	private final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
 
 	private int goldAmount = 0;
 	private int goldPerSecond = 4;
 	private JButton gold;
 
-	public ImageIcon placeHolderImage = new ImageIcon("resources/Black.png");
+	// icons
+	public static ImageIcon placeHolderImage = new ImageIcon("resources/Black.png");
+	public static ImageIcon item1Image = new ImageIcon("resources/item1.png");
+	public static ImageIcon item2Image = new ImageIcon("resources/item2.png");
+	public static ImageIcon item3Image = new ImageIcon("resources/item3.png");
+	public static ImageIcon item4Image = new ImageIcon("resources/item4.png");
+	public static ImageIcon emptySlotImage = new ImageIcon("resources/emptySlot.png");
+
+	// items
+	private JLabel[][] inventoryItems = {
+			{ new JLabel(emptySlotImage), new JLabel(emptySlotImage), new JLabel(emptySlotImage),
+					new JLabel(emptySlotImage) },
+			{ new JLabel(emptySlotImage), new JLabel(emptySlotImage), new JLabel(emptySlotImage),
+					new JLabel(emptySlotImage) } };
+	// abilities
+	private JLabel[] abilities = { new JLabel(placeHolderImage), new JLabel(placeHolderImage),
+			new JLabel(placeHolderImage), new JLabel(placeHolderImage) };
 
 	private static String gameName = Menu.gameName;
 
@@ -45,10 +66,11 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		gold.setActionCommand(SHOP);
 		gold.addActionListener(this);
 
-		JLabel title = new JLabel("gameName");
 		JLabel mapImage = new JLabel(placeHolderImage);
-		JLabel temp2 = new JLabel("chat");
-		JLabel temp3 = new JLabel("stats");
+		JLabel temp1 = new JLabel(placeHolderImage);
+		JLabel chatLabel = new JLabel("Welcome to " + gameName);
+		JLabel health = new JLabel("health", SwingConstants.CENTER);
+		JLabel mana = new JLabel("mana", SwingConstants.CENTER);
 
 		// make border
 		Border red = BorderFactory.createLineBorder(Color.RED, 1);
@@ -66,33 +88,80 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 		// make panels
 		JLayeredPane layered = new JLayeredPane();
+		layered.setSize(SCREEN_SIZE);
 		JPanel pane = new JPanel(gbl);
-		JPanel chat = new JPanel(gbl);
+		pane.setSize(SCREEN_SIZE);
+		JScrollPane chat = new JScrollPane(chatLabel);
+		chat.setSize(SCREEN_SIZE);
 		JPanel stats = new JPanel(gbl);
+		stats.setSize(SCREEN_SIZE);
 		JPanel inventory = new JPanel(gbl);
+		inventory.setSize(SCREEN_SIZE);
 		JPanel map = new JPanel(gbl);
-		map.setSize(10000,10000);
+		map.setSize(SCREEN_SIZE);
+		
 
 		GridBagConstraints c = new GridBagConstraints();
 
 		// set layout
-		
+
 		// inventory
 		c.gridwidth = 1;
 		c.weighty = 1;
 		c.weightx = 1;
-		c.anchor = GridBagConstraints.SOUTH;
 		c.gridy = 0;
 		c.gridx = 0;
+
+		// temporary item test
+		inventoryItems[0][0].setIcon(item1Image);
+		inventoryItems[1][1].setIcon(item2Image);
+		inventoryItems[0][2].setIcon(item3Image);
+		inventoryItems[1][3].setIcon(item4Image);
+
+		for (int y = 0; y < inventoryItems.length; y++) {
+			for (int x = 0; x < inventoryItems[y].length; x++) {
+				c.gridy = y;
+				c.gridx = x;
+				inventory.add(inventoryItems[y][x], c);
+				inventoryItems[y][x].setBorder(frame);
+			}
+		}
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 4;
+		c.gridy = 2;
+		c.gridx = 0;
 		inventory.add(gold, c);
+		c.fill = 0;
+		c.gridwidth = 1;
+		c.gridy = 0;
+		c.gridx = 0;
 
 		// map
 		map.add(mapImage);
+
 		// chat
-		chat.add(temp2);
+		chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
 		// stats
-		stats.add(temp3, c);
-		
+		c.gridy = 0;
+		for (int x = 0; x < abilities.length; x++) {
+			c.gridx = x;
+			stats.add(abilities[x], c);
+			abilities[x].setBorder(frame);
+		}
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridwidth = 4;
+		c.gridy = 1;
+		stats.add(mana, c);
+		mana.setBorder(blue);
+		c.gridy = 2;
+		stats.add(health, c);
+		health.setBorder(green);
+		c.gridwidth = 0;
+		c.fill = 0;
 
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
@@ -101,22 +170,22 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		}
 
 		c.gridy = 1;
-//		c.gridx = 0;
-//		c.anchor = GridBagConstraints.SOUTHWEST;
-//		pane.add(chat, c);
-//		chat.setBorder(yellow);
+		c.gridx = 0;
+		c.anchor = GridBagConstraints.SOUTHWEST;
+		pane.add(chat, c);
+		chat.setBorder(yellow);
 		c.gridx = 1;
-//		c.anchor = GridBagConstraints.SOUTHWEST;
+		c.anchor = GridBagConstraints.SOUTH;
 		pane.add(stats, c);
-		stats.setBorder(red);
-		
-		// top
+		stats.setBorder(frame);
+
+		// map & inventory
 		if (lefty) {
 			c.anchor = GridBagConstraints.NORTHWEST;
 			c.gridy = 0;
-			c.gridx = 0;
+			c.gridx = 0;			
 			pane.add(inventory, c);
-			inventory.setBorder(blue);
+			inventory.setBorder(frame);
 			c.anchor = GridBagConstraints.NORTHEAST;
 			c.gridx = 2;
 			pane.add(map, c);
@@ -127,26 +196,30 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			c.gridy = 0;
 			c.gridx = 2;
 			pane.add(inventory, c);
-			inventory.setBorder(blue);
+			inventory.setBorder(frame);
 			c.anchor = GridBagConstraints.NORTHWEST;
 			c.gridx = 0;
 			pane.add(map, c);
 			map.setBorder(green);
 			map.setBounds(0, 0, 100, 100);
 		}
-		
-		
+
 		pane.setBorder(frame);
 		pane.setSize(getToolkit().getScreenSize());
+		pane.setOpaque(false);
+		pane.setBounds(0, 0, getToolkit().getScreenSize().width, getToolkit().getScreenSize().height);
 		layered.add(pane, new Integer(1), 0);
+		temp1.setBounds(0, 0, getToolkit().getScreenSize().width, getToolkit().getScreenSize().height);
+		layered.add(temp1, new Integer(0), 100);
 		add(layered);
 
 		// System.out.println(getToolkit().getScreenSize());
 		setVisible(true);
 		changeFontRecursive(this, menuFont);
 		// next line to be deleted when fixed
-//		JOptionPane.showMessageDialog(controllingFrame, "Pressing tab breaks everything", "Warning",
-//				JOptionPane.WARNING_MESSAGE);
+		// JOptionPane.showMessageDialog(controllingFrame, "Pressing tab breaks
+		// everything", "Warning",
+		// JOptionPane.WARNING_MESSAGE);
 		requestFocus();
 		start();
 	}
@@ -155,7 +228,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		while (true) {
 			try {
 				Thread.sleep(1000 / goldPerSecond);
-			} catch (InterruptedException e) {				
+			} catch (InterruptedException e) {
 			}
 			goldAmount += 1;
 			gold.setText("$" + goldAmount);
@@ -163,14 +236,14 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	}
 
 	public void changeFontRecursive(Container root, Font font) {
-	    for (Component c : root.getComponents()) {
-	        c.setFont(font);
-	        if (c instanceof Container) {
-	            changeFontRecursive((Container) c, font);
-	        }
-	    }
+		for (Component c : root.getComponents()) {
+			c.setFont(font);
+			if (c instanceof Container) {
+				changeFontRecursive((Container) c, font);
+			}
+		}
 	}
-	
+
 	public void start() {
 		Thread t = new Thread(this);
 		t.start();
@@ -266,10 +339,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			// USE inventory slot 8
 			System.out.println("USE inventory slot 8");
 			// charater.UseItem(8);
-			break;
-		case KeyEvent.VK_9:
-			// Key 9 pressed
-			System.out.println("Key 9 pressed");
 			break;
 		case KeyEvent.VK_ESCAPE:
 			// Escape pressed

@@ -55,7 +55,6 @@ public class Login implements ActionListener {
 			int port = Integer.parseInt(settings.getSetting("client.server.port").getValue());
 			System.out.println("connecting to " + ip + ":" + port);
 			server = ServerConnection.getInstance(ip, port);
-			server.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,
