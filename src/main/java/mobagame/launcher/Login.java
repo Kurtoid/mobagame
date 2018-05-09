@@ -210,7 +210,7 @@ public class Login implements ActionListener {
 				e.printStackTrace();
 			}
 			h.waitForResponse();
-			LoginStatusPacket status = new LoginStatusPacket(h.getResponse());
+			LoginStatusPacket status = (LoginStatusPacket) h.getResponse(LoginStatusPacket.class);
 			if (status.success) {
 				// user logged in
 				new Menu();

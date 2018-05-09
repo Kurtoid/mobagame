@@ -13,6 +13,7 @@ import java.nio.channels.spi.SelectorProvider;
 import java.util.*;
 
 import mobagame.core.networking.packets.LoginPacket;
+import mobagame.core.networking.packets.SendRandomDataPacket;
 
 public class ServerConnection extends Thread {
 	// The host:port combination to connect to
@@ -248,4 +249,5 @@ public class ServerConnection extends Thread {
 			e.printStackTrace();
 		}
 	}
+
 }
