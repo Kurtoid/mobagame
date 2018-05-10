@@ -7,8 +7,6 @@ package mobagame.launcher;
 import javax.swing.*;
 import javax.swing.border.Border;
 
-import launcher.MyCanvas;
-
 import java.awt.*;
 import java.awt.event.*;
 
