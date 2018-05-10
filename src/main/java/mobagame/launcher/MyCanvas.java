@@ -31,8 +31,8 @@ public class MyCanvas extends JComponent {
 			int width = img1.getWidth(this);
 			int height = img1.getHeight(this);
 
-			int w = scale /* width */;
-			int h = scale /* height*/;
+			int w = width*scale /* width */;
+			int h = height*scale /* height*/;
 			// explicitly specify width (w) and height (h)
 			g.drawImage(img1, 0, 0, (int) w, (int) h, this);
 		} catch (IOException e) {
@@ -46,7 +46,7 @@ public class MyCanvas extends JComponent {
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setBounds(30, 30, 300, 300);
-		window.getContentPane().add(new MyCanvas("resources/black.png", 100));
+		window.getContentPane().add(new MyCanvas("resources/Items/strawberry.png", 6));
 		window.setVisible(true);
 	}
 }
