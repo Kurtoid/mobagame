@@ -51,6 +51,7 @@ public class UserLoginTester2 {
 		System.out.println((h.getResponse(SendRandomDataPacket.class)));
 
 		h = new RspHandler();
+
 		try {
 			server.send(buff.array(), h);
 		} catch (IOException e) {

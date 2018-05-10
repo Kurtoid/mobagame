@@ -74,7 +74,7 @@ public class RspHandler extends Thread {
 		}
 		return null;
 	}
-	
+
 	public Packet getResponse(Class c) {
 		Iterator<Packet> i = packets.iterator();
 		while(i.hasNext()) {
@@ -91,5 +91,6 @@ public class RspHandler extends Thread {
 		System.out.println("construct RspHandler");
 		responses = new LinkedBlockingQueue<ByteBuffer>();
 		packets = new LinkedBlockingQueue<>();
+		start();
 	}
 }
