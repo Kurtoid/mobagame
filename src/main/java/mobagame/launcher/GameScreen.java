@@ -7,41 +7,46 @@ package mobagame.launcher;
 import javax.swing.*;
 import javax.swing.border.Border;
 
-import snippet.JScrollPane;
-import snippet.JTextArea;
+import launcher.MyCanvas;
 
 import java.awt.*;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
 public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable {
-
+	
 	private static Font menuFont = SignUp.menuFont;
 
 	private static boolean testing = true;
 	private static boolean usePadAndBar = false;
 	private static boolean lefty = false;
-	
-	private final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
 
+	private final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
+	private final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth()/4 + "px'>";
+	final int scale = 1;
+	
 	private int goldAmount = 0;
 	private int goldPerSecond = 4;
 	private JButton gold;
 
 	// icons
-	public static ImageIcon placeHolderImage = new ImageIcon("resources/Black.png");
-	public static ImageIcon item1Image = new ImageIcon("resources/item1.png");
-	public static ImageIcon item2Image = new ImageIcon("resources/item2.png");
-	public static ImageIcon item3Image = new ImageIcon("resources/item3.png");
-	public static ImageIcon item4Image = new ImageIcon("resources/item4.png");
-	public static ImageIcon emptySlotImage = new ImageIcon("resources/emptySlot.png");
+	public static String placeHolderImage = ("resources/Untitled.png");
+	public static String item1Image = ("resources/Items/item1.png");
+	public static String item2Image = ("resources/Items/item2.png");
+	public static String item3Image = ("resources/Items/item3.png");
+	public static String item4Image = ("resources/Items/item4.png");
+	public static String knife = ("resources/Items/knife.png");
+	public static String emptySlotImage = ("resources/Items/emptySlot.png");
 
+	//	
+	
 	// items
-	private JLabel[][] inventoryItems = {
-			{ new JLabel(emptySlotImage), new JLabel(emptySlotImage), new JLabel(emptySlotImage),
-					new JLabel(emptySlotImage) },
-			{ new JLabel(emptySlotImage), new JLabel(emptySlotImage), new JLabel(emptySlotImage),
-					new JLabel(emptySlotImage) } };
+	private String[][] inventoryItems = {
+			{ (emptySlotImage), (emptySlotImage), (emptySlotImage),
+					(emptySlotImage) },
+			{ (emptySlotImage), (emptySlotImage), (emptySlotImage),
+					(emptySlotImage) } };
+	
 	// abilities
 	private JLabel[] abilities = { new JLabel(placeHolderImage), new JLabel(placeHolderImage),
 			new JLabel(placeHolderImage), new JLabel(placeHolderImage) };
@@ -67,8 +72,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		gold.addActionListener(this);
 
 		JLabel mapImage = new JLabel(placeHolderImage);
-		JLabel temp1 = new JLabel(placeHolderImage);
-		JLabel chatLabel = new JLabel("Welcome to " + gameName);
+		JLabel temp1 = new JLabel(emptySlotImage);
+		JLabel chatLabel = new JLabel(chatWrap + "Welcome to " + gameName);
 		JLabel health = new JLabel("health", SwingConstants.CENTER);
 		JLabel mana = new JLabel("mana", SwingConstants.CENTER);
 
@@ -87,18 +92,20 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		GridBagLayout gbl = new GridBagLayout();
 
 		// make panels
+		Dimension d  = new Dimension();
 		JLayeredPane layered = new JLayeredPane();
 		layered.setSize(SCREEN_SIZE);
 		JPanel pane = new JPanel(gbl);
 		pane.setSize(SCREEN_SIZE);
 		JScrollPane chat = new JScrollPane(chatLabel);
-		chat.setSize(SCREEN_SIZE);
+		chat.setSize((int) SCREEN_SIZE.width / 4, (int) SCREEN_SIZE.height);
 		JPanel stats = new JPanel(gbl);
-		stats.setSize(SCREEN_SIZE);
+		d.setSize((int) (SCREEN_SIZE.width / 4), (int) (SCREEN_SIZE.height));
+		stats.setMaximumSize(d);
 		JPanel inventory = new JPanel(gbl);
-		inventory.setSize(SCREEN_SIZE);
+		inventory.setSize((int) SCREEN_SIZE.width / 5, (int) SCREEN_SIZE.height / 10);
 		JPanel map = new JPanel(gbl);
-		map.setSize(SCREEN_SIZE);
+		map.setSize((int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
 		
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -113,17 +120,17 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		c.gridx = 0;
 
 		// temporary item test
-		inventoryItems[0][0].setIcon(item1Image);
-		inventoryItems[1][1].setIcon(item2Image);
-		inventoryItems[0][2].setIcon(item3Image);
-		inventoryItems[1][3].setIcon(item4Image);
+		inventoryItems[0][0] = (item1Image);
+		inventoryItems[1][1] = (knife);
+		inventoryItems[0][2] = (item3Image);
+		inventoryItems[1][3] = (item4Image);
 
 		for (int y = 0; y < inventoryItems.length; y++) {
 			for (int x = 0; x < inventoryItems[y].length; x++) {
 				c.gridy = y;
 				c.gridx = x;
-				inventory.add(inventoryItems[y][x], c);
-				inventoryItems[y][x].setBorder(frame);
+				inventory.add(new MyCanvas(inventoryItems[y][x], scale), c);
+//				inventoryItems[y][x].setBorder(frame);
 			}
 		}
 
@@ -190,7 +197,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			c.gridx = 2;
 			pane.add(map, c);
 			map.setBorder(green);
-			map.setBounds(0, 0, 100, 100);
+			map.setBounds(0, 0, (int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
 		} else {
 			c.anchor = GridBagConstraints.NORTHEAST;
 			c.gridy = 0;
@@ -201,19 +208,18 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			c.gridx = 0;
 			pane.add(map, c);
 			map.setBorder(green);
-			map.setBounds(0, 0, 100, 100);
+			map.setBounds(0, 0, (int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
 		}
 
 		pane.setBorder(frame);
-		pane.setSize(getToolkit().getScreenSize());
+		pane.setSize(SCREEN_SIZE);
 		pane.setOpaque(false);
-		pane.setBounds(0, 0, getToolkit().getScreenSize().width, getToolkit().getScreenSize().height);
+		pane.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		layered.add(pane, new Integer(1), 0);
-		temp1.setBounds(0, 0, getToolkit().getScreenSize().width, getToolkit().getScreenSize().height);
-		layered.add(temp1, new Integer(0), 100);
+		temp1.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
+		layered.add(temp1, new Integer(0), 0);
 		add(layered);
 
-		// System.out.println(getToolkit().getScreenSize());
 		setVisible(true);
 		changeFontRecursive(this, menuFont);
 		// next line to be deleted when fixed
