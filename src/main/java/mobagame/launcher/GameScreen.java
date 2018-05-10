@@ -12,7 +12,7 @@ import java.awt.event.*;
 
 @SuppressWarnings("serial")
 public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable {
-	
+
 	private static Font menuFont = SignUp.menuFont;
 
 	private static boolean testing = true;
@@ -20,9 +20,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private static boolean lefty = false;
 
 	private final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
-	private final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth()/4 + "px'>";
+	private final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 4 + "px'>";
 	final int scale = 1;
-	
+
 	private int goldAmount = 0;
 	private int goldPerSecond = 4;
 	private JButton gold;
@@ -36,15 +36,12 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public static String knife = ("resources/Items/knife.png");
 	public static String emptySlotImage = ("resources/Items/emptySlot.png");
 
-	//	
-	
+	//
+
 	// items
-	private String[][] inventoryItems = {
-			{ (emptySlotImage), (emptySlotImage), (emptySlotImage),
-					(emptySlotImage) },
-			{ (emptySlotImage), (emptySlotImage), (emptySlotImage),
-					(emptySlotImage) } };
-	
+	private String[] inventoryItems = { (emptySlotImage), (emptySlotImage), (emptySlotImage), (emptySlotImage),
+			(emptySlotImage), (emptySlotImage), (emptySlotImage), (emptySlotImage) };
+
 	// abilities
 	private JLabel[] abilities = { new JLabel(placeHolderImage), new JLabel(placeHolderImage),
 			new JLabel(placeHolderImage), new JLabel(placeHolderImage) };
@@ -90,7 +87,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		GridBagLayout gbl = new GridBagLayout();
 
 		// make panels
-		Dimension d  = new Dimension();
+		Dimension d = new Dimension();
 		JLayeredPane layered = new JLayeredPane();
 		layered.setSize(SCREEN_SIZE);
 		JPanel pane = new JPanel(gbl);
@@ -104,7 +101,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		inventory.setSize((int) SCREEN_SIZE.width / 5, (int) SCREEN_SIZE.height / 10);
 		JPanel map = new JPanel(gbl);
 		map.setSize((int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
-		
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -118,18 +114,16 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		c.gridx = 0;
 
 		// temporary item test
-		inventoryItems[0][0] = (item1Image);
-		inventoryItems[1][1] = (knife);
-		inventoryItems[0][2] = (item3Image);
-		inventoryItems[1][3] = (item4Image);
+		inventoryItems[0] = (item1Image);
+		inventoryItems[1] = (knife);
+		inventoryItems[2] = (item3Image);
+		inventoryItems[3] = (item4Image);
 
 		for (int y = 0; y < inventoryItems.length; y++) {
-			for (int x = 0; x < inventoryItems[y].length; x++) {
-				c.gridy = y;
-				c.gridx = x;
-				inventory.add(new MyCanvas(inventoryItems[y][x], scale), c);
-//				inventoryItems[y][x].setBorder(frame);
-			}
+			c.gridy = y / 4;
+			c.gridx = y % 4;
+			inventory.add(new MyCanvas(inventoryItems[y], SCREEN_SIZE.width/40), c);
+			// inventoryItems[y][x].setBorder(frame);
 		}
 
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -188,7 +182,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		if (lefty) {
 			c.anchor = GridBagConstraints.NORTHWEST;
 			c.gridy = 0;
-			c.gridx = 0;			
+			c.gridx = 0;
 			pane.add(inventory, c);
 			inventory.setBorder(frame);
 			c.anchor = GridBagConstraints.NORTHEAST;
