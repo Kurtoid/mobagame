@@ -10,6 +10,14 @@ import java.util.Random;
  */
 public class SendRandomDataPacket extends Packet {
 
+	public SendRandomDataPacket(ByteBuffer chunkBuf) {
+		super();
+	}
+
+	public SendRandomDataPacket(){
+
+	}
+
 	@Override
 	public ByteBuffer getBytes() {
 		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4;

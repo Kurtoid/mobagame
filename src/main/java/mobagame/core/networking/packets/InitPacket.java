@@ -9,6 +9,10 @@ import java.nio.ByteBuffer;
  */
 public class InitPacket extends Packet {
 
+	public InitPacket(ByteBuffer chunkBuf) {
+		super();
+	}
+
 	@Override
 	public ByteBuffer getBytes() {
 		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE;
