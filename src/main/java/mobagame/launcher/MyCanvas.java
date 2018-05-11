@@ -14,13 +14,23 @@ import javax.swing.JFrame;
 public class MyCanvas extends JComponent {
 
 	String location;
-	int scale;
+	int height;
+	int width;
 
 	public MyCanvas(String location, int scale) {
 		super();
 		this.location = location;
-		this.scale = scale;
-		this.setPreferredSize(new Dimension(scale,  scale));
+		this.width = scale;
+		this.height = scale;
+		this.setPreferredSize(new Dimension(width,  height));
+	}
+	
+	public MyCanvas(String location, int width, int height) {
+		super();
+		this.location = location;
+		this.width = width;
+		this.height = height;
+		this.setPreferredSize(new Dimension(width,  height));
 	}
 
 	public void paint(Graphics g) {
@@ -28,13 +38,8 @@ public class MyCanvas extends JComponent {
 		try {
 			img1 = ImageIO.read(new File(location));
 
-			int width = img1.getWidth(this);
-			int height = img1.getHeight(this);
-
-			int w = width*scale /* width */;
-			int h = height*scale /* height*/;
 			// explicitly specify width (w) and height (h)
-			g.drawImage(img1, 0, 0, (int) w, (int) h, this);
+			g.drawImage(img1, 0, 0, (int) width, (int) height, this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -45,8 +50,8 @@ public class MyCanvas extends JComponent {
 	public static void main(String[] a) {
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setBounds(30, 30, 300, 300);
-		window.getContentPane().add(new MyCanvas("resources/Items/strawberry.png", 6));
+		window.setBounds(0, 0, 300, 300);
+		window.getContentPane().add(new MyCanvas("resources/Items/strawberry.png", 300));
 		window.setVisible(true);
 	}
 }
