@@ -27,6 +27,7 @@ public abstract class Packet {
 	public static byte PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE = 0x07;
 	public static byte PK_ID_PLAYER_MOVE_REPORT = 0x08;
 	public static byte PK_ID_PLAYER_REQUEST_MOVEMENT = 0x08;
+	public static byte PK_ID_SIGNUP_RESPONSE = 0x09;
 
 	public static byte PK_ID_RANDOM_BS_PACKET = 0x69;
 

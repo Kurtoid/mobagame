@@ -11,6 +11,12 @@ import java.nio.ByteBuffer;
 public class DisconnectPacket extends Packet {
 
 
+	public DisconnectPacket(ByteBuffer chunkBuf) {
+		super();
+	}
+	public DisconnectPacket(){
+
+	}
 	@Override
 	public ByteBuffer getBytes() {
 		ByteBuffer buff = ByteBuffer.allocate(PACKET_SIZE_SIZE + PACKET_ID_SIZE);
