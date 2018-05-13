@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import mobagame.core.networking.packets.*;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
@@ -85,14 +86,38 @@ public class ResponseWorker implements Runnable {
 
 	private void handleSignupPacket(SignupPacket packet, ServerDataEvent dataEvent) {
 		PlayerAccountDBO dbo = new PlayerAccountDBO();
+		SignupResponsePacket response = new SignupResponsePacket();
 //		SignupResponsePacket resp = new SignupResponsePacket(SignupResponsePacket.FA);
 		try {
 			dbo.createAccount(packet.getUsername(), packet.getPassword(), packet.getEmailAddress(),
 					packet.getSecurityQuestionID(), packet.getSecurityQuestionAnswer());
+			response.status = SignupResponsePacket.SUCCESSFUL;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			PlayerAccount tmp = null;
+			try{
+				tmp = dbo.getAccountByEmail(packet.getEmailAddress());
+			} catch (SQLException e1) {
+				System.out.println("not email");
+				// skip
+			}
+			if(tmp!=null){
+				System.out.println("bad email");
+				response.status = SignupResponsePacket.FAILED_EMAIL;
+			}
+			tmp = null;
+			try{
+				tmp = dbo.getAccountByUsername(packet.getUsername());
+			} catch (SQLException e1) {
+				System.out.println("not username");
+				// skip
+			}
+			if(tmp!=null){
+				System.out.println("bad username");
+				response.status = SignupResponsePacket.FAILED_USERNAME;
+			}
 		}
+		dataEvent.server.send(dataEvent.socket, response.getBytes().array());
 	}
 
 	void handleLoginPacket(LoginPacket p, ServerDataEvent dataEvent){

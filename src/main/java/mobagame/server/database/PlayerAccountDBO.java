@@ -19,6 +19,8 @@ public class PlayerAccountDBO {
 
 	PreparedStatement createAccount;
 	PreparedStatement loginAccount;
+	PreparedStatement getAccountByUsername;
+	PreparedStatement getAccountByEmail;
 
 	public PlayerAccountDBO() {
 		try {
@@ -27,6 +29,8 @@ public class PlayerAccountDBO {
 					"INSERT INTO PlayerAccount (username, password, email, questionID, questionAnswer, xp, level) VALUES (?, ?, ?, ?, ?, ?, ?)");
 			loginAccount = db.getConnection()
 					.prepareStatement("SELECT * FROM PlayerAccount WHERE username = ? AND password = ?");
+			getAccountByUsername = db.getConnection().prepareStatement("SELECT * FROM PlayerAccount WHERE username = ?");
+			getAccountByEmail = db.getConnection().prepareStatement("SELECT * FROM PlayerAccount WHERE email = ?");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,15 +89,50 @@ public class PlayerAccountDBO {
 			loginAccount.execute();
 			ResultSet rs = loginAccount.getResultSet();
 			rs.next();
-			PlayerAccount p = new PlayerAccount();
-			p.id = rs.getInt("id");
-			p.level = rs.getInt("level");
-			p.username = rs.getString("username");
+			PlayerAccount p = getPlayerAccountFromResultSet(rs);
 			return p;
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * gets a player based off of username
+	 * @param username
+	 * @return
+	 * @throws SQLException
+	 */
+	public PlayerAccount getAccountByUsername(String username) throws SQLException {
+		getAccountByUsername.setString(1,username);
+		getAccountByUsername.executeQuery();
+		ResultSet rs = getAccountByUsername.getResultSet();
+		rs.next();
+		PlayerAccount p = getPlayerAccountFromResultSet(rs);
+		return p;
+	}
+
+	/**
+	 * gets a player based off of email
+	 * @param email
+	 * @return
+	 * @throws SQLException
+	 */
+	public PlayerAccount getAccountByEmail(String email) throws SQLException {
+		getAccountByEmail.setString(1,email);
+		getAccountByEmail.executeQuery();
+		ResultSet rs = getAccountByEmail.getResultSet();
+		rs.next();
+		PlayerAccount p = getPlayerAccountFromResultSet(rs);
+		return p;
+	}
+
+	private PlayerAccount getPlayerAccountFromResultSet(ResultSet rs) throws SQLException {
+		PlayerAccount p = new PlayerAccount();
+		p.id = rs.getInt("id");
+		p.level = rs.getInt("level");
+		p.username = rs.getString("username");
+		return p;
 	}
 
 	public static void main(String[] args) {

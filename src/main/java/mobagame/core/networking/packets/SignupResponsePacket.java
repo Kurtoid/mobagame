@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class SignupResponsePacket extends Packet {
-	final byte SUCCESSFUL = 0, FAILED_USERNAME = 1, FAILED_EMAIL = 2;
-	byte status;
+	public static final byte SUCCESSFUL = 0, FAILED_USERNAME = 1, FAILED_EMAIL = 2;
+	public byte status;
 
 	public SignupResponsePacket() {
 
