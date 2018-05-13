@@ -7,6 +7,7 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
 import mobagame.core.networking.packets.DisconnectPacket;
 import mobagame.core.networking.packets.LoginPacket;
@@ -45,10 +46,14 @@ public class UserLoginTester2 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		h.waitForResponse();
-		System.out.println((h.getResponse(SendRandomDataPacket.class)));
-		System.out.println((h.getResponse(SendRandomDataPacket.class)));
-		System.out.println((h.getResponse(SendRandomDataPacket.class)));
+		try {
+			h.waitForResponse(3000);
+			System.out.println((h.getResponse(SendRandomDataPacket.class)));
+			System.out.println((h.getResponse(SendRandomDataPacket.class)));
+			System.out.println((h.getResponse(SendRandomDataPacket.class)));
+		} catch (TimeoutException e) {
+			e.printStackTrace();
+		}
 
 		h = new RspHandler();
 
@@ -58,10 +63,14 @@ public class UserLoginTester2 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		h.waitForResponse();
-		System.out.println((h.getResponse()));
-		System.out.println((h.getResponse()));
-		System.out.println((h.getResponse()));
+		try {
+			h.waitForResponse(3000);
+			System.out.println((h.getResponse()));
+			System.out.println((h.getResponse()));
+			System.out.println((h.getResponse()));
+		} catch (TimeoutException e) {
+			e.printStackTrace();
+		}
 
 		System.exit(0);
 	}

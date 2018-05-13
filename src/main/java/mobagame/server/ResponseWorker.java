@@ -98,17 +98,19 @@ public class ResponseWorker implements Runnable {
 	void handleLoginPacket(LoginPacket p, ServerDataEvent dataEvent){
 		// if (serverEnabled) {
 		PlayerAccountDBO dbo = new PlayerAccountDBO();
+		PlayerAccount player = null;
 		try {
-			PlayerAccount player = dbo.loginAccount(p.getUsername(), p.getPassword());
-			LoginStatusPacket loginPak = new LoginStatusPacket();
-			loginPak.success = player != null;
-			dataEvent.server.send(dataEvent.socket, loginPak.getBytes().array());
+			player = dbo.loginAccount(p.getUsername(), p.getPassword());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		LoginStatusPacket loginPak = new LoginStatusPacket();
+		loginPak.success = player != null;
+		dataEvent.server.send(dataEvent.socket, loginPak.getBytes().array());
+		if(player!=null){
+			dataEvent.server.send(dataEvent.socket, new PublicPlayerDataPacket(player).getBytes().array());
+		}
 		// }
-
-		System.out.println(p.toString());
 
 	}
 }

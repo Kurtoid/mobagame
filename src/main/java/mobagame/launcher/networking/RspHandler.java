@@ -5,15 +5,22 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeoutException;
 
-import mobagame.core.networking.packets.Packet;
-import mobagame.core.networking.packets.SendRandomDataPacket;
+import mobagame.core.networking.packets.*;
 
 public class RspHandler extends Thread {
 
 	private BlockingQueue<ByteBuffer> responses;
 	private BlockingQueue<Packet> packets;
 
+
+	/**
+	 * called by the server thread
+	 * dont use this anywhere else
+	 * @param rsp
+	 * @return whether the connection should be closed or not
+	 */
 	public synchronized boolean handleResponse(byte[] rsp) {
 		System.out.println("handle response");
 		responses.add(ByteBuffer.wrap(rsp));
@@ -21,18 +28,64 @@ public class RspHandler extends Thread {
 		return false;
 	}
 
-	public synchronized void waitForResponse() {
+	/**
+	 * waits for at least one response to have been processed
+	 */
+	public synchronized void waitForResponse()  {
 		System.out.println("waiting for response");
-		while (responses.isEmpty()) {
+		while (packets.isEmpty()) {
 			try {
 				this.wait();
 			} catch (InterruptedException e) {
 			}
 		}
-		System.out.print("resp recieved ");
-		System.out.println(responses.peek());
+		System.out.print("resp recieved");
 	}
 
+	/**
+	 * waits for at least one response to have been processed, or <i>timeout</i> milliseconds
+	 * @param timeout
+	 * @throws TimeoutException if it times out
+	 */
+	public synchronized void waitForResponse(long timeout) throws TimeoutException {
+		long currentTime = System.currentTimeMillis();
+		System.out.println("waiting for response");
+		while (packets.isEmpty()) {
+			try {
+				this.wait(timeout);
+			} catch (InterruptedException e) {
+			}
+			if(System.currentTimeMillis() - currentTime > timeout){
+				throw new TimeoutException("the server took too long");
+			}
+		}
+		System.out.print("resp recieved");
+	}
+
+	/**
+	 * waits for <i>amount</i> responses, or <i>timeout</i> milliseconds
+	 * @param amount
+	 * @param timeout
+	 * @throws TimeoutException
+	 */
+	public synchronized void waitForResponse(int amount, long timeout) throws TimeoutException{
+		long currentTime = System.currentTimeMillis();
+		System.out.println("waiting for response " + amount);
+		while (packets.size() < amount) {
+			try {
+				this.wait(timeout);
+			} catch (InterruptedException e) {
+			}
+			if(System.currentTimeMillis() - currentTime > timeout){
+				throw new TimeoutException("the server took too long");
+			}
+		}
+		System.out.println("resp recieved");
+	}
+
+	/**
+	 * dont call this directly
+	 */
 	@Override
 	public void run() {
 		super.run();
@@ -40,32 +93,59 @@ public class RspHandler extends Thread {
 			ByteBuffer b = null;
 			try {
 				b = responses.take();
+				System.out.println("proccessing response");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println(Arrays.toString(b.array()));
+			System.out.println("arrayin: " + Arrays.toString(b.array()));
 			while (b.remaining() > 0) {
-				System.out.println(b.toString());
+				System.out.println("remaining " + b.toString());
 				int len = b.getInt();
-				System.out.println(len);
+				System.out.println("len " + len);
 				if (len > 0) {
 					ByteBuffer pkt = ByteBuffer.allocate(len);
 					pkt.putInt(len);
 					byte[] tmp = new byte[len - 4];
 					b.get(tmp);
 					pkt.put(tmp);
-					System.out.println(Arrays.toString(pkt.array()));
+					System.out.println("cut array " + Arrays.toString(pkt.array()));
 					if (Packet.getPacketID(pkt) == Packet.PK_ID_RANDOM_BS_PACKET) {
 						System.out.println("Bullshit");
+						addToPackets(new SendRandomDataPacket(pkt));
+					} else if (Packet.getPacketID(pkt) == Packet.PK_ID_SIGNUP_RESPONSE) {
+						System.out.println("SignupResponse");
+						addToPackets(new SignupResponsePacket(pkt));
+					} else if (Packet.getPacketID(pkt) == Packet.PK_ID_AUTH_STATUS) {
+						System.out.println("LoginStatusPacket");
+						addToPackets(new LoginStatusPacket(pkt));
+					} else if (Packet.getPacketID(pkt) == Packet.PK_ID_PUBLIC_PLAYER_DATA) {
+						System.out.println("playerdata");
+						addToPackets(new PublicPlayerDataPacket(pkt));
+					} else {
+						System.out.println("unknown packet " + Packet.getPacketID(pkt));
 					}
 				}
 			}
 		}
 	}
 
-	public Packet getResponse() {
-		System.out.println("get response");
+	/**
+	 * adds a packet to the queue, and notifys any waits
+	 * @param p
+	 */
+	private synchronized void addToPackets(Packet p) {
+		System.out.println(p.getClass().getName() + " added");
+		packets.add(p);
+		this.notify();
+	}
+
+	/**
+	 * gets any next avalible response
+	 * @return
+	 */
+	public synchronized Packet getResponse() {
+		System.out.println("get response called");
 		try {
 			return packets.take();
 		} catch (InterruptedException e) {
@@ -75,15 +155,24 @@ public class RspHandler extends Thread {
 		return null;
 	}
 
-	public Packet getResponse(Class c) {
+	/**
+	 * gets a response of a specified type
+	 * @param c
+	 * @return
+	 */
+	public synchronized Packet getResponse(Class c) {
 		Iterator<Packet> i = packets.iterator();
-		while(i.hasNext()) {
-			Packet p = i.next();
-			if(p.getClass().isInstance(c)) {
+		System.out.println(packets.size() + " to search");
+		while (i.hasNext()) {
+			Packet tmp = i.next();
+			System.out.println("looking at " + tmp.getClass().getName());
+			if (c.isInstance(tmp)) {
 				i.remove();
-				return p;
+				System.out.println(tmp.getClass().getName() + " found");
+				return tmp;
 			}
 		}
+		System.out.println("Cant find packet type " + c.getName());
 		return null;
 	}
 

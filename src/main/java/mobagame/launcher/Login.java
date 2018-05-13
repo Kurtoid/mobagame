@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,9 +23,11 @@ import javax.swing.SwingUtilities;
 
 import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.LoginStatusPacket;
+import mobagame.core.networking.packets.PublicPlayerDataPacket;
 import mobagame.core.settings.SettingManager;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
+import mobagame.server.database.PlayerAccount;
 
 public class Login implements ActionListener {
 	public JFrame login = new JFrame("Welcome to _______________________");
@@ -209,17 +212,24 @@ public class Login implements ActionListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			h.waitForResponse();
-			LoginStatusPacket status = (LoginStatusPacket) h.getResponse(LoginStatusPacket.class);
-			if (status.success) {
-				// user logged in
-				new Menu();
-			} else {
+			try {
+				h.waitForResponse(2, 3000); // wait for two packets, or three seconds
+				LoginStatusPacket status = (LoginStatusPacket) h.getResponse(LoginStatusPacket.class);
+				System.out.println(status.success ? "logged in" : "not logged in");
+				if (status.success) {
+					// user logged in
+					PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) h.getResponse(PublicPlayerDataPacket.class);
+					System.out.println(playerData.player.toString());
+					new Menu(playerData.player, false);
+				} else {
 
+				}
+			} catch (TimeoutException e) {
+				e.printStackTrace();
+				new Menu();
 			}
 
 			// Add if statement to check if use is admin
-			new Menu(User, true);
 			login.setVisible(false);
 		} else if (ae.getActionCommand().equals("Forgot Password")) {
 			// opens the menu to get your password back
