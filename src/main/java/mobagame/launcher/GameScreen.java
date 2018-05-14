@@ -17,7 +17,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
 	private final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
 
-	private static Font menuFont = SignUp.menuFont;
+	private Font menuFont = new Font("Old English Text MT", Font.PLAIN, (int) (SCREEN_SIZE.getWidth() / 100 * 9/5));
 	private Font gameFont = new Font("Times New Roman", Font.BOLD, (int) (SCREEN_SIZE.getWidth() / 100)); // 10?
 	private Font chatFont = new Font("Times New Roman", Font.BOLD, (int) (SCREEN_SIZE.getWidth() / 100 * 3 / 2)); // 14?
 	// I think in game font should be TNR since it is easy to read at a smaller
@@ -188,7 +188,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		c.gridy = 1;
 		c.gridx = 0;
 		c.anchor = GridBagConstraints.SOUTHWEST;
-//		pane.add(chat, c);
+		pane.add(chat, c);
 		chat.setBorder(yellow);
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.SOUTH;
@@ -226,10 +226,10 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		pane.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		layered.add(pane, new Integer(1), 0);
 		
-		JPanel asdf = new JPanel();
-		asdf.add(new MyCanvas(backgroundImage, SCREEN_SIZE.width, SCREEN_SIZE.height));
-		asdf.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
-//		layered.add(asdf, new Integer(0), 0);
+		JPanel background = new JPanel();
+		background.add(new MyCanvas(backgroundImage, SCREEN_SIZE.width, SCREEN_SIZE.height));
+		background.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
+		layered.add(background, new Integer(0), 0);
 		add(layered);
 
 		setVisible(true);
