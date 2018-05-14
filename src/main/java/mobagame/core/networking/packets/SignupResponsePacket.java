@@ -1,7 +1,5 @@
 package mobagame.core.networking.packets;
 
-import sun.security.pkcs.SigningCertificateInfo;
-
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
