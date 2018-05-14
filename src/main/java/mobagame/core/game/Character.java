@@ -7,6 +7,7 @@ public class Character {
 	private int maxMana;
 
 	// abilitys
+	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
 	private Ability[] abilitys = new Ability[5];
 
 	private int range; // Measured in custom units ru
@@ -43,7 +44,7 @@ public class Character {
 		return charName;
 	}
 
-	// make array 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
+	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
 	public Ability[] getAbilitys() {
 		return abilitys;
 	}

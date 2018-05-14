@@ -42,10 +42,10 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public static String backgroundImage = ("resources/Untitled.png");
 
 	// items
-	public static Item item1Image =new Item("item1", "resources/Items/item1.png", 100, 0, false);
-	public static Item item2Image =  new Item("item2", "resources/Items/item2.png", 50, 0, false);
+	public static Item item1Image = new Item("item1", "resources/Items/item1.png", 100, 0, false);
+	public static Item item2Image = new Item("item2", "resources/Items/item2.png", 50, 0, false);
 	public static Item item3Image = new Item("item3", "resources/Items/item3.png", 30, 0, false);
-	public static Item item4Image = new Item("item4", "resources/Items/item4.png", 20, 0, false);
+	public static Item item4Image = new Item("item4", "resources/Items/item4.png", 1, 0, false);
 	public static Item knife = new Item("knife", "resources/Items/knife.png", 500, 0, false);
 	public static Item empty = new Item("empty", "resources/Items/emptySlot.png", 0, 0, false);
 
@@ -139,7 +139,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			for (int x = 0; x < user.inventory[y].length; x++) {
 				c.gridy = y;
 				c.gridx = x;
-//				inventory.add(new MyCanvas(user.inventory[y][x], SCREEN_SIZE.width / 40), c);
 				inventory.add(new MyCanvas(user.inventory[y][x].getImageLocation(), SCREEN_SIZE.width / 40), c);
 			}
 		}
@@ -177,11 +176,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		c.gridwidth = 0;
 		c.fill = 0;
 
-		/*
-		 * // Draw Rectangles DNW yet RectangleDrawing manaBar = new RectangleDrawing(0,
-		 * 0, SCREEN_SIZE.height, SCREEN_SIZE.width, Color.GREEN, true);
-		 * mana.add(manaBar);
-		 */
+		// Draw Rectangles DNW yet
+//		RectangleDrawing manaBar = new RectangleDrawing(0, 0, SCREEN_SIZE.height, SCREEN_SIZE.width, Color.GREEN, true);
+//		mana.add(manaBar);
 
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
@@ -254,8 +251,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			}
 			goldAmount += 1;
 			gold.setText("$" + goldAmount);
-			 user.setCurrentMana((int) Math.random() * 300);
-			 user.setCurrentHealth((int) Math.random() * 300);
+			user.setGoldAmount(goldAmount);
+			user.setCurrentMana((int) Math.random() * 300);
+			user.setCurrentHealth((int) Math.random() * 300);
 		}
 	}
 
@@ -288,8 +286,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			// GOTO Shop
 			System.out.println("GOTO Shop");
 			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GOTO", JOptionPane.INFORMATION_MESSAGE);
-			knife.buy(user);
-			break;
 		case KeyEvent.VK_M:
 			// GOTO In-Game
 			System.out.println("GOTO In-Game");
