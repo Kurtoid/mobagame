@@ -18,8 +18,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
 
 	private Font menuFont = new Font("Old English Text MT", Font.PLAIN, (int) (SCREEN_SIZE.getWidth() / 100 * 9/5));
-	private Font gameFont = new Font("Times New Roman", Font.BOLD, (int) (SCREEN_SIZE.getWidth() / 100)); // 10?
-	private Font chatFont = new Font("Times New Roman", Font.BOLD, (int) (SCREEN_SIZE.getWidth() / 100 * 3 / 2)); // 14?
+	private Font gameFont = new Font("Times New Roman", Font.BOLD, (int) (SCREEN_SIZE.getWidth() / 100));
+	private Font chatFont = new Font("Times New Roman", Font.BOLD, (int) (SCREEN_SIZE.getWidth() / 100 * 3 / 2));
 	// I think in game font should be TNR since it is easy to read at a smaller
 	// print
 
@@ -64,6 +64,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	// open menu window for playerName
 	public GameScreen() {
 		super(gameName);
+		UIManager.put("OptionPane.messageFont", chatFont);
+		UIManager.put("OptionPane.buttonFont", menuFont);
 
 		// listeners
 		this.addKeyListener(this);
