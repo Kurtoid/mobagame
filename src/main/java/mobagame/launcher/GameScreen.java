@@ -18,7 +18,7 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable {
 
-	private final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
+	public final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
 	private final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
 
 	private Font menuFont = new Font("Old English Text MT", Font.PLAIN, (int) (SCREEN_SIZE.getWidth() / 100 * 9 / 5));
@@ -42,10 +42,10 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public static String backgroundImage = ("resources/Untitled.png");
 
 	// items
-	public static Item item1Image = new Item("item1", "resources/Items/item1.png", 100, 0, false);
-	public static Item item2Image = new Item("item2", "resources/Items/item2.png", 50, 0, false);
-	public static Item item3Image = new Item("item3", "resources/Items/item3.png", 30, 0, false);
-	public static Item item4Image = new Item("item4", "resources/Items/item4.png", 1, 0, false);
+	public static Item item1 = new Item("item1", "resources/Items/item1.png", 100, 0, false);
+	public static Item item2 = new Item("item2", "resources/Items/item2.png", 50, 0, false);
+	public static Item item3 = new Item("item3", "resources/Items/item3.png", 30, 0, false);
+	public static Item item4 = new Item("item4", "resources/Items/item4.png", 1, 0, false);
 	public static Item knife = new Item("knife", "resources/Items/knife.png", 500, 0, false);
 	public static Item empty = new Item("empty", "resources/Items/emptySlot.png", 0, 0, false);
 
@@ -77,7 +77,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		gold.addActionListener(this);
 
 		String mapImage = (placeHolderImage);
-		JLabel chatLabel = new JLabel(chatWrap + "Welcome to " + gameName);
+		JLabel chatLabel = new JLabel(chatWrap + "Welcome to " + gameName + "\n");
+		chatLabel.setBounds(0, SCREEN_SIZE.height / 2, SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
 		JPanel health = new JPanel();
 		JPanel mana = new JPanel();
 
@@ -106,10 +107,10 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		Dimension d = new Dimension();
 		JLayeredPane layered = new JLayeredPane();
 		layered.setSize(SCREEN_SIZE);
-		JPanel pane = new JPanel(gbl);
-		pane.setSize(SCREEN_SIZE);
+		JPanel front = new JPanel(gbl);
+		front.setSize(SCREEN_SIZE);
 		JScrollPane chat = new JScrollPane(chatLabel);
-		chat.setSize((int) SCREEN_SIZE.width / 4, (int) SCREEN_SIZE.height);
+		chat.setSize((int) SCREEN_SIZE.width / 4, (int) SCREEN_SIZE.height / 2);
 		JPanel stats = new JPanel(gbl);
 		d.setSize((int) (SCREEN_SIZE.width / 4), (int) (SCREEN_SIZE.height));
 		stats.setMaximumSize(d);
@@ -130,10 +131,10 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		c.gridx = 0;
 
 		// temporary item test
-		user.inventory[0][0] = (item1Image);
+		user.inventory[0][0] = (item1);
 		user.inventory[0][2] = (knife);
-		user.inventory[1][1] = (item3Image);
-		user.inventory[1][3] = (item4Image);
+		user.inventory[1][1] = (item3);
+		user.inventory[1][3] = (item4);
 
 		for (int y = 0; y < user.inventory.length; y++) {
 			for (int x = 0; x < user.inventory[y].length; x++) {
@@ -177,8 +178,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		c.fill = 0;
 
 		// Draw Rectangles DNW yet
-//		RectangleDrawing manaBar = new RectangleDrawing(0, 0, SCREEN_SIZE.height, SCREEN_SIZE.width, Color.GREEN, true);
-//		mana.add(manaBar);
+		// RectangleDrawing manaBar = new RectangleDrawing(0, 0, SCREEN_SIZE.height,
+		// SCREEN_SIZE.width, Color.GREEN, true);
+		// mana.add(manaBar);
 
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
@@ -189,11 +191,11 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		c.gridy = 1;
 		c.gridx = 0;
 		c.anchor = GridBagConstraints.SOUTHWEST;
-		pane.add(chat, c);
+		front.add(chat, c);
 		chat.setBorder(yellow);
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.SOUTH;
-		pane.add(stats, c);
+		front.add(stats, c);
 		stats.setBorder(frame);
 		/// *
 		// map & inventory
@@ -201,31 +203,31 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			c.anchor = GridBagConstraints.NORTHWEST;
 			c.gridy = 0;
 			c.gridx = 0;
-			pane.add(inventory, c);
+			front.add(inventory, c);
 			inventory.setBorder(frame);
 			c.anchor = GridBagConstraints.NORTHEAST;
 			c.gridx = 2;
-			pane.add(map, c);
+			front.add(map, c);
 			map.setBorder(green);
 			map.setBounds(0, 0, (int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
 		} else {
 			c.anchor = GridBagConstraints.NORTHEAST;
 			c.gridy = 0;
 			c.gridx = 2;
-			pane.add(inventory, c);
+			front.add(inventory, c);
 			inventory.setBorder(frame);
 			c.anchor = GridBagConstraints.NORTHWEST;
 			c.gridx = 0;
-			pane.add(map, c);
+			front.add(map, c);
 			map.setBorder(green);
 			map.setBounds(0, 0, (int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
 		}
 		// */
-		pane.setBorder(frame);
-		pane.setSize(SCREEN_SIZE);
-		pane.setOpaque(false);
-		pane.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
-		layered.add(pane, new Integer(1), 0);
+		front.setBorder(frame);
+		front.setSize(SCREEN_SIZE);
+		front.setOpaque(false);
+		front.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
+		layered.add(front, new Integer(1), 0);
 
 		JPanel background = new JPanel();
 		background.add(new MyCanvas(backgroundImage, SCREEN_SIZE.width, SCREEN_SIZE.height));
@@ -290,6 +292,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			// GOTO In-Game
 			System.out.println("GOTO In-Game");
 			JOptionPane.showMessageDialog(controllingFrame, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			// new Shop();
 			break;
 		case KeyEvent.VK_Q:
 			// USE Q ability
@@ -378,6 +381,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 		if (SHOP.equals(cmd)) { // GOTO Shop
 			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			// new Shop();
 		} else if (MENU.equals(cmd)) { // GOTO In-Game
 			JOptionPane.showMessageDialog(controllingFrame, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 		} else {
