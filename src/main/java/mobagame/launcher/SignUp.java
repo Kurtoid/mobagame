@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -20,7 +21,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import jdk.nashorn.internal.scripts.JO;
 import mobagame.core.networking.packets.SignupPacket;
+import mobagame.core.networking.packets.SignupResponsePacket;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
 
@@ -39,16 +42,13 @@ public class SignUp extends JFrame implements ActionListener {
 	private static String DROP = "drop";
 
 	private static JFrame controllingFrame; // needed for dialogs
-
+	private static boolean testing = false;
+	ServerConnection conn;
 	private JTextField usernameField;
 	private JPasswordField passwordField;
 	private JTextField emailField;
 	private JComboBox<String> questionField;
 	private JTextField answerField;
-
-	private static boolean testing = false;
-
-	ServerConnection conn;
 
 	public SignUp() {
 		super("Sign Up");
@@ -131,73 +131,6 @@ public class SignUp extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 
-	public void actionPerformed(ActionEvent ae) {
-		String cmd = ae.getActionCommand();
-
-		if (OK.equals(cmd)) { // Process the password.
-
-			char[] passwordChar = passwordField.getPassword();
-			String password = "";
-			for (int x = 0; x < passwordChar.length; x++) {
-				password += passwordChar[x];
-			}
-			String username = usernameField.getText();
-			String email = emailField.getText();
-			String answer = answerField.getText();
-			byte question = (byte) questionField.getSelectedIndex();
-			if (isPasswordValid(passwordChar)) {
-				if (isAvalable(username, "Username")) {
-					if (isEmailValid(email)) {
-						if (isAvalable(email, "Email")) {
-							SignupPacket p = new SignupPacket(username, password, email, question, answer);
-							RspHandler h = new RspHandler();
-							try {
-								conn.send(p.getBytes().array(), h);
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: "
-									+ password + " Email: " + email + " Question: " + question + " Answer: " + answer);
-						}
-					}
-				}
-			}
-			// Zero out the possible password, for security.
-			Arrays.fill(passwordChar, '0');
-
-		} else if (DROP.equals(cmd)) {
-
-		} else {
-			JOptionPane.showMessageDialog(controllingFrame, "Invalid password. Try again.", "Error Message",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
-	private boolean isAvalable(String check, String colume) {
-		// TODO Check to see if already in database
-		return true;
-	}
-
-	// To be valid, a password must be have a username, an @, and a domain
-	private boolean isEmailValid(String email) {
-		int numOfAtSigns = 0, numOfDots = 0;
-		for (int x = 1; x < email.length() - 1; x++) {
-			if (email.charAt(x) == 64) {
-				numOfAtSigns++;
-				x++;
-			} else if (email.charAt(x) == 46) {
-				numOfDots++;
-			}
-		}
-		if (numOfAtSigns != 1 || numOfDots != 1) {
-			JOptionPane.showMessageDialog(controllingFrame, "Invalid email. Try again.", "Error Message",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		return true;
-	}
-
 	// To be valid, a password must be >= 6 chars and must only have charaters that
 	// fall between char values of 23 and 126
 	private static boolean isPasswordValid(char[] input) {
@@ -225,5 +158,88 @@ public class SignUp extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		testing = true;
 		new SignUp();
+	}
+
+	public void actionPerformed(ActionEvent ae) {
+		String cmd = ae.getActionCommand();
+
+		if (OK.equals(cmd)) { // Process the password.
+
+			char[] passwordChar = passwordField.getPassword();
+			String password = "";
+			for (int x = 0; x < passwordChar.length; x++) {
+				password += passwordChar[x];
+			}
+			String username = usernameField.getText();
+			String email = emailField.getText();
+			String answer = answerField.getText();
+			byte question = (byte) questionField.getSelectedIndex();
+			if (isPasswordValid(passwordChar)) {
+				if (isAvalable(username, "Username")) {
+					if (isEmailValid(email)) {
+						if (isAvalable(email, "Email")) {
+							SignupPacket p = new SignupPacket(username, password, email, question, answer);
+							RspHandler h = new RspHandler();
+							try {
+								conn.send(p.getBytes().array(), h);
+								h.waitForResponse(3000);
+								SignupResponsePacket resp = (SignupResponsePacket) h.getResponse(SignupResponsePacket.class);
+								switch (resp.status) {
+									case SignupResponsePacket.SUCCESSFUL:
+										JOptionPane.showMessageDialog(controllingFrame, "Success! You can now log in", "Success", JOptionPane.INFORMATION_MESSAGE);
+										break;
+									case SignupResponsePacket.FAILED_EMAIL:
+										JOptionPane.showMessageDialog(controllingFrame, "This email address has been used", "Error", JOptionPane.ERROR_MESSAGE);
+										break;
+									case SignupResponsePacket.FAILED_USERNAME:
+										JOptionPane.showMessageDialog(controllingFrame, "This username has been used", "Error", JOptionPane.ERROR_MESSAGE);
+										break;
+								}
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (TimeoutException e) {
+								JOptionPane.showMessageDialog(controllingFrame, "There was an error contacting the server", "Oops", JOptionPane.ERROR_MESSAGE);
+								e.printStackTrace();
+							}
+							JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: "
+									+ password + " Email: " + email + " Question: " + question + " Answer: " + answer);
+						}
+					}
+				}
+			} else {
+				JOptionPane.showMessageDialog(controllingFrame, "Invalid password. Try again.", "Error Message",
+						JOptionPane.ERROR_MESSAGE);
+			}
+			// Zero out the possible password, for security.
+			Arrays.fill(passwordChar, '0');
+
+		} else if (DROP.equals(cmd)) {
+
+		}
+	}
+
+	private boolean isAvalable(String check, String colume) {
+		// TODO Check to see if already in database
+		return true;
+	}
+
+	// To be valid, a password must be have a username, an @, and a domain
+	private boolean isEmailValid(String email) {
+		int numOfAtSigns = 0, numOfDots = 0;
+		for (int x = 1; x < email.length() - 1; x++) {
+			if (email.charAt(x) == 64) {
+				numOfAtSigns++;
+				x++;
+			} else if (email.charAt(x) == 46) {
+				numOfDots++;
+			}
+		}
+		if (numOfAtSigns != 1 || numOfDots != 1) {
+			JOptionPane.showMessageDialog(controllingFrame, "Invalid email. Try again.", "Error Message",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return true;
 	}
 }

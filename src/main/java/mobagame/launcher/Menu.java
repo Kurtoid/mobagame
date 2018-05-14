@@ -4,6 +4,8 @@
 
 package mobagame.launcher;
 
+import mobagame.server.database.PlayerAccount;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -31,15 +33,15 @@ public class Menu extends JFrame implements ActionListener {
 	// open menu window for testing
 
 	public Menu() {
-		this("testing", false);
+		this(new PlayerAccount("testing"), false);
 	}
 
 	// open menu window for playerName
-	public Menu(String name, boolean admin) {
+	public Menu(PlayerAccount name, boolean admin) {
 		super(gameName);
 
 		isAdmin = admin;
-		playerName = name;
+		playerName = name.username;
 
 		setSize(windowWidth, windowHeight);
 		setResizable(false);
@@ -156,6 +158,6 @@ public class Menu extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		testing = true;
 		new Menu();
-		new Menu("ktaces", true);
+		new Menu(new PlayerAccount("ktaces"), true);
 	}
 }

@@ -28,7 +28,7 @@ public abstract class Packet {
 	public static byte PK_ID_PLAYER_MOVE_REPORT = 0x08;
 	public static byte PK_ID_PLAYER_REQUEST_MOVEMENT = 0x08;
 	public static byte PK_ID_SIGNUP_RESPONSE = 0x09;
-
+public static byte PK_ID_PUBLIC_PLAYER_DATA = 0x10;
 	public static byte PK_ID_RANDOM_BS_PACKET = 0x69;
 
 	public static int BYTES_PER_CHARACTER = 1;
@@ -52,7 +52,8 @@ public abstract class Packet {
 	 * @return type of packet
 	 */
 	public static byte getPacketID(ByteBuffer bf) {
-		return bf.get(4);
+		bf.position(4);
+		return bf.get();
 	}
 
 	/**

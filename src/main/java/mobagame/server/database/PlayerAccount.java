@@ -9,7 +9,18 @@ import java.util.*;
  *
  */
 public class PlayerAccount {
-	String username;
-	int id;
-	int level;
+	public String username;
+	public int id;
+	public int level;
+	public PlayerAccount(){
+
+	}
+
+	/**
+	 * only for debug use
+	 * @param name
+	 */
+	public PlayerAccount(String name){
+		username = name;
+	}
 }

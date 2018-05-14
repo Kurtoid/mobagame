@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import mobagame.core.networking.packets.*;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
@@ -85,30 +86,56 @@ public class ResponseWorker implements Runnable {
 
 	private void handleSignupPacket(SignupPacket packet, ServerDataEvent dataEvent) {
 		PlayerAccountDBO dbo = new PlayerAccountDBO();
+		SignupResponsePacket response = new SignupResponsePacket();
 //		SignupResponsePacket resp = new SignupResponsePacket(SignupResponsePacket.FA);
 		try {
 			dbo.createAccount(packet.getUsername(), packet.getPassword(), packet.getEmailAddress(),
 					packet.getSecurityQuestionID(), packet.getSecurityQuestionAnswer());
+			response.status = SignupResponsePacket.SUCCESSFUL;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			PlayerAccount tmp = null;
+			try{
+				tmp = dbo.getAccountByEmail(packet.getEmailAddress());
+			} catch (SQLException e1) {
+				System.out.println("not email");
+				// skip
+			}
+			if(tmp!=null){
+				System.out.println("bad email");
+				response.status = SignupResponsePacket.FAILED_EMAIL;
+			}
+			tmp = null;
+			try{
+				tmp = dbo.getAccountByUsername(packet.getUsername());
+			} catch (SQLException e1) {
+				System.out.println("not username");
+				// skip
+			}
+			if(tmp!=null){
+				System.out.println("bad username");
+				response.status = SignupResponsePacket.FAILED_USERNAME;
+			}
 		}
+		dataEvent.server.send(dataEvent.socket, response.getBytes().array());
 	}
 
 	void handleLoginPacket(LoginPacket p, ServerDataEvent dataEvent){
 		// if (serverEnabled) {
 		PlayerAccountDBO dbo = new PlayerAccountDBO();
+		PlayerAccount player = null;
 		try {
-			PlayerAccount player = dbo.loginAccount(p.getUsername(), p.getPassword());
-			LoginStatusPacket loginPak = new LoginStatusPacket();
-			loginPak.success = player != null;
-			dataEvent.server.send(dataEvent.socket, loginPak.getBytes().array());
+			player = dbo.loginAccount(p.getUsername(), p.getPassword());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		LoginStatusPacket loginPak = new LoginStatusPacket();
+		loginPak.success = player != null;
+		dataEvent.server.send(dataEvent.socket, loginPak.getBytes().array());
+		if(player!=null){
+			dataEvent.server.send(dataEvent.socket, new PublicPlayerDataPacket(player).getBytes().array());
+		}
 		// }
-
-		System.out.println(p.toString());
 
 	}
 }
