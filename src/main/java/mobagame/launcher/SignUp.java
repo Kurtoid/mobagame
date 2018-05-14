@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import jdk.nashorn.internal.scripts.JO;
 import mobagame.core.networking.packets.SignupPacket;
 import mobagame.core.networking.packets.SignupResponsePacket;
 import mobagame.launcher.networking.RspHandler;
@@ -175,38 +174,39 @@ public class SignUp extends JFrame implements ActionListener {
 			String answer = answerField.getText();
 			byte question = (byte) questionField.getSelectedIndex();
 			if (isPasswordValid(passwordChar)) {
-				if (isAvalable(username, "Username")) {
-					if (isEmailValid(email)) {
-						if (isAvalable(email, "Email")) {
-							SignupPacket p = new SignupPacket(username, password, email, question, answer);
-							RspHandler h = new RspHandler();
-							try {
-								conn.send(p.getBytes().array(), h);
-								h.waitForResponse(3000);
-								SignupResponsePacket resp = (SignupResponsePacket) h.getResponse(SignupResponsePacket.class);
-								switch (resp.status) {
-									case SignupResponsePacket.SUCCESSFUL:
-										JOptionPane.showMessageDialog(controllingFrame, "Success! You can now log in", "Success", JOptionPane.INFORMATION_MESSAGE);
-										break;
-									case SignupResponsePacket.FAILED_EMAIL:
-										JOptionPane.showMessageDialog(controllingFrame, "This email address has been used", "Error", JOptionPane.ERROR_MESSAGE);
-										break;
-									case SignupResponsePacket.FAILED_USERNAME:
-										JOptionPane.showMessageDialog(controllingFrame, "This username has been used", "Error", JOptionPane.ERROR_MESSAGE);
-										break;
-								}
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (TimeoutException e) {
-								JOptionPane.showMessageDialog(controllingFrame, "There was an error contacting the server", "Oops", JOptionPane.ERROR_MESSAGE);
-								e.printStackTrace();
-							}
-							JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: "
-									+ password + " Email: " + email + " Question: " + question + " Answer: " + answer);
+				if (isEmailValid(email)) {
+					SignupPacket p = new SignupPacket(username, password, email, question, answer);
+					RspHandler h = new RspHandler();
+					try {
+						conn.send(p.getBytes().array(), h);
+						h.waitForResponse(3000);
+						SignupResponsePacket resp = (SignupResponsePacket) h.getResponse(SignupResponsePacket.class);
+						switch (resp.status) {
+						case SignupResponsePacket.SUCCESSFUL:
+							JOptionPane.showMessageDialog(controllingFrame, "Success! You can now log in", "Success",
+									JOptionPane.INFORMATION_MESSAGE);
+							break;
+						case SignupResponsePacket.FAILED_EMAIL:
+							JOptionPane.showMessageDialog(controllingFrame, "This email address has been used", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							break;
+						case SignupResponsePacket.FAILED_USERNAME:
+							JOptionPane.showMessageDialog(controllingFrame, "This username has been used", "Error",
+									JOptionPane.ERROR_MESSAGE);
+							break;
 						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (TimeoutException e) {
+						JOptionPane.showMessageDialog(controllingFrame, "There was an error contacting the server",
+								"Oops", JOptionPane.ERROR_MESSAGE);
+						e.printStackTrace();
 					}
+//					JOptionPane.showMessageDialog(controllingFrame, "Username: " + username + " Password: " + password
+//							+ " Email: " + email + " Question: " + question + " Answer: " + answer);
 				}
+
 			} else {
 				JOptionPane.showMessageDialog(controllingFrame, "Invalid password. Try again.", "Error Message",
 						JOptionPane.ERROR_MESSAGE);
@@ -217,11 +217,6 @@ public class SignUp extends JFrame implements ActionListener {
 		} else if (DROP.equals(cmd)) {
 
 		}
-	}
-
-	private boolean isAvalable(String check, String colume) {
-		// TODO Check to see if already in database
-		return true;
 	}
 
 	// To be valid, a password must be have a username, an @, and a domain
