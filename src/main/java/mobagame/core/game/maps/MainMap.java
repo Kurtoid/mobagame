@@ -10,14 +10,13 @@ public class MainMap {
 	int width;
 
 	public MainMap() {
-		makeMap();
 	}
 
 	public Path2D getMap() {
 		return map;
 	}
 
-	private void makeMap() {
+	public void makeMap() {
 		if (width == 0 || height == 0) {
 			System.err.println("set the size dumbass");
 			return;
@@ -69,18 +68,18 @@ public class MainMap {
 
 	}
 
-	void setServerMode() {
+	public void setServerMode() {
 		width = 1000;
 		height = 1000;
 	}
 
-	void setSize(int w, int h) {
+	public void setSize(int w, int h) {
 		width = w;
 		height = h;
 	}
 
 	private double normalizeWidth(double input) {
-		return (input / 100) * width;
+		return (input / 100) * height;
 	}
 
 	private double normalizeHeight(double input) {

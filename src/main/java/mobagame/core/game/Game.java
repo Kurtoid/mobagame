@@ -13,6 +13,8 @@ public class Game {
 
 	public Game() {
 		map = new MainMap();
+		map.setServerMode();
+		map.makeMap();
 		players = new ArrayList<>();
 		gameID = new Random().nextInt();
 	}

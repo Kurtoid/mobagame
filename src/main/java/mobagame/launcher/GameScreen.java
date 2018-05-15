@@ -11,6 +11,7 @@ import javax.swing.border.TitledBorder;
 import mobagame.core.game.Character;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
+import mobagame.core.game.maps.MainMap;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -59,11 +60,16 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	private JFrame controllingFrame; // needed for dialogs
 
+	MainMap gameMap;
+
 	// open menu window for playerName
 	public GameScreen() {
 		super(gameName);
 		UIManager.put("OptionPane.messageFont", chatFont);
 		UIManager.put("OptionPane.buttonFont", menuFont);
+		gameMap = new MainMap();
+		gameMap.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
+		gameMap.makeMap();
 
 		// set up things
 
@@ -229,8 +235,17 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		front.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		layered.add(front, new Integer(1), 0);
 
-		JPanel background = new JPanel();
-		background.add(new MyCanvas(backgroundImage, SCREEN_SIZE.width, SCREEN_SIZE.height));
+		JPanel background = new JPanel() {
+			@Override
+			public void paint(Graphics g) {
+				super.paint(g);
+				Graphics2D graphics = (Graphics2D) g;
+				graphics.setStroke(new BasicStroke(SCREEN_SIZE.height / 100));
+				graphics.draw(gameMap.getMap());
+			}
+		};
+		// background.add(new MyCanvas(backgroundImage, SCREEN_SIZE.width,
+		// SCREEN_SIZE.height));
 		background.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		layered.add(background, new Integer(0), 0);
 		add(layered);
