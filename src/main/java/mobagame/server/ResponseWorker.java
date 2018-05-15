@@ -8,12 +8,20 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
-import mobagame.core.networking.packets.*;
+import mobagame.core.networking.packets.DisconnectPacket;
+import mobagame.core.networking.packets.InitPacket;
+import mobagame.core.networking.packets.LoginPacket;
+import mobagame.core.networking.packets.LoginStatusPacket;
+import mobagame.core.networking.packets.Packet;
+import mobagame.core.networking.packets.PublicPlayerDataPacket;
+import mobagame.core.networking.packets.SendRandomDataPacket;
+import mobagame.core.networking.packets.SignupPacket;
+import mobagame.core.networking.packets.SignupResponsePacket;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 
 public class ResponseWorker implements Runnable {
+	MasterGameRunner runner;
 	private List queue = new LinkedList();
 	public Queue<Packet> gameEvents = new LinkedBlockingQueue<Packet>();
 

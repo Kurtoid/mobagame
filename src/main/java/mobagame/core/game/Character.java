@@ -15,6 +15,7 @@ public class Character {
 	private int abiPow;
 	private int phyPowScale;
 	private int abiPowScale;
+	private int speed;
 
 	private String imageLocation;
 
@@ -78,6 +79,14 @@ public class Character {
 
 	public String getImageLocation() {
 		return imageLocation;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 
 }

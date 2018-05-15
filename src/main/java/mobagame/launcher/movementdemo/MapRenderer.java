@@ -10,7 +10,8 @@ import javax.swing.JPanel;
 public class MapRenderer extends JPanel {
 	Path2D upperMapPath;
 	Path2D lowerMapPath;
-
+	Path2D innerCircle;
+	long frameCount = 0;
 	Path2D mapOuterBounds;
 	public MapRenderer(int width, int height) {
 		setSize(width, height);
@@ -27,14 +28,19 @@ public class MapRenderer extends JPanel {
 		lowerMapPath.moveTo(normalizeWidth(10), normalizeHeight(100));
 		lowerMapPath.lineTo(normalizeWidth(47.711), normalizeHeight(100 - 37.711));
 		lowerMapPath.append(new Arc2D.Double(normalizeWidth(37.5), normalizeHeight(100 - 62.5), normalizeWidth(25), normalizeHeight(25), -100.55, 111.1, Arc2D.OPEN), true);
-		// TODO: one of these is misaligned. fix me
 		lowerMapPath.lineTo(normalizeWidth(100), normalizeHeight(10));
 		lowerMapPath.lineTo(normalizeWidth(100), normalizeHeight(100));
 		lowerMapPath.lineTo(0, normalizeHeight(100));
 
 		upperMapPath.append(lowerMapPath, false);
 
-		mapOuterBounds =new Path2D.Double();
+		innerCircle = new Path2D.Double();
+		innerCircle.moveTo(normalizeWidth(50), normalizeHeight(50));
+		innerCircle.append(new Ellipse2D.Double(normalizeWidth(45), normalizeHeight(45), normalizeWidth(10), normalizeHeight(10)), false);
+		
+		upperMapPath.append(innerCircle, false);
+		
+		mapOuterBounds = new Path2D.Double();
 		mapOuterBounds.moveTo(0,0);
 		mapOuterBounds.lineTo(normalizeWidth(100), normalizeHeight(0));
 		mapOuterBounds.moveTo(normalizeWidth(100), normalizeHeight(0));
@@ -64,7 +70,9 @@ public class MapRenderer extends JPanel {
 		g.setColor(Color.RED);
 		g.setStroke(new BasicStroke(10));
 		g.draw(mapOuterBounds);
-
+		frameCount++;
 //		g.drawOval((int)normalizeWidth(50-12.5), (int)normalizeHeight(50-12.5), 250, 250);
 	}
+
+		
 }
