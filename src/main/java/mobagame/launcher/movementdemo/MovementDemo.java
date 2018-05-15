@@ -19,7 +19,7 @@ public class MovementDemo extends JFrame implements Runnable {
 
 	public MovementDemo() {
 		JLayeredPane lPane = new JLayeredPane();
-		mapR = new MapRenderer();
+		mapR = new MapRenderer(SIZE_X, SIZE_Y);
 		mover = new PlayerMover(this, mapR);
 		mover.start();
 		panel = new JPanel() {
@@ -77,8 +77,10 @@ public class MovementDemo extends JFrame implements Runnable {
 		panel.setBounds(0, 0, SIZE_X, SIZE_Y);
 		lPane.add(mapR, 1);
 		lPane.add(panel, 0);
+		lPane.setBounds(0, 0, SIZE_X, SIZE_Y);
+		lPane.setPreferredSize(new Dimension(SIZE_X, SIZE_Y));
 		add(lPane);
-		setSize(SIZE_X, SIZE_Y);
+		pack();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}

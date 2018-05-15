@@ -1,11 +1,11 @@
 package mobagame.launcher.movementdemo;
 
 public class PlayerMover extends Thread {
-	double x = 50;
-	double y = 50;
+	double x = 500;
+	double y = 500;
 	double speed = 1;
-	double targetx = 50;
-	double targety = 50;
+	double targetx = 500;
+	double targety = 500;
 	MapRenderer r;
 	MovementDemo md;
 
