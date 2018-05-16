@@ -6,7 +6,7 @@ import java.util.Random;
 import mobagame.core.game.maps.MainMap;
 
 public class Game {
-	ArrayList<InGamePlayer> players;
+	public ArrayList<InGamePlayer> players;
 	MainMap map;
 
 	private int gameID;

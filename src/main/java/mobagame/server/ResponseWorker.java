@@ -8,15 +8,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import mobagame.core.networking.packets.DisconnectPacket;
-import mobagame.core.networking.packets.InitPacket;
-import mobagame.core.networking.packets.LoginPacket;
-import mobagame.core.networking.packets.LoginStatusPacket;
-import mobagame.core.networking.packets.Packet;
-import mobagame.core.networking.packets.PublicPlayerDataPacket;
-import mobagame.core.networking.packets.SendRandomDataPacket;
-import mobagame.core.networking.packets.SignupPacket;
-import mobagame.core.networking.packets.SignupResponsePacket;
+import mobagame.core.networking.packets.*;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 
@@ -70,7 +62,8 @@ public class ResponseWorker implements Runnable {
 			} else if (packetID == Packet.PK_ID_RANDOM_BS_PACKET) {
 				System.out.println("BULLSHIT MODE");
 				handleBullshitPacket(new SendRandomDataPacket(chunkBuf), dataEvent);
-
+			}else if(packetID == Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME){
+				handleRequestEnterGameapacket(new RequestEnterGamePacket(chunkBuf), dataEvent);
 			} else {
 				System.out.println("bad pkt");
 			}
@@ -78,6 +71,10 @@ public class ResponseWorker implements Runnable {
 			// Return to sender
 			// dataEvent.server.send(dataEvent.socket, dataEvent.data);
 		}
+	}
+
+	private void handleRequestEnterGameapacket(RequestEnterGamePacket requestEnterGamePacket, ServerDataEvent dataEvent) {
+		runner.assignGame(requestEnterGamePacket.playerID);
 	}
 
 	private void handleBullshitPacket(SendRandomDataPacket packet, ServerDataEvent dataEvent) {

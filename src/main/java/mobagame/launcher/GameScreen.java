@@ -9,6 +9,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import mobagame.core.game.Character;
+import mobagame.core.game.Game;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
 import mobagame.core.game.maps.MainMap;
@@ -235,15 +236,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		front.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		layered.add(front, new Integer(1), 0);
 
-		JPanel background = new JPanel() {
-			@Override
-			public void paint(Graphics g) {
-				super.paint(g);
-				Graphics2D graphics = (Graphics2D) g;
-				graphics.setStroke(new BasicStroke(SCREEN_SIZE.height / 100));
-				graphics.draw(gameMap.getMap());
-			}
-		};
+		MapPanel background = new MapPanel(gameMap, new Game());
 		// background.add(new MyCanvas(backgroundImage, SCREEN_SIZE.width,
 		// SCREEN_SIZE.height));
 		background.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);

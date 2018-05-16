@@ -7,12 +7,17 @@ import java.nio.ByteBuffer;
  * players
  *
  * @author Kurt Wilson
- *
  */
 public class RequestEnterGamePacket extends Packet {
-	int playerID;
-	int characterID;
-	int gameID;
+	public int playerID;
+	public int characterID;
+	public int gameID;
+
+	public RequestEnterGamePacket(ByteBuffer chunkBuf) {
+		super();
+		readData(chunkBuf);
+	}
+
 	@Override
 	public ByteBuffer getBytes() {
 		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 4 + 4;

@@ -98,4 +98,6 @@ public class MasterGameRunner extends Thread {
 		
 	}
 
+	public void assignGame(int playerID) {
+	}
 }
