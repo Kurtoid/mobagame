@@ -4,9 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mobagame.core.game.Game;
+import mobagame.core.game.InGamePlayer;
+import mobagame.core.game.PlayerMover;
+import mobagame.core.game.maps.MainMap;
+import mobagame.server.game.ServerGame;
 
 public class MasterGameRunner extends Thread {
-	Set<Game> games;
+	Set<ServerGame> games;
 	boolean running = false;
 	double fps;
 	int frameCount = 0;
@@ -65,7 +69,7 @@ public class MasterGameRunner extends Thread {
 				// Update the frames we got.
 				int thisSecond = (int) (lastUpdateTime / 1000000000);
 				if (thisSecond > lastSecondTime) {
-					System.out.println("NEW SECOND " + thisSecond + " " + updateCount);
+//					System.out.println("NEW SECOND " + thisSecond + " " + updateCount);
 					fps = updateCount;
 					updateCount = 0;
 					lastSecondTime = thisSecond;
@@ -95,9 +99,25 @@ public class MasterGameRunner extends Thread {
 	}
 
 	private void updateGame() {
-		
+		for(ServerGame g : games) {
+			g.update();
+		}
 	}
 
-	public void assignGame(int playerID) {
+	public Game assignGame(int playerID) {
+		for (ServerGame g : games) {
+			if (!g.isFull()) {
+				return g;
+			}
+		}
+		MainMap m = new MainMap();
+		m.setServerMode();
+		m.makeMap();
+		ServerGame g = new ServerGame(m);
+		InGamePlayer p = new InGamePlayer(playerID);
+		p.mover = new PlayerMover(m, p);
+		games.add(g);
+		g.players.add(p);
+		return g;
 	}
 }

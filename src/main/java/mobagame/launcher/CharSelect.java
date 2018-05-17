@@ -4,7 +4,15 @@ package mobagame.launcher;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+
 import javax.swing.*;
+
+import mobagame.core.networking.packets.RequestEnterGamePacket;
+import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection;
+import mobagame.server.database.PlayerAccount;
 
 public class CharSelect implements Runnable {
 	private JLabel timer = new JLabel("90");
@@ -25,6 +33,10 @@ public class CharSelect implements Runnable {
 	JPanel red5 = new JPanel();
 	public ImageIcon placeHolderImage = new ImageIcon("resources//Black.png");
 	public ImageIcon reaperCharPic = new ImageIcon("resources//Reaper.png");
+
+	JButton startButton;
+	PlayerAccount player;
+	ServerConnection conn;
 	//thread to run the countdown timer
 	public void run() {
 		String temp = "90";
@@ -48,7 +60,14 @@ public class CharSelect implements Runnable {
 
 	private GridBagConstraints gbc = new GridBagConstraints();
 
-	public CharSelect() {
+	public CharSelect(PlayerAccount player) {
+		this.player = player;
+		try {
+			conn = ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		//Setting up character select menu
 		blueTeamSelect.setSize(750, 400);
 		redTeamSelect.setSize(750, 400);
@@ -172,6 +191,27 @@ public class CharSelect implements Runnable {
 		gbc.gridx = 0;
 		gbc.weightx = 1;
 		selectionScreen.add(charStats, gbc); // new line
+		startButton = new JButton("START");
+		startButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO: second arguemtn is character id
+				RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
+				RspHandler h = new RspHandler();
+				try {
+					conn.send(req.getBytes().array(), h);
+					h.waitForResponse();
+					RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
+					System.out.println(game.gameID);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		gbc.gridy = 4;
+		selectionScreen.add(startButton, gbc);
 		selectionScreen.setVisible(true);
 		start();
 	}

@@ -6,8 +6,8 @@ import java.awt.geom.Path2D;
 
 public class MainMap {
 	private Path2D map;
-	int height;
-	int width;
+	public int height;
+	public int width;
 
 	public MainMap() {
 	}
@@ -74,7 +74,7 @@ public class MainMap {
 	}
 
 	public void setSize(int w, int h) {
-		width = w;
+		width = h;
 		height = h;
 	}
 

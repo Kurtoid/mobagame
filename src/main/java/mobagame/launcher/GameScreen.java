@@ -13,6 +13,7 @@ import mobagame.core.game.Game;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
 import mobagame.core.game.maps.MainMap;
+import mobagame.launcher.game.ClientGame;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -236,12 +237,15 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		front.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		layered.add(front, new Integer(1), 0);
 
-		MapPanel background = new MapPanel(gameMap, new Game());
+		MapPanel background = new MapPanel(gameMap, new ClientGame());
 		// background.add(new MyCanvas(backgroundImage, SCREEN_SIZE.width,
 		// SCREEN_SIZE.height));
 		background.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
+		background.resetPanAndZoom();
 		layered.add(background, new Integer(0), 0);
 		add(layered);
+		Thread t = new Thread(background);
+		t.start();
 
 		setVisible(true);
 		changeFontRecursive(this, menuFont);

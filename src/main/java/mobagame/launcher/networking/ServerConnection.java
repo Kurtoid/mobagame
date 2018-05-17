@@ -18,7 +18,6 @@ import mobagame.core.networking.packets.SendRandomDataPacket;
 public class ServerConnection extends Thread {
 	// The host:port combination to connect to
 	private InetAddress hostAddress;
-	private int port;
 
 	// The selector we'll be monitoring
 	private Selector selector;
@@ -36,8 +35,13 @@ public class ServerConnection extends Thread {
 	private Map rspHandlers = Collections.synchronizedMap(new HashMap());
 
 	private static ServerConnection instance;
+	public static String ip;
+	public static int port;
 
 	public static ServerConnection getInstance(String ip, int port) throws UnknownHostException, IOException {
+		ServerConnection.port = port;
+		ServerConnection.ip = ip;
+
 		if (instance == null) {
 			instance = new ServerConnection(InetAddress.getByName(ip), port);
 		}
@@ -46,7 +50,6 @@ public class ServerConnection extends Thread {
 
 	private ServerConnection(InetAddress hostAddress, int port) throws IOException {
 		this.hostAddress = hostAddress;
-		this.port = port;
 		this.selector = this.initSelector();
 		this.start();
 	}

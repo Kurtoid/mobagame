@@ -122,6 +122,9 @@ public class RspHandler extends Thread {
 					} else if (Packet.getPacketID(pkt) == Packet.PK_ID_PUBLIC_PLAYER_DATA) {
 						System.out.println("playerdata");
 						addToPackets(new PublicPlayerDataPacket(pkt));
+					} else if(Packet.getPacketID(pkt)==Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE) {
+						System.out.println("request game resposne");
+						addToPackets(new RequestEnterGameResponsePacket(pkt));
 					} else {
 						System.out.println("unknown packet " + Packet.getPacketID(pkt));
 					}

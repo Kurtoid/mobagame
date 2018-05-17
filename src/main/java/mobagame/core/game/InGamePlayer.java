@@ -4,18 +4,18 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.PlayerMovement;
 import mobagame.launcher.GameScreen;
 
 public class InGamePlayer {
 	private int playerID;
 	private double x;
 	private double y;
-	private double targetX;
-	private double targetY;
 	private Character character;
 	private int currentHealth;
 	private int currentMana;
 	private int goldAmount = 0;
+	public PlayerMover mover;
 	public Item[][] inventory = { { (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) },
 			{ (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) } };;
 
@@ -24,7 +24,7 @@ public class InGamePlayer {
 	public InGamePlayer() {
 		setDefaultShape();
 	}
-	
+
 	private void setDefaultShape() {
 		setPlayerShape(new Rectangle2D.Double(getX(), getY(), MainMap.normalizeWidth(20, 100), MainMap.normalizeHeight(20, 100)));
 	}
@@ -75,20 +75,8 @@ public class InGamePlayer {
 		this.currentMana = currentMana;
 	}
 
-	public double getTargetX() {
-		return targetX;
-	}
-
-	public void setTargetX(double targetX) {
-		this.targetX = targetX;
-	}
-
-	public double getTargetY() {
-		return targetY;
-	}
-
-	public void setTargetY(double targetY) {
-		this.targetY = targetY;
+	public InGamePlayer(int playerID) {
+		this.playerID = playerID;
 	}
 
 	public Shape getPlayerShape() {
@@ -106,4 +94,6 @@ public class InGamePlayer {
 	public void setY(double y) {
 		this.y = y;
 	}
+
+
 }

@@ -3,12 +3,24 @@ package mobagame.server;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import mobagame.core.networking.packets.*;
+import mobagame.core.game.Game;
+import mobagame.core.networking.packets.DisconnectPacket;
+import mobagame.core.networking.packets.InitPacket;
+import mobagame.core.networking.packets.LoginPacket;
+import mobagame.core.networking.packets.LoginStatusPacket;
+import mobagame.core.networking.packets.Packet;
+import mobagame.core.networking.packets.PublicPlayerDataPacket;
+import mobagame.core.networking.packets.RequestEnterGamePacket;
+import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
+import mobagame.core.networking.packets.SendRandomDataPacket;
+import mobagame.core.networking.packets.SignupPacket;
+import mobagame.core.networking.packets.SignupResponsePacket;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 
@@ -63,6 +75,7 @@ public class ResponseWorker implements Runnable {
 				System.out.println("BULLSHIT MODE");
 				handleBullshitPacket(new SendRandomDataPacket(chunkBuf), dataEvent);
 			}else if(packetID == Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME){
+				System.out.println("request enter game");
 				handleRequestEnterGameapacket(new RequestEnterGamePacket(chunkBuf), dataEvent);
 			} else {
 				System.out.println("bad pkt");
@@ -74,7 +87,12 @@ public class ResponseWorker implements Runnable {
 	}
 
 	private void handleRequestEnterGameapacket(RequestEnterGamePacket requestEnterGamePacket, ServerDataEvent dataEvent) {
-		runner.assignGame(requestEnterGamePacket.playerID);
+		Game g = runner.assignGame(requestEnterGamePacket.playerID);
+		System.out.println("resp with gameid " + g.getGameID());
+		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g);
+		System.out.println(Arrays.toString(resp.getBytes().array()));
+		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
+
 	}
 
 	private void handleBullshitPacket(SendRandomDataPacket packet, ServerDataEvent dataEvent) {

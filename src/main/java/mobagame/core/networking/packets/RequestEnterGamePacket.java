@@ -18,6 +18,14 @@ public class RequestEnterGamePacket extends Packet {
 		readData(chunkBuf);
 	}
 
+	public RequestEnterGamePacket(int p, int c, int g) {
+		// TODO Auto-generated constructor stub
+	}
+	public RequestEnterGamePacket(int p, int c) {
+		// TODO Auto-generated constructor stub
+	}
+
+
 	@Override
 	public ByteBuffer getBytes() {
 		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 4 + 4;
@@ -35,6 +43,7 @@ public class RequestEnterGamePacket extends Packet {
 
 	@Override
 	void readData(ByteBuffer buff) {
+		buff.rewind();
 		playerID = buff.getInt(5);
 		characterID = buff.getInt();
 	}

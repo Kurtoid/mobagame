@@ -213,16 +213,18 @@ public class Login implements ActionListener {
 				e.printStackTrace();
 			}
 			try {
-				h.waitForResponse(2, 3000); // wait for two packets, or three seconds
+				h.waitForResponse(1, 3000); // wait for one packets, or three seconds
 				LoginStatusPacket status = (LoginStatusPacket) h.getResponse(LoginStatusPacket.class);
 				System.out.println(status.success ? "logged in" : "not logged in");
 				if (status.success) {
 					// user logged in
+					h.waitForResponse(1, 3000); // wait for two packets, or three seconds
+
 					PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) h.getResponse(PublicPlayerDataPacket.class);
 					System.out.println(playerData.player.toString());
 					new Menu(playerData.player, false);
 				} else {
-
+					System.out.println("login faild");
 				}
 			} catch (TimeoutException e) {
 				e.printStackTrace();

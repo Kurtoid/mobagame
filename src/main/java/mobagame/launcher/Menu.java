@@ -29,7 +29,7 @@ public class Menu extends JFrame implements ActionListener {
 	private static Boolean testing = false;
 
 	private static JFrame controllingFrame; // needed for dialogs
-
+	PlayerAccount player;
 	// open menu window for testing
 
 	public Menu() {
@@ -39,6 +39,7 @@ public class Menu extends JFrame implements ActionListener {
 	// open menu window for playerName
 	public Menu(PlayerAccount name, boolean admin) {
 		super(gameName);
+		player = name;
 
 		isAdmin = admin;
 		playerName = name.username;
@@ -132,7 +133,7 @@ public class Menu extends JFrame implements ActionListener {
 
 		if (PLAY.equals(cmd)) { // GO TO Selection
 			// TODO Find available game
-			new CharSelect();
+			new CharSelect(player);
 			setVisible(false);
 
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
@@ -157,7 +158,6 @@ public class Menu extends JFrame implements ActionListener {
 
 	public static void main(String[] args) {
 		testing = true;
-		new Menu();
 		new Menu(new PlayerAccount("ktaces"), true);
 	}
 }

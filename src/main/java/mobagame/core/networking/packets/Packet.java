@@ -22,13 +22,14 @@ public abstract class Packet {
 
 	public static byte PK_ID_AUTH_SIGNUP = 0x03;
 	public static byte PK_ID_AUTH_STATUS = 0x04;
-	public static byte PK_ID_CONN_DISCONNECT =  0x05;
+	public static byte PK_ID_CONN_DISCONNECT = 0x05;
 	public static byte PK_ID_PLAYER_REQUEST_ENTER_GAME = 0x06;
 	public static byte PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE = 0x07;
 	public static byte PK_ID_PLAYER_MOVE_REPORT = 0x08;
 	public static byte PK_ID_PLAYER_REQUEST_MOVEMENT = 0x08;
 	public static byte PK_ID_SIGNUP_RESPONSE = 0x09;
-public static byte PK_ID_PUBLIC_PLAYER_DATA = 0x10;
+	public static byte PK_ID_PUBLIC_PLAYER_DATA = 0x10;
+	public static byte PK_ID_PLAYER_MOVEMENT = 0x11;
 	public static byte PK_ID_RANDOM_BS_PACKET = 0x69;
 
 	public static int BYTES_PER_CHARACTER = 1;
