@@ -6,7 +6,6 @@ public enum ItemType {
 	PhysicalPower,
 	AbilityPower,
 	Speed,
-	Attack,
 	AttackSpecial,
 	Armor,
 	MagicResistance

@@ -48,31 +48,28 @@ public class Item {
 							for (int z = 0; z < type.length; z++) {
 								switch (type[z]) {
 								case Health:
-									// user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
+									 user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
 									break;
 								case Mana:
-									// user.setMaxMana(user.getMaxManah() + effectPoints[z]);
+									 user.setMaxMana(user.getMaxMana() + effectPoints[z]);
 									break;
 								case PhysicalPower:
-									// user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
+									 user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
 									break;
 								case AbilityPower:
-									// user.setPhysicalPower(user.getPhysicalPower() + effectPoints[z]);
+									 user.setPhyPow(user.getPhyPow() + effectPoints[z]);
 									break;
 								case Speed:
-									// user.setSpeed(user.getSpeed() + effectPoints[z]);
-									break;
-								case Attack:
-									// user.setAttack(user.getAttack() + effectPoints[z]);
+									 user.setSpeed(user.getSpeed() + effectPoints[z]);
 									break;
 								case AttackSpecial:
-									// user.setAttackSpecial(user.getAttackSpecial() + effectPoints[z]);
+									 user.setAbiPow(user.getAbiPow() + effectPoints[z]);
 									break;
 								case Armor:
-									// user.setArmor(user.getArmor() + effectPoints[z]);
+									 user.setArmor(user.getArmor() + effectPoints[z]);
 									break;
 								case MagicResistance:
-									// user.setMagicResistance(user.getMagicResistance() + effectPoints[z]);
+									 user.setMagicResist(user.getMagicResist() + effectPoints[z]);
 									break;
 								default:
 									System.out.println("ERROR: Unknown item type");
