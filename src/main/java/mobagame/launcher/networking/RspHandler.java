@@ -110,23 +110,38 @@ public class RspHandler extends Thread {
 					b.get(tmp);
 					pkt.put(tmp);
 					System.out.println("cut array " + Arrays.toString(pkt.array()));
-					if (Packet.getPacketID(pkt) == Packet.PK_ID_RANDOM_BS_PACKET) {
-						System.out.println("Bullshit");
-						addToPackets(new SendRandomDataPacket(pkt));
-					} else if (Packet.getPacketID(pkt) == Packet.PK_ID_SIGNUP_RESPONSE) {
-						System.out.println("SignupResponse");
-						addToPackets(new SignupResponsePacket(pkt));
-					} else if (Packet.getPacketID(pkt) == Packet.PK_ID_AUTH_STATUS) {
-						System.out.println("LoginStatusPacket");
-						addToPackets(new LoginStatusPacket(pkt));
-					} else if (Packet.getPacketID(pkt) == Packet.PK_ID_PUBLIC_PLAYER_DATA) {
-						System.out.println("playerdata");
-						addToPackets(new PublicPlayerDataPacket(pkt));
-					} else if(Packet.getPacketID(pkt)==Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE) {
-						System.out.println("request game resposne");
-						addToPackets(new RequestEnterGameResponsePacket(pkt));
-					} else {
-						System.out.println("unknown packet " + Packet.getPacketID(pkt));
+					switch (Packet.getPacketID(pkt)) {
+						case Packet.PK_ID_RANDOM_BS_PACKET:
+							System.out.println("Bullshit");
+							addToPackets(new SendRandomDataPacket(pkt));
+							break;
+						case Packet.PK_ID_SIGNUP_RESPONSE:
+							System.out.println("SignupResponse");
+							addToPackets(new SignupResponsePacket(pkt));
+							break;
+						case Packet.PK_ID_AUTH_STATUS:
+							System.out.println("LoginStatusPacket");
+							addToPackets(new LoginStatusPacket(pkt));
+							break;
+						case Packet.PK_ID_PUBLIC_PLAYER_DATA:
+							System.out.println("playerdata");
+							addToPackets(new PublicPlayerDataPacket(pkt));
+							break;
+						case Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE:
+							System.out.println("request game resposne");
+							addToPackets(new RequestEnterGameResponsePacket(pkt));
+							break;
+						case Packet.PK_ID_PLAYER_MOVE_REPORT:
+							System.out.println("Player movement report");
+							addToPackets(new PlayerPositionPacket(pkt));
+							break;
+						case Packet.PK_ID_PLAYER_MOVEMENT:
+							System.out.println("player_movement");
+							addToPackets(new PlayerPositionPacket(pkt));
+							break;
+						default:
+							System.out.println("unknown packet " + Packet.getPacketID(pkt));
+							break;
 					}
 				}
 			}

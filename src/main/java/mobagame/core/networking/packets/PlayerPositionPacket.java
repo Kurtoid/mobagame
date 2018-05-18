@@ -3,9 +3,9 @@ package mobagame.core.networking.packets;
 import java.nio.ByteBuffer;
 
 public class PlayerPositionPacket extends Packet {
-	int x;
-	int y;
-	int playerID;
+	public int x;
+	public int y;
+	public int playerID;
 
 	@Override
 	public ByteBuffer getBytes() {
@@ -32,8 +32,17 @@ public class PlayerPositionPacket extends Packet {
 	void readData(ByteBuffer buff) {
 		buff.rewind();
 		playerID = buff.getInt(5);
-		x = buff.getInt();
-		y = buff.getInt();
+		x = buff.getInt(9);
+		y = buff.getInt(13);
+		System.out.println(toString());
 	}
 
+	@Override
+	public String toString() {
+		return "PlayerPositionPacket{" +
+				"x=" + x +
+				", y=" + y +
+				", playerID=" + playerID +
+				'}';
+	}
 }
