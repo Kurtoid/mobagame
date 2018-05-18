@@ -10,7 +10,8 @@ public class Item {
 	private boolean isConsumable;
 	private ItemType[] type;
 
-	public Item(String name, String imageLocation, int price,ItemType[] type, int[] effectPoints, boolean isConsumable) {
+	public Item(String name, String imageLocation, int price, ItemType[] type, int[] effectPoints,
+			boolean isConsumable) {
 		this.name = name;
 		this.imageLocation = imageLocation;
 		this.price = price;
@@ -19,6 +20,22 @@ public class Item {
 		this.isConsumable = isConsumable;
 	}
 
+	public Item(String name, String imageLocation, int price, int effectPoints, boolean isConsumable) {
+		this(name, imageLocation, price, makeItemTypeArray(ItemType.Health), makeIntArray(effectPoints), isConsumable);
+
+		int[] effectPointsArray = { effectPoints };
+	}
+
+	private static ItemType[] makeItemTypeArray(ItemType type) {
+		ItemType[] array = {type};
+		return array;
+	}
+
+	private static int[] makeIntArray(int type) {
+		int[] array = {type};
+		return array;
+	}
+	
 	public void buy(InGamePlayer user) {
 		int gold = user.getGoldAmount();
 		for (int y = 0; y < user.inventory.length; y++) {
@@ -31,23 +48,31 @@ public class Item {
 							for (int z = 0; z < type.length; z++) {
 								switch (type[z]) {
 								case Health:
-//									user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
+									// user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
 									break;
 								case Mana:
+									// user.setMaxMana(user.getMaxManah() + effectPoints[z]);
 									break;
 								case PhysicalPower:
+									// user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
 									break;
 								case AbilityPower:
+									// user.setPhysicalPower(user.getPhysicalPower() + effectPoints[z]);
 									break;
 								case Speed:
+									// user.setSpeed(user.getSpeed() + effectPoints[z]);
 									break;
 								case Attack:
+									// user.setAttack(user.getAttack() + effectPoints[z]);
 									break;
 								case AttackSpecial:
+									// user.setAttackSpecial(user.getAttackSpecial() + effectPoints[z]);
 									break;
 								case Armor:
+									// user.setArmor(user.getArmor() + effectPoints[z]);
 									break;
 								case MagicResistance:
+									// user.setMagicResistance(user.getMagicResistance() + effectPoints[z]);
 									break;
 								default:
 									System.out.println("ERROR: Unknown item type");
@@ -80,8 +105,19 @@ public class Item {
 	public Item use(InGamePlayer user) {
 		if (isConsumable) {
 			// do stuff
-			user.setCurrentHealth(user.getCurrentHealth() + effectPoints);
-			user.setCurrentMana(user.getCurrentMana() + effectPoints);
+			for (int x = 0; x < type.length; x++) {
+				switch (type[x]) {
+				case Health:
+					user.setCurrentHealth(user.getCurrentHealth() + effectPoints[x]);
+					break;
+				case Mana:
+					user.setCurrentMana(user.getCurrentMana() + effectPoints[x]);
+					break;
+				default:
+					System.out.println("ERROR: Not a valid consumable item");
+					break;
+				}
+			}
 			return null;
 		}
 		return this;
