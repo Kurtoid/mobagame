@@ -90,7 +90,6 @@ public class CharSelect implements Runnable {
 		red3.setSize(150, 400);
 		red4.setSize(150, 400);
 		red5.setSize(150, 400);
-		ImageIcon placeHolderImage = new ImageIcon("E://ImpressMeProject/Black.png");
 		JLabel blue1CharImage = new JLabel(placeHolderImage);
 		JLabel blue2CharImage = new JLabel(reaperCharPic);
 		JLabel blue3CharImage = new JLabel(placeHolderImage);
@@ -205,7 +204,7 @@ public class CharSelect implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO: second arguemtn is character id
+				// TODO: second arguement is character id
 				RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
 				RspHandler h = new RspHandler();
 				try {

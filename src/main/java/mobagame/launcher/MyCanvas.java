@@ -23,6 +23,7 @@ public class MyCanvas extends JComponent {
 		this.width = scale;
 		this.height = scale;
 		this.setPreferredSize(new Dimension(width,  height));
+		System.out.println("Square Image Created");
 	}
 	
 	public MyCanvas(String location, int width, int height) {
@@ -31,6 +32,7 @@ public class MyCanvas extends JComponent {
 		this.width = width;
 		this.height = height;
 		this.setPreferredSize(new Dimension(width,  height));
+		System.out.println("Rectangle Image Created");
 	}
 
 	public void paint(Graphics g) {
