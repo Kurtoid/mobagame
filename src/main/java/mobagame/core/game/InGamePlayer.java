@@ -36,32 +36,17 @@ public class InGamePlayer {
 		return abiq;
 	}
 
-	public void setAbiq(Ability abiq) {
-		this.abiq = abiq;
-	}
-
 	public Ability getAbiw() {
 		return abiw;
-	}
-
-	public void setAbiw(Ability abiw) {
-		this.abiw = abiw;
 	}
 
 	public Ability getAbie() {
 		return abie;
 	}
 
-	public void setAbie(Ability abie) {
-		this.abie = abie;
-	}
 
 	public Ability getAbir() {
 		return abir;
-	}
-
-	public void setAbir(Ability abir) {
-		this.abir = abir;
 	}
 
 	public void setCharacter(Character character) {
@@ -171,6 +156,10 @@ public class InGamePlayer {
 		character = chara;
 		currentHealth = maxHealth;
 		currentMana = maxMana;
+		abiq = chara.getAbiq();
+		abiw = chara.getAbiw();
+		abie = chara.getAbie();
+		abir = chara.getAbir();
 	}
 
 	private void setDefaultShape() {
