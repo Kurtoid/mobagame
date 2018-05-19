@@ -8,8 +8,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import mobagame.core.game.Game;
+import mobagame.core.game.InGamePlayer;
+import mobagame.core.game.PlayerMover;
 import mobagame.core.networking.packets.DisconnectPacket;
 import mobagame.core.networking.packets.InitPacket;
 import mobagame.core.networking.packets.LoginPacket;
@@ -18,22 +21,26 @@ import mobagame.core.networking.packets.Packet;
 import mobagame.core.networking.packets.PublicPlayerDataPacket;
 import mobagame.core.networking.packets.RequestEnterGamePacket;
 import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
+import mobagame.core.networking.packets.RequestPlayerMovementPacket;
 import mobagame.core.networking.packets.SendRandomDataPacket;
 import mobagame.core.networking.packets.SignupPacket;
 import mobagame.core.networking.packets.SignupResponsePacket;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
+import mobagame.server.game.ServerGame;
 
 public class ResponseWorker implements Runnable {
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	MasterGameRunner runner;
 	private List queue = new LinkedList();
 	public Queue<Packet> gameEvents = new LinkedBlockingQueue<Packet>();
 
-	public void processData(ConnectionListener server, SocketChannel socket, byte[] data, int count) {
+	public void processData(ConnectionListener server, SocketChannel socket, byte[] data, int count, int connectionID) {
 		byte[] dataCopy = new byte[count];
 		System.arraycopy(data, 0, dataCopy, 0, count);
 		synchronized (queue) {
-			queue.add(new ServerDataEvent(server, socket, dataCopy));
+			queue.add(new ServerDataEvent(server, socket, dataCopy, connectionID));
 			queue.notify();
 		}
 	}
@@ -55,30 +62,42 @@ public class ResponseWorker implements Runnable {
 			ByteBuffer chunkBuf = ByteBuffer.wrap(dataEvent.data);
 			byte packetID = Packet.getPacketID(chunkBuf);
 			System.out.println(packetID);
-			if (packetID == Packet.PK_ID_AUTH_LOGIN) {
-				System.out.println("login");
+			switch (packetID) {
+			case Packet.PK_ID_AUTH_LOGIN:
+				logger.log(Level.INFO, "login");
 				// System.out.println(new LoginPacket(chunkBuf));
 				LoginPacket p = new LoginPacket(chunkBuf);
 				handleLoginPacket(p, dataEvent);
-			} else if (packetID == Packet.PK_ID_AUTH_SIGNUP) {
+				break;
+			case Packet.PK_ID_AUTH_SIGNUP:
 				// System.out.println(new SignupPacket(chunkBuf));
-				System.out.println("Signup");
+				logger.log(Level.INFO, "Signup");
 				SignupPacket packet = new SignupPacket(chunkBuf);
 				handleSignupPacket(packet, dataEvent);
-			} else if (packetID == Packet.PK_ID_INIT) {
-				System.out.println("Connection init");
+				break;
+			case Packet.PK_ID_INIT:
+				logger.log(Level.INFO, "Connection init");
 				handleInitPacket(new InitPacket(chunkBuf), dataEvent);
-			} else if (packetID == Packet.PK_ID_CONN_DISCONNECT) {
-				System.out.println("disconnect");
+				break;
+			case Packet.PK_ID_CONN_DISCONNECT:
+				logger.log(Level.INFO, "disconnect");
 				handleDisconnectPacket(new DisconnectPacket(chunkBuf), dataEvent);
-			} else if (packetID == Packet.PK_ID_RANDOM_BS_PACKET) {
-				System.out.println("BULLSHIT MODE");
+				break;
+			case Packet.PK_ID_RANDOM_BS_PACKET:
+				logger.log(Level.INFO, "BULLSHIT MODE");
 				handleBullshitPacket(new SendRandomDataPacket(chunkBuf), dataEvent);
-			}else if(packetID == Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME){
-				System.out.println("request enter game");
-				handleRequestEnterGameapacket(new RequestEnterGamePacket(chunkBuf), dataEvent);
-			} else {
-				System.out.println("bad pkt");
+				break;
+			case Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME:
+				logger.log(Level.INFO, "request enter game");
+				handleRequestEnterGamePacket(new RequestEnterGamePacket(chunkBuf), dataEvent);
+				break;
+			case Packet.PK_ID_PLAYER_REQUEST_MOVEMENT:
+				logger.log(Level.INFO, "player movement");
+				handleRequestMovementPacket(new RequestPlayerMovementPacket(chunkBuf), dataEvent);
+				break;
+			default:
+				logger.log(Level.WARNING, "bad pkt");
+				break;
 			}
 
 			// Return to sender
@@ -86,9 +105,24 @@ public class ResponseWorker implements Runnable {
 		}
 	}
 
-	private void handleRequestEnterGameapacket(RequestEnterGamePacket requestEnterGamePacket, ServerDataEvent dataEvent) {
-		Game g = runner.assignGame(requestEnterGamePacket.playerID);
-		System.out.println("resp with gameid " + g.getGameID());
+	private void handleRequestMovementPacket(RequestPlayerMovementPacket requestPlayerMovementPacket,
+			ServerDataEvent dataEvent) {
+		logger.log(Level.INFO, "conn id " + dataEvent.connectionID);
+		runner.getPlayer(dataEvent.connectionID).mover.setTarget(requestPlayerMovementPacket.x,
+				requestPlayerMovementPacket.y);
+	}
+
+	private void handleRequestEnterGamePacket(RequestEnterGamePacket requestEnterGamePacket,
+			ServerDataEvent dataEvent) {
+		ServerGame g = runner.findGame(requestEnterGamePacket.playerID);
+		InGamePlayer p = new InGamePlayer(requestEnterGamePacket.playerID);
+		runner.conn.playerToConnection.put(p, dataEvent.socket);
+		p.setX(110);
+		p.setY(890);
+		p.mover = new PlayerMover(g.map, p);
+		runner.addToGame(g, p, dataEvent.connectionID);
+
+		logger.log(Level.INFO, "resp with gameid " + g.getGameID());
 		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g);
 		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
@@ -110,7 +144,8 @@ public class ResponseWorker implements Runnable {
 	private void handleSignupPacket(SignupPacket packet, ServerDataEvent dataEvent) {
 		PlayerAccountDBO dbo = new PlayerAccountDBO();
 		SignupResponsePacket response = new SignupResponsePacket();
-//		SignupResponsePacket resp = new SignupResponsePacket(SignupResponsePacket.FA);
+		// SignupResponsePacket resp = new
+		// SignupResponsePacket(SignupResponsePacket.FA);
 		try {
 			dbo.createAccount(packet.getUsername(), packet.getPassword(), packet.getEmailAddress(),
 					packet.getSecurityQuestionID(), packet.getSecurityQuestionAnswer());
@@ -118,32 +153,32 @@ public class ResponseWorker implements Runnable {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			PlayerAccount tmp = null;
-			try{
+			try {
 				tmp = dbo.getAccountByEmail(packet.getEmailAddress());
 			} catch (SQLException e1) {
-				System.out.println("not email");
+				logger.log(Level.INFO, "not email");
 				// skip
 			}
-			if(tmp!=null){
-				System.out.println("bad email");
+			if (tmp != null) {
+				logger.log(Level.INFO, "bad email");
 				response.status = SignupResponsePacket.FAILED_EMAIL;
 			}
 			tmp = null;
-			try{
+			try {
 				tmp = dbo.getAccountByUsername(packet.getUsername());
 			} catch (SQLException e1) {
-				System.out.println("not username");
+				logger.log(Level.INFO, "not username");
 				// skip
 			}
-			if(tmp!=null){
-				System.out.println("bad username");
+			if (tmp != null) {
+				logger.log(Level.INFO, "bad username");
 				response.status = SignupResponsePacket.FAILED_USERNAME;
 			}
 		}
 		dataEvent.server.send(dataEvent.socket, response.getBytes().array());
 	}
 
-	void handleLoginPacket(LoginPacket p, ServerDataEvent dataEvent){
+	void handleLoginPacket(LoginPacket p, ServerDataEvent dataEvent) {
 		// if (serverEnabled) {
 		PlayerAccountDBO dbo = new PlayerAccountDBO();
 		PlayerAccount player = null;
@@ -155,7 +190,7 @@ public class ResponseWorker implements Runnable {
 		LoginStatusPacket loginPak = new LoginStatusPacket();
 		loginPak.success = player != null;
 		dataEvent.server.send(dataEvent.socket, loginPak.getBytes().array());
-		if(player!=null){
+		if (player != null) {
 			dataEvent.server.send(dataEvent.socket, new PublicPlayerDataPacket(player).getBytes().array());
 		}
 		// }

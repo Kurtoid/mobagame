@@ -8,15 +8,24 @@ import java.io.IOException;
 
 import javax.swing.*;
 
+import org.omg.PortableServer.ServantRetentionPolicyValue;
+
+import mobagame.core.game.InGamePlayer;
+import mobagame.core.game.PlayerMover;
+import mobagame.core.game.maps.MainMap;
 import mobagame.core.networking.packets.RequestEnterGamePacket;
 import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
+import mobagame.launcher.game.ClientGame;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
 import mobagame.server.database.PlayerAccount;
 
 public class CharSelect implements Runnable {
+
 	private JLabel timer = new JLabel("90");
 	JFrame selectionScreen = new JFrame("Character Select");
+	final Dimension SCREEN_SIZE =selectionScreen.getToolkit().getScreenSize();
+
 	JPanel blueTeamSelect = new JPanel();
 	JPanel charSelectMenu = new JPanel();
 	JPanel redTeamSelect = new JPanel();
@@ -47,10 +56,9 @@ public class CharSelect implements Runnable {
 			}
 			temp = Integer.toString(i);
 			timer.setText(temp);
-			selectionScreen.setVisible(true);
+//			selectionScreen.setVisible(true);
 		}
-		selectionScreen.setVisible(false);
-		 new GameScreen();
+//		selectionScreen.setVisible(false);
 	}
 	//Meathod to start countdown timer thread
 	public void start() {
@@ -61,6 +69,7 @@ public class CharSelect implements Runnable {
 	private GridBagConstraints gbc = new GridBagConstraints();
 
 	public CharSelect(PlayerAccount player) {
+
 		this.player = player;
 		try {
 			conn = ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port);
@@ -203,6 +212,14 @@ public class CharSelect implements Runnable {
 					h.waitForResponse();
 					RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
 					System.out.println(game.gameID);
+					ClientGame g = new ClientGame(game.gameID);
+					g.setPlayerPlayer(new InGamePlayer(player.id));
+					g.getPlayerPlayer().mover = new PlayerMover(g.map, g.getPlayerPlayer());
+					g.map = new MainMap();
+					g.map.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
+					g.map.makeMap();
+					selectionScreen.setVisible(false);
+					new GameScreen(g);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

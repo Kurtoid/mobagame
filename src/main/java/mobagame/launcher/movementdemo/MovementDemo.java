@@ -40,6 +40,7 @@ public class MovementDemo extends JFrame implements Runnable {
 			public void mouseClicked(MouseEvent mouseEvent) {
 				mover.targetx = mouseEvent.getX();
 				mover.targety = mouseEvent.getY();
+				System.out.println(mouseEvent.toString());
 			}
 
 			@Override

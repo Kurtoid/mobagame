@@ -1,30 +1,39 @@
 package mobagame.server;
 
+import mobagame.core.game.InGamePlayer;
+
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainServer {
 	ConnectionListener l;
 	MasterGameRunner gRunner;
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	public MainServer() {
-		System.out.println("Starting server");
-		System.out.println("initializing objects");
+		logger.log(Level.INFO, "Starting Server");
+		logger.log(Level.INFO, "initializing objects");
 		gRunner = new MasterGameRunner();
 		ResponseWorker worker = new ResponseWorker();
 		// required, TODO: make this neater later
 		worker.runner = gRunner;
 		new Thread(worker).start();
-		System.out.println("started message parser");
+		logger.log(Level.INFO, "started message parser");
+		ConnectionListener conn = null;
 		try {
-			new Thread(new ConnectionListener(null, 8666, worker)).start();
+			conn = new ConnectionListener(null, 8666, worker);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("started network listener");
+		new Thread(conn).start();
+		logger.log(Level.INFO, "started network listener");
+		gRunner.conn = conn;
 	}
 
 	public static void main(String[] args) {
-		new MainServer();
+
+		MainServer s = new MainServer();
 
 	}
 }

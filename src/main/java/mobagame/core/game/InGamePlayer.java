@@ -4,7 +4,6 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
 import mobagame.core.game.maps.MainMap;
-import mobagame.core.networking.packets.PlayerMovement;
 import mobagame.launcher.GameScreen;
 
 public class InGamePlayer {
@@ -36,32 +35,17 @@ public class InGamePlayer {
 		return abiq;
 	}
 
-	public void setAbiq(Ability abiq) {
-		this.abiq = abiq;
-	}
-
 	public Ability getAbiw() {
 		return abiw;
-	}
-
-	public void setAbiw(Ability abiw) {
-		this.abiw = abiw;
 	}
 
 	public Ability getAbie() {
 		return abie;
 	}
 
-	public void setAbie(Ability abie) {
-		this.abie = abie;
-	}
 
 	public Ability getAbir() {
 		return abir;
-	}
-
-	public void setAbir(Ability abir) {
-		this.abir = abir;
 	}
 
 	public void setCharacter(Character character) {
@@ -155,7 +139,7 @@ public class InGamePlayer {
 	private int level = 1;
 	public PlayerMover mover;
 	public Item[][] inventory = { { (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) },
-			{ (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) } };;
+			{ (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) } };
 
 	private Shape playerShape;
 
@@ -171,6 +155,10 @@ public class InGamePlayer {
 		character = chara;
 		currentHealth = maxHealth;
 		currentMana = maxMana;
+		abiq = chara.getAbiq();
+		abiw = chara.getAbiw();
+		abie = chara.getAbie();
+		abir = chara.getAbir();
 	}
 
 	private void setDefaultShape() {

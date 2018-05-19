@@ -13,24 +13,24 @@ import java.nio.charset.StandardCharsets;
 public abstract class Packet {
 	public abstract ByteBuffer getBytes();
 
-	public static int MAX_USERNAME_LENGTH = 16;
-	public static int MAX_PASSWORD_LENGTH = 64;
-	public static byte PK_ID_INIT = 0x01;
-	public static byte PK_ID_AUTH_LOGIN = 0x02;
-	public static int MAX_EMAIL_LENGTH = 254;
-	public static int MAX_SECURITY_QUESTION_SIZE = 254;
+	public static final int MAX_USERNAME_LENGTH = 16;
+	public static final int MAX_PASSWORD_LENGTH = 64;
+	public static final byte PK_ID_INIT = 01;
+	public static final byte PK_ID_AUTH_LOGIN = 02;
+	public static final int MAX_EMAIL_LENGTH = 254;
+	public static final int MAX_SECURITY_QUESTION_SIZE = 254;
 
-	public static byte PK_ID_AUTH_SIGNUP = 0x03;
-	public static byte PK_ID_AUTH_STATUS = 0x04;
-	public static byte PK_ID_CONN_DISCONNECT = 0x05;
-	public static byte PK_ID_PLAYER_REQUEST_ENTER_GAME = 0x06;
-	public static byte PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE = 0x07;
-	public static byte PK_ID_PLAYER_MOVE_REPORT = 0x08;
-	public static byte PK_ID_PLAYER_REQUEST_MOVEMENT = 0x08;
-	public static byte PK_ID_SIGNUP_RESPONSE = 0x09;
-	public static byte PK_ID_PUBLIC_PLAYER_DATA = 0x10;
-	public static byte PK_ID_PLAYER_MOVEMENT = 0x11;
-	public static byte PK_ID_RANDOM_BS_PACKET = 0x69;
+	public static final byte PK_ID_AUTH_SIGNUP = 03;
+	public static final byte PK_ID_AUTH_STATUS = 04;
+	public static final byte PK_ID_CONN_DISCONNECT = 05;
+	public static final byte PK_ID_PLAYER_REQUEST_ENTER_GAME = 06;
+	public static final byte PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE = 07;
+	public static final byte PK_ID_PLAYER_MOVE_REPORT = 8;
+	public static final byte PK_ID_PLAYER_REQUEST_MOVEMENT = 9;
+	public static final byte PK_ID_SIGNUP_RESPONSE = 10;
+	public static final byte PK_ID_PUBLIC_PLAYER_DATA = 11;
+	public static final byte PK_ID_PLAYER_MOVEMENT = 12;
+	public static final byte PK_ID_RANDOM_BS_PACKET = 69;
 
 	public static int BYTES_PER_CHARACTER = 1;
 	public static int PACKET_ID_SIZE = 1;
@@ -40,16 +40,14 @@ public abstract class Packet {
 	 * with a set of bytes, parse it out and assign the results to the specific
 	 * packet class variables
 	 *
-	 * @param buff
-	 *            the data
+	 * @param buff the data
 	 */
 	abstract void readData(ByteBuffer buff);
 
 	/**
 	 * utility method: what type is the packet?
 	 *
-	 * @param bf
-	 *            packet data
+	 * @param bf packet data
 	 * @return type of packet
 	 */
 	public static byte getPacketID(ByteBuffer bf) {
@@ -72,12 +70,9 @@ public abstract class Packet {
 	/**
 	 * read a packet and pull a string from it
 	 *
-	 * @param bf
-	 *            the original packet
-	 * @param position
-	 *            where the string starts
-	 * @param length
-	 *            how long the string <i>could be</i>
+	 * @param bf       the original packet
+	 * @param position where the string starts
+	 * @param length   how long the string <i>could be</i>
 	 * @return
 	 */
 	protected String getStringFromBuffer(ByteBuffer bf, int position, int length) {
@@ -91,10 +86,8 @@ public abstract class Packet {
 	/**
 	 * given a packet, set it's type with a given packet type constant
 	 *
-	 * @param bf
-	 *            the packet data
-	 * @param packet_type
-	 *            the type to assign to it
+	 * @param bf          the packet data
+	 * @param packet_type the type to assign to it
 	 */
 	protected void setPacketType(ByteBuffer bf, byte packet_type) {
 		bf.position(4);
@@ -104,14 +97,10 @@ public abstract class Packet {
 	/**
 	 * add a string to a byte array
 	 *
-	 * @param bf
-	 *            the packet data
-	 * @param s
-	 *            the string
-	 * @param position
-	 *            where it should be
-	 * @param length
-	 *            how long it could be
+	 * @param bf       the packet data
+	 * @param s        the string
+	 * @param position where it should be
+	 * @param length   how long it could be
 	 */
 	protected void setString(ByteBuffer bf, String s, int position, int length) {
 

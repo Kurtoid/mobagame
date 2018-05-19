@@ -16,11 +16,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import mobagame.core.game.InGamePlayer;
 import mobagame.launcher.networking.ChangeRequest;
+import mobagame.server.game.ServerGame;
 
 //http://rox-xmlrpc.sourceforge.net/niotut/#The client
 public class ConnectionListener implements Runnable {
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	// The host:port combination to listen on
 	private InetAddress hostAddress;
 	private int port;
@@ -41,6 +47,9 @@ public class ConnectionListener implements Runnable {
 
 	// Maps a SocketChannel to a list of ByteBuffer instances
 	private Map pendingData = new HashMap();
+	Map<SocketChannel, Integer> ConnectionIDs = new HashMap<SocketChannel, Integer>();
+	public Map<InGamePlayer, SocketChannel> playerToConnection = new HashMap<InGamePlayer, SocketChannel>();
+	int nextConnectionID = 0;
 
 	public ConnectionListener(InetAddress hostAddress, int port, ResponseWorker worker) throws IOException {
 		this.hostAddress = hostAddress;
@@ -78,12 +87,12 @@ public class ConnectionListener implements Runnable {
 					while (changes.hasNext()) {
 						ChangeRequest change = (ChangeRequest) changes.next();
 						switch (change.type) {
-						case ChangeRequest.CHANGEOPS:
-							SelectionKey key = change.socket.keyFor(this.selector);
-							if (key != null) {
-								key.interestOps(change.ops);
-							} else {
-							}
+							case ChangeRequest.CHANGEOPS:
+								SelectionKey key = change.socket.keyFor(this.selector);
+								if (key != null) {
+									key.interestOps(change.ops);
+								} else {
+								}
 						}
 					}
 					this.pendingChanges.clear();
@@ -123,6 +132,8 @@ public class ConnectionListener implements Runnable {
 
 		// Accept the connection and make it non-blocking
 		SocketChannel socketChannel = serverSocketChannel.accept();
+		logger.log(Level.FINE, "accepted " + nextConnectionID);
+		ConnectionIDs.put(socketChannel, nextConnectionID++);
 		Socket socket = socketChannel.socket();
 		socketChannel.configureBlocking(false);
 
@@ -144,21 +155,32 @@ public class ConnectionListener implements Runnable {
 		} catch (IOException e) {
 			// The remote forcibly closed the connection, cancel
 			// the selection key and close the channel.
+			logger.log(Level.INFO, "connection cutoff " + ConnectionIDs.get(socketChannel));
 			key.cancel();
 			socketChannel.close();
+			removePlayerFromGame(ConnectionIDs.get(socketChannel));
 			return;
 		}
 
 		if (numRead == -1) {
 			// Remote entity shut the socket down cleanly. Do the
 			// same from our end and cancel the channel.
+			logger.log(Level.INFO, "closed connection " + ConnectionIDs.get(socketChannel));
 			key.channel().close();
 			key.cancel();
+			removePlayerFromGame(ConnectionIDs.get(socketChannel));
 			return;
 		}
 
 		// Hand the data off to our worker thread
-		this.worker.processData(this, socketChannel, this.readBuffer.array(), numRead);
+		this.worker.processData(this, socketChannel, this.readBuffer.array(), numRead, ConnectionIDs.get(socketChannel));
+	}
+
+	private void removePlayerFromGame(Integer connID) {
+		InGamePlayer p = worker.runner.connectionToPlayer.remove(connID);
+		ServerGame g = worker.runner.playerToGame.remove(p);
+		playerToConnection.remove(p);
+		g.players.remove(p);
 	}
 
 	private void write(SelectionKey key) throws IOException {
@@ -218,4 +240,6 @@ public class ConnectionListener implements Runnable {
 			e.printStackTrace();
 		}
 	}
+
+
 }
