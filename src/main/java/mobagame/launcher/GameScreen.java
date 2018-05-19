@@ -36,7 +36,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	private InGamePlayer user = new InGamePlayer(new Character(300, 300), 300, 300);
 
-	private int goldAmount = 0;
+	private int goldAmount = 500;
 	private int goldPerSecond = 3;
 	private JButton gold;
 
@@ -59,6 +59,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	private static String SHOP = "shop";
 	private static String MENU = "menu";
+	
+	private JPanel inventory;
 
 	private JFrame controllingFrame; // needed for dialogs
 
@@ -75,6 +77,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		gameMap.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
 		gameMap.makeMap();
 
+		user.setGoldAmount(goldAmount);
 		// set up things
 
 		// listeners
@@ -124,7 +127,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		JPanel stats = new JPanel(gbl);
 		d.setSize((int) (SCREEN_SIZE.width / 4), (int) (SCREEN_SIZE.height));
 		stats.setMaximumSize(d);
-		JPanel inventory = new JPanel(gbl);
+		inventory = new JPanel(gbl);
 		inventory.setSize((int) SCREEN_SIZE.width / 5, (int) SCREEN_SIZE.height / 10);
 		JPanel map = new JPanel(gbl);
 		map.setSize((int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
@@ -302,12 +305,13 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		case KeyEvent.VK_P:
 			// GOTO Shop
 			System.out.println("GOTO Shop");
-			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+//			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			new Shop();
+			break;
 		case KeyEvent.VK_M:
 			// GOTO In-Game
 			System.out.println("GOTO In-Game");
 			JOptionPane.showMessageDialog(controllingFrame, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
-			// new Shop();
 			break;
 		case KeyEvent.VK_Q:
 			// USE Q ability
@@ -395,8 +399,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		String cmd = ae.getActionCommand();
 
 		if (SHOP.equals(cmd)) { // GOTO Shop
-			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GOTO", JOptionPane.INFORMATION_MESSAGE);
-			// new Shop();
+//			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			 new Shop();
 		} else if (MENU.equals(cmd)) { // GOTO In-Game
 			JOptionPane.showMessageDialog(controllingFrame, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 		} else {

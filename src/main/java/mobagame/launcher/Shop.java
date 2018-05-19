@@ -55,7 +55,7 @@ public class Shop extends JFrame implements ActionListener {
 		setSize(500, 1000);
 		add(list);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
 
