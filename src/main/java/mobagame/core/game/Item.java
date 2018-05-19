@@ -22,20 +22,18 @@ public class Item {
 
 	public Item(String name, String imageLocation, int price, int effectPoints, boolean isConsumable) {
 		this(name, imageLocation, price, makeItemTypeArray(ItemType.Health), makeIntArray(effectPoints), isConsumable);
-
-		int[] effectPointsArray = { effectPoints };
 	}
 
 	private static ItemType[] makeItemTypeArray(ItemType type) {
-		ItemType[] array = {type};
+		ItemType[] array = { type };
 		return array;
 	}
 
 	private static int[] makeIntArray(int type) {
-		int[] array = {type};
+		int[] array = { type };
 		return array;
 	}
-	
+
 	public void buy(InGamePlayer user) {
 		int gold = user.getGoldAmount();
 		for (int y = 0; y < user.inventory.length; y++) {
@@ -43,33 +41,34 @@ public class Item {
 				if (user.inventory[y][x] == GameScreen.empty) {
 					if (gold >= price) {
 						gold -= price;
+						user.setGoldAmount(gold);
 						user.inventory[y][x] = this;
 						if (!isConsumable) {
 							for (int z = 0; z < type.length; z++) {
 								switch (type[z]) {
 								case Health:
-									 user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
+									user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
 									break;
 								case Mana:
-									 user.setMaxMana(user.getMaxMana() + effectPoints[z]);
+									user.setMaxMana(user.getMaxMana() + effectPoints[z]);
 									break;
 								case PhysicalPower:
-									 user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
+									user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
 									break;
 								case AbilityPower:
-									 user.setPhyPow(user.getPhyPow() + effectPoints[z]);
+									user.setPhyPow(user.getPhyPow() + effectPoints[z]);
 									break;
 								case Speed:
-									 user.setSpeed(user.getSpeed() + effectPoints[z]);
+									user.setSpeed(user.getSpeed() + effectPoints[z]);
 									break;
 								case AttackSpecial:
-									 user.setAbiPow(user.getAbiPow() + effectPoints[z]);
+									user.setAbiPow(user.getAbiPow() + effectPoints[z]);
 									break;
 								case Armor:
-									 user.setArmor(user.getArmor() + effectPoints[z]);
+									user.setArmor(user.getArmor() + effectPoints[z]);
 									break;
 								case MagicResistance:
-									 user.setMagicResist(user.getMagicResist() + effectPoints[z]);
+									user.setMagicResist(user.getMagicResist() + effectPoints[z]);
 									break;
 								default:
 									System.out.println("ERROR: Unknown item type");
@@ -77,9 +76,11 @@ public class Item {
 								}
 							}
 						}
+						System.out.println("You bought a " + this.name);
 						return;
 					} else {
 						System.out.println("Not enought gold to buy " + this.name);
+						return;
 					}
 				}
 			}
@@ -93,6 +94,10 @@ public class Item {
 
 	public int getPrice() {
 		return price;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	public void setPrice(int price) {
@@ -118,5 +123,19 @@ public class Item {
 			return null;
 		}
 		return this;
+	}
+	
+	public String toString() {
+		return name + ": "
+				+ "$" +	price;
+	}
+
+	public static void main(String[] args) {
+		Item knife = new Item("knife", "resources/Items/knife.png", 500, 10, false);
+		InGamePlayer user = new InGamePlayer(0);
+		user.setGoldAmount(100);
+		knife.buy(user);
+		user.setGoldAmount(500);
+		knife.buy(user);
 	}
 }
