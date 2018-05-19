@@ -10,6 +10,7 @@ public class RequestEnterGameResponsePacket extends Packet {
 
 	int status;
 	public int gameID = -1;
+	int playerID;
 
 	public RequestEnterGameResponsePacket(Game g) {
 		status = STATUS_ACCEPT;
@@ -26,13 +27,14 @@ public class RequestEnterGameResponsePacket extends Packet {
 
 	@Override
 	public ByteBuffer getBytes() {
-		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 4;
+		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 4+4;
 		// status, and gameID
 		ByteBuffer buff = ByteBuffer.allocate(dataSize);
 		buff.putInt(dataSize);
 		setPacketType(buff, PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE);
 		buff.putInt(status);
 		buff.putInt(gameID);
+		buff.putInt(playerID);
 		return buff;
 	}
 
@@ -41,7 +43,8 @@ public class RequestEnterGameResponsePacket extends Packet {
 		buff.rewind();
 		status = buff.getInt(5);
 		gameID = buff.getInt(5 + 4);
-		System.out.println("gameResp " + status + " " + gameID);
+		playerID = buff.getInt(5+4*2);
+		System.out.println("gameResp " + status + " " + gameID + " " + playerID);
 
 	}
 
