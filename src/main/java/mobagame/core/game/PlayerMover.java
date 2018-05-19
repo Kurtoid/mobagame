@@ -41,7 +41,7 @@ public class PlayerMover {
 //		System.out.println(x + "\t" + y);
 	}
 
-	public void setTarget(int newX, int newY) {
+	public void setTarget(double newX, double newY) {
 		targetx = newX;
 		targety = newY;
 	}
