@@ -166,7 +166,7 @@ public class MapPanel extends JPanel implements Runnable {
 //		if (System.currentTimeMillis() - marker.timeCreated > 3000) {
 		Point.Double p = new Point.Double(marker.x, marker.y);
 		p.x = (int) convertHeightFromServer(p.x, map.width);
-		p.y = (int) convertHeightFromServer(p.y, map.width);
+		p.y = (int) convertWidthFromServer(p.y, map.width);
 
 		getCurrentTransform().transform(p, p);
 
@@ -200,7 +200,7 @@ public class MapPanel extends JPanel implements Runnable {
 		RspHandler h = conn.getHandler();
 		// Only run this in another Thread!
 		// This value would probably be stored elsewhere.
-		final double GAME_HERTZ = 10.0;
+		final double GAME_HERTZ = 30.0;
 		// Calculate how many ns each frame should take for our target game hertz.
 		final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
 		// At the very most we will update the game this many times before a new render.
