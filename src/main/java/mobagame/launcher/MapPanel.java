@@ -164,10 +164,13 @@ public class MapPanel extends JPanel implements Runnable {
 		// }
 
 //		if (System.currentTimeMillis() - marker.timeCreated > 3000) {
-		Point p = new Point(marker.x, marker.y);
+		Point.Double p = new Point.Double(marker.x, marker.y);
+		p.x = (int) convertHeightFromServer(p.x, map.width);
+		p.y = (int) convertHeightFromServer(p.y, map.width);
+
 		getCurrentTransform().transform(p, p);
 
-		graphics.fillRect(p.x, p.y, marker.width, marker.height);
+		graphics.fillRect((int)p.getX(), (int)p.getY(), marker.width, marker.height);
 //		}
 	}
 
@@ -193,10 +196,11 @@ public class MapPanel extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
+		System.out.println("running mapPanel");
 		RspHandler h = conn.getHandler();
 		// Only run this in another Thread!
 		// This value would probably be stored elsewhere.
-		final double GAME_HERTZ = 30.0;
+		final double GAME_HERTZ = 10.0;
 		// Calculate how many ns each frame should take for our target game hertz.
 		final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
 		// At the very most we will update the game this many times before a new render.
@@ -209,7 +213,7 @@ public class MapPanel extends JPanel implements Runnable {
 		double lastRenderTime = System.nanoTime();
 
 		// If we are able to get as high as this FPS, don't render again.
-		final double TARGET_FPS = 60;
+		final double TARGET_FPS = 10;
 		final double TARGET_TIME_BETWEEN_RENDERS = 1000000000 / TARGET_FPS;
 
 		// Simple way of finding FPS.
@@ -224,12 +228,16 @@ public class MapPanel extends JPanel implements Runnable {
 				while (now - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
 					// updateGame();
 					// do server pings here
+					System.out.println("updating from server");
 					PlayerPositionPacket p = (PlayerPositionPacket) h.getResponse(PlayerPositionPacket.class);
 					if (p != null) {
 						marker.x = p.x;
 						marker.y = p.y;
+						System.out.println(p.x + " " + p.y);
+
 					}
 
+					
 					lastUpdateTime += TIME_BETWEEN_UPDATES;
 					updateCount++;
 				}
@@ -281,13 +289,19 @@ public class MapPanel extends JPanel implements Runnable {
 			}
 		}
 	}
-
-	private int convertHeightToServer(int input) {
-		return (int) ((input / (double) map.height) * 1000);
+	public static double convertHeightFromServer(double input, double width) {
+		return (input / 1000) * width;
+	}
+	public static double convertWidthFromServer(double input, double width) {
+		return (input / 1000) * width;
 	}
 
-	private int convertWidthToServer(int input) {
-		return (int) ((input / (double) map.height) * 1000);
+	private double convertHeightToServer(double input) {
+		return ((input / (double) map.height) * 1000);
+	}
+
+	private double convertWidthToServer(double input) {
+		return  ((input / map.height) * 1000);
 	}
 
 }

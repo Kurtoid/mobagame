@@ -1,5 +1,7 @@
 package mobagame.server;
 
+import mobagame.core.game.InGamePlayer;
+
 import java.io.IOException;
 
 public class MainServer {
@@ -27,7 +29,8 @@ public class MainServer {
 	}
 
 	public static void main(String[] args) {
-		new MainServer();
+		MainServer s = new MainServer();
+
 
 	}
 }

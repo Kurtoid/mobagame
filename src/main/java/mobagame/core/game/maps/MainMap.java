@@ -91,6 +91,7 @@ public class MainMap {
 		return (input / 100) * height;
 	}
 
+	// make another version of this in mappanel to convert from server to client
 	public static double normalizeWidth(double input, double width) {
 		return (input / 100) * width;
 	}

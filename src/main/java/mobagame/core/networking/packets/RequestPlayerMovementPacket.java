@@ -9,8 +9,8 @@ import java.nio.ByteBuffer;
  *
  */
 public class RequestPlayerMovementPacket extends Packet {
-	public int x;
-	public int y;
+	public double x;
+	public double y;
 
 	public RequestPlayerMovementPacket(ByteBuffer chunkBuf) {
 		readData(chunkBuf);
@@ -21,20 +21,20 @@ public class RequestPlayerMovementPacket extends Packet {
 
 	@Override
 	public ByteBuffer getBytes() {
-		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 4;
+		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 8 + 8;
 		ByteBuffer buff = ByteBuffer.allocate(dataSize);
 		buff.putInt(dataSize);
 		setPacketType(buff, PK_ID_PLAYER_REQUEST_MOVEMENT);
-		buff.putInt(x);
-		buff.putInt(y);
+		buff.putDouble(x);
+		buff.putDouble(y);
 		return buff;
 	}
 
 	@Override
 	void readData(ByteBuffer buff) {
 		buff.position(5);
-		x = buff.getInt();
-		y = buff.getInt();
+		x = buff.getDouble();
+		y = buff.getDouble();
 	}
 
 	public static void main(String[] args) {

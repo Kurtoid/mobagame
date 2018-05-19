@@ -18,9 +18,9 @@ public class PlayerMover {
 
 	public void update() {
 		double angleRadians = Math.atan2(targety - player.getY(), targetx - player.getX());
-		int oldx = player.getX();
+		double oldx = player.getX();
 
-		int x = (int) (oldx + (speed * Math.cos(angleRadians)));
+		double x = (oldx + (speed * Math.cos(angleRadians)));
 
 		/*
 		 * if (x < targetx) { x++; } if (x > targetx) { x--; } //
@@ -28,8 +28,8 @@ public class PlayerMover {
 		if (map.getMap().intersects(x, player.getY(), 5, 5)) {
 			x = oldx;
 		}
-		int oldy = player.getY();
-		int y = (int) (oldy + (speed * Math.sin(angleRadians)));
+		double oldy = player.getY();
+		double y = (oldy + (speed * Math.sin(angleRadians)));
 		/*
 		 * if (y > targety) { y--; } if (y < targety) { y++; } //
 		 */
