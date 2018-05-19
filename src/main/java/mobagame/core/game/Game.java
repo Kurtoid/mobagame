@@ -10,10 +10,18 @@ public abstract class Game {
 	private InGamePlayer playerPlayer;
 	public MainMap map;
 	final static int MAX_PLAYERS = 10;
-	private int gameID;
+	protected int gameID;
 
 	public Game() {
 		map = new MainMap();
+		map.setServerMode();
+		map.makeMap();
+		players = new ArrayList<>();
+		gameID = new Random().nextInt();
+	}
+
+	public Game(MainMap m) {
+		map = m;
 		map.setServerMode();
 		map.makeMap();
 		players = new ArrayList<>();

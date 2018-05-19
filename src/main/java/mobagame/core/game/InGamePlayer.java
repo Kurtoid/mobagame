@@ -4,7 +4,6 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
 import mobagame.core.game.maps.MainMap;
-import mobagame.core.networking.packets.PlayerMovement;
 import mobagame.launcher.GameScreen;
 
 public class InGamePlayer {
@@ -140,7 +139,7 @@ public class InGamePlayer {
 	private int level = 1;
 	public PlayerMover mover;
 	public Item[][] inventory = { { (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) },
-			{ (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) } };;
+			{ (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) } };
 
 	private Shape playerShape;
 

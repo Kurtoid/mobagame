@@ -1,6 +1,6 @@
 package mobagame.launcher.movementdemo;
 
-public class PlayerMover extends Thread {
+ class PlayerMover extends Thread {
 	double x = 500;
 	double y = 600;
 	double speed = 1;

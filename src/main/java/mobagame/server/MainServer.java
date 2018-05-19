@@ -1,10 +1,13 @@
 package mobagame.server;
 
+import mobagame.core.game.InGamePlayer;
+
 import java.io.IOException;
 
 public class MainServer {
 	ConnectionListener l;
 	MasterGameRunner gRunner;
+
 	public MainServer() {
 		System.out.println("Starting server");
 		System.out.println("initializing objects");
@@ -14,17 +17,20 @@ public class MainServer {
 		worker.runner = gRunner;
 		new Thread(worker).start();
 		System.out.println("started message parser");
+		ConnectionListener conn = null;
 		try {
-			new Thread(new ConnectionListener(null, 8666, worker)).start();
+			conn = new ConnectionListener(null, 8666, worker);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		new Thread(conn).start();
 		System.out.println("started network listener");
+		gRunner.conn = conn;
 	}
 
 	public static void main(String[] args) {
-		new MainServer();
+		MainServer s = new MainServer();
+
 
 	}
 }

@@ -3,19 +3,19 @@ package mobagame.core.networking.packets;
 import java.nio.ByteBuffer;
 
 public class PlayerPositionPacket extends Packet {
-	int x;
-	int y;
-	int playerID;
+	public double x;
+	public double y;
+	public int playerID;
 
 	@Override
 	public ByteBuffer getBytes() {
-		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 4 + 4;
+		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 8 + 8;
 		ByteBuffer buff = ByteBuffer.allocate(dataSize);
 		buff.putInt(dataSize);
 		setPacketType(buff, PK_ID_PLAYER_MOVEMENT);
 		buff.putInt(playerID);
-		buff.putInt(x);
-		buff.putInt(y);
+		buff.putDouble(x);
+		buff.putDouble(y);
 		return buff;
 	}
 
@@ -32,8 +32,17 @@ public class PlayerPositionPacket extends Packet {
 	void readData(ByteBuffer buff) {
 		buff.rewind();
 		playerID = buff.getInt(5);
-		x = buff.getInt();
-		y = buff.getInt();
+		x = buff.getDouble(9);
+		y = buff.getDouble(17);
+		System.out.println(toString());
 	}
 
+	@Override
+	public String toString() {
+		return "PlayerPositionPacket{" +
+				"x=" + x +
+				", y=" + y +
+				", playerID=" + playerID +
+				'}';
+	}
 }

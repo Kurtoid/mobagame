@@ -11,15 +11,19 @@ public class MainMap {
 
 	public MainMap() {
 	}
+	public MainMap(int w, int h) {
+		width = w;
+		height = h;
+	}
 
 	public Path2D getMap() {
 		return map;
 	}
 
-	public void makeMap() {
+	public MainMap makeMap() {
 		if (width == 0 || height == 0) {
 			System.err.println("set the size dumbass");
-			return;
+			return null;
 		}
 		/***********
 		 * * H* * * ( ) * H *
@@ -65,6 +69,7 @@ public class MainMap {
 		 * mapOuterBounds.lineTo(0, 0); //
 		 */
 		map = upperMapPath;
+		return this;
 
 	}
 
@@ -86,6 +91,7 @@ public class MainMap {
 		return (input / 100) * height;
 	}
 
+	// make another version of this in mappanel to convert from server to client
 	public static double normalizeWidth(double input, double width) {
 		return (input / 100) * width;
 	}

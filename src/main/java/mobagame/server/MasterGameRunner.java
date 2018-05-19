@@ -1,6 +1,9 @@
 package mobagame.server;
 
+import java.nio.channels.SocketChannel;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import mobagame.core.game.Game;
@@ -11,9 +14,13 @@ import mobagame.server.game.ServerGame;
 
 public class MasterGameRunner extends Thread {
 	Set<ServerGame> games;
+	Map<Integer, InGamePlayer> connectionToPlayer = new HashMap<>();
+
+	Map<InGamePlayer, ServerGame> playerToGame = new HashMap<>();
 	boolean running = false;
 	double fps;
 	int frameCount = 0;
+	public ConnectionListener conn;
 	/**
 	 * almost never used, but there if we need it
 	 */
@@ -24,6 +31,7 @@ public class MasterGameRunner extends Thread {
 		running = true;
 		this.setDaemon(true);
 		this.start();
+		ServerGame.runner = this;
 	}
 
 	/**
@@ -34,7 +42,7 @@ public class MasterGameRunner extends Thread {
 	public void run() {
 		super.run();
 		// This value would probably be stored elsewhere.
-		final double GAME_HERTZ = 30.0;
+		final double GAME_HERTZ = 10.0;
 		// Calculate how many ns each frame should take for our target game hertz.
 		final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
 		// We will need the last update time.
@@ -69,7 +77,7 @@ public class MasterGameRunner extends Thread {
 				// Update the frames we got.
 				int thisSecond = (int) (lastUpdateTime / 1000000000);
 				if (thisSecond > lastSecondTime) {
-//					System.out.println("NEW SECOND " + thisSecond + " " + updateCount);
+					// System.out.println("NEW SECOND " + thisSecond + " " + updateCount);
 					fps = updateCount;
 					updateCount = 0;
 					lastSecondTime = thisSecond;
@@ -99,14 +107,16 @@ public class MasterGameRunner extends Thread {
 	}
 
 	private void updateGame() {
-		for(ServerGame g : games) {
+		for (ServerGame g : games) {
 			g.update();
+			g.sendToClients(conn);
 		}
 	}
 
-	public Game assignGame(int playerID) {
+	public ServerGame findGame(int playerID) {
 		for (ServerGame g : games) {
 			if (!g.isFull()) {
+				System.out.println("using existing game");
 				return g;
 			}
 		}
@@ -114,10 +124,19 @@ public class MasterGameRunner extends Thread {
 		m.setServerMode();
 		m.makeMap();
 		ServerGame g = new ServerGame(m);
-		InGamePlayer p = new InGamePlayer(playerID);
-		p.mover = new PlayerMover(m, p);
 		games.add(g);
-		g.players.add(p);
+		System.out.println("new game created");
 		return g;
+	}
+
+	public InGamePlayer getPlayer(int connectionID) {
+		return connectionToPlayer.get(connectionID);
+	}
+
+	public void addToGame(ServerGame g, InGamePlayer p, int connectionID) {
+		g.players.add(p);
+		connectionToPlayer.put(connectionID, p);
+		playerToGame.put(p, g);
+
 	}
 }

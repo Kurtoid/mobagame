@@ -37,6 +37,7 @@ public class ServerConnection extends Thread {
 	private static ServerConnection instance;
 	public static String ip;
 	public static int port;
+	SocketChannel serverConn;
 
 	public static ServerConnection getInstance(String ip, int port) throws UnknownHostException, IOException {
 		ServerConnection.port = port;
@@ -51,15 +52,38 @@ public class ServerConnection extends Thread {
 	private ServerConnection(InetAddress hostAddress, int port) throws IOException {
 		this.hostAddress = hostAddress;
 		this.selector = this.initSelector();
+//		this.initiateConnection();
 		this.start();
 	}
-
+	public RspHandler getHandler(){
+		RspHandler h = new RspHandler();
+		this.rspHandlers.put(serverConn, h);
+		return h;
+	}
 	public void send(byte[] data, RspHandler handler) throws IOException {
 		// Start a new connection
 		SocketChannel socket = this.initiateConnection();
 
 		// Register the response handler
 		this.rspHandlers.put(socket, handler);
+
+		// And queue the data we want written
+		synchronized (this.pendingData) {
+			List queue = (List) this.pendingData.get(socket);
+			if (queue == null) {
+				queue = new ArrayList();
+				this.pendingData.put(socket, queue);
+			}
+			queue.add(ByteBuffer.wrap(data));
+		}
+
+		// Finally, wake up our selecting thread so it can make the required changes
+		this.selector.wakeup();
+	}
+
+	public void send(byte[] data) throws IOException {
+		// Start a new connection
+		SocketChannel socket = this.initiateConnection();
 
 		// And queue the data we want written
 		synchronized (this.pendingData) {
@@ -137,6 +161,7 @@ public class ServerConnection extends Thread {
 		} catch (IOException e) {
 			// The remote forcibly closed the connection, cancel
 			// the selection key and close the channel.
+			System.out.println("cuttoff");
 			key.cancel();
 			socketChannel.close();
 			return;
@@ -145,6 +170,7 @@ public class ServerConnection extends Thread {
 		if (numRead == -1) {
 			// Remote entity shut the socket down cleanly. Do the
 			// same from our end and cancel the channel.
+			System.out.println("closed");
 			key.channel().close();
 			key.cancel();
 			return;
@@ -217,21 +243,32 @@ public class ServerConnection extends Thread {
 
 	private SocketChannel initiateConnection() throws IOException {
 		// Create a non-blocking socket channel
-		SocketChannel socketChannel = SocketChannel.open();
-		socketChannel.configureBlocking(false);
+		if (serverConn !=null && serverConn.isConnected()) {
+			synchronized (this.pendingChanges) {
+				this.pendingChanges
+						.add(new ChangeRequest(serverConn, ChangeRequest.REGISTER, SelectionKey.OP_WRITE));
+			}
 
-		// Kick off connection establishment
-		socketChannel.connect(new InetSocketAddress(this.hostAddress, this.port));
+			return serverConn;
+		} else {
+			SocketChannel socketChannel = SocketChannel.open();
+			socketChannel.configureBlocking(false);
 
-		// Queue a channel registration since the caller is not the
-		// selecting thread. As part of the registration we'll register
-		// an interest in connection events. These are raised when a channel
-		// is ready to complete connection establishment.
-		synchronized (this.pendingChanges) {
-			this.pendingChanges.add(new ChangeRequest(socketChannel, ChangeRequest.REGISTER, SelectionKey.OP_CONNECT));
+			// Kick off connection establishment
+			socketChannel.connect(new InetSocketAddress(this.hostAddress, this.port));
+
+			// Queue a channel registration since the caller is not the
+			// selecting thread. As part of the registration we'll register
+			// an interest in connection events. These are raised when a channel
+			// is ready to complete connection establishment.
+			synchronized (this.pendingChanges) {
+				this.pendingChanges
+						.add(new ChangeRequest(socketChannel, ChangeRequest.REGISTER, SelectionKey.OP_CONNECT));
+			}
+			serverConn = socketChannel;
+			return socketChannel;
+
 		}
-
-		return socketChannel;
 	}
 
 	private Selector initSelector() throws IOException {

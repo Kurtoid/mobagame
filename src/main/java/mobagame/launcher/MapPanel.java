@@ -1,8 +1,12 @@
 package mobagame.launcher;
 
 import mobagame.core.game.Game;
-import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.PlayerPositionPacket;
+import mobagame.core.networking.packets.RequestPlayerMovementPacket;
+import mobagame.launcher.game.gamePlayObjects.ClickMarker;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +18,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
+import java.io.IOException;
 
 public class MapPanel extends JPanel implements Runnable {
 	MainMap map;
@@ -31,10 +37,22 @@ public class MapPanel extends JPanel implements Runnable {
 
 	int mouseX;
 	int mouseY;
+	ServerConnection conn;
+	ClickMarker marker;
 
-	public MapPanel(MainMap m, Game g) {
-		map = m;
+	public MapPanel(Game g) {
+		marker = new ClickMarker();
+		marker.timeCreated = System.currentTimeMillis();
+		marker.width = 20;
+		marker.height = 20;
+		map = g.map;
 		game = g;
+		try {
+			conn = ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		addKeyListener(new KeyListener() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -54,8 +72,28 @@ public class MapPanel extends JPanel implements Runnable {
 		addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("mouseclick " + e.toString());
+				Point p = e.getPoint();
+				try {
+					getCurrentTransform().inverseTransform(p, p);
+				} catch (NoninvertibleTransformException e1) {
+					e1.printStackTrace();
+				}
+				marker.x = p.x;
+				marker.y = p.y;
+				marker.timeCreated = System.currentTimeMillis();
+
+				System.out.println("mouseclick " + p.toString());
 				game.getPlayerPlayer().mover.setTarget(e.getX(), e.getY());
+				RequestPlayerMovementPacket move = new RequestPlayerMovementPacket();
+				move.x = convertHeightToServer(p.x);
+				move.y = convertWidthToServer(p.y);
+				System.out.println("sent to server " + move.x + "  " + move.y);
+				try {
+					conn.send(move.getBytes().array());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					System.out.println("failed to send movement update");
+				}
 			}
 
 			@Override
@@ -88,11 +126,11 @@ public class MapPanel extends JPanel implements Runnable {
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				System.out.println("mouse dragged");
 				translateX += ((e.getX() - mouseX) / scaleX);
 				translateY += ((e.getY() - mouseY) / scaleY);
 				mouseX = e.getX();
 				mouseY = e.getY();
+				System.out.println("mouse dragged ");
 				repaint();
 			}
 		});
@@ -100,12 +138,13 @@ public class MapPanel extends JPanel implements Runnable {
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
-				System.out.println("mouse wheel moved");
 				scaleX += e.getWheelRotation();
 				scaleY += e.getWheelRotation();
 
 				scaleX = Math.max(1, scaleX);
 				scaleY = Math.max(1, scaleY);
+				System.out.print("mouse wheel moved ");
+
 				System.out.println(scaleX + " " + scaleY);
 				repaint();
 			}
@@ -123,12 +162,22 @@ public class MapPanel extends JPanel implements Runnable {
 		// for (InGamePlayer player : game.players) {
 		// graphics.fillRect((int) player.getX(), (int) player.getY(), 20, 20);
 		// }
+
+//		if (System.currentTimeMillis() - marker.timeCreated > 3000) {
+		Point.Double p = new Point.Double(marker.x, marker.y);
+		p.x = (int) convertHeightFromServer(p.x, map.width);
+		p.y = (int) convertHeightFromServer(p.y, map.width);
+
+		getCurrentTransform().transform(p, p);
+
+		graphics.fillRect((int)p.getX(), (int)p.getY(), marker.width, marker.height);
+//		}
 	}
 
 	private AffineTransform getCurrentTransform() {
 		AffineTransform tx = new AffineTransform();
-		double centerX = (double) getWidth() / 2;
-		double centerY = (double) getHeight() / 2;
+		double centerX = map.width;
+		double centerY = map.height;
 		tx.translate(centerX, centerY);
 		tx.scale(scaleX, scaleY);
 		tx.translate(-centerX, -centerY);
@@ -147,9 +196,11 @@ public class MapPanel extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
+		System.out.println("running mapPanel");
+		RspHandler h = conn.getHandler();
 		// Only run this in another Thread!
 		// This value would probably be stored elsewhere.
-		final double GAME_HERTZ = 30.0;
+		final double GAME_HERTZ = 10.0;
 		// Calculate how many ns each frame should take for our target game hertz.
 		final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
 		// At the very most we will update the game this many times before a new render.
@@ -162,7 +213,7 @@ public class MapPanel extends JPanel implements Runnable {
 		double lastRenderTime = System.nanoTime();
 
 		// If we are able to get as high as this FPS, don't render again.
-		final double TARGET_FPS = 60;
+		final double TARGET_FPS = 10;
 		final double TARGET_TIME_BETWEEN_RENDERS = 1000000000 / TARGET_FPS;
 
 		// Simple way of finding FPS.
@@ -177,6 +228,16 @@ public class MapPanel extends JPanel implements Runnable {
 				while (now - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
 					// updateGame();
 					// do server pings here
+					System.out.println("updating from server");
+					PlayerPositionPacket p = (PlayerPositionPacket) h.getResponse(PlayerPositionPacket.class);
+					if (p != null) {
+						marker.x = p.x;
+						marker.y = p.y;
+						System.out.println(p.x + " " + p.y);
+
+					}
+
+					
 					lastUpdateTime += TIME_BETWEEN_UPDATES;
 					updateCount++;
 				}
@@ -227,6 +288,20 @@ public class MapPanel extends JPanel implements Runnable {
 				}
 			}
 		}
-
 	}
+	public static double convertHeightFromServer(double input, double width) {
+		return (input / 1000) * width;
+	}
+	public static double convertWidthFromServer(double input, double width) {
+		return (input / 1000) * width;
+	}
+
+	private double convertHeightToServer(double input) {
+		return ((input / (double) map.height) * 1000);
+	}
+
+	private double convertWidthToServer(double input) {
+		return  ((input / map.height) * 1000);
+	}
+
 }
