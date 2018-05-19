@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mobagame.core.game.Game;
 import mobagame.core.game.InGamePlayer;
@@ -13,6 +15,8 @@ import mobagame.core.game.maps.MainMap;
 import mobagame.server.game.ServerGame;
 
 public class MasterGameRunner extends Thread {
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	Set<ServerGame> games;
 	Map<Integer, InGamePlayer> connectionToPlayer = new HashMap<>();
 
@@ -116,7 +120,7 @@ public class MasterGameRunner extends Thread {
 	public ServerGame findGame(int playerID) {
 		for (ServerGame g : games) {
 			if (!g.isFull()) {
-				System.out.println("using existing game");
+				logger.log(Level.INFO, "using existing game");
 				return g;
 			}
 		}
@@ -125,7 +129,7 @@ public class MasterGameRunner extends Thread {
 		m.makeMap();
 		ServerGame g = new ServerGame(m);
 		games.add(g);
-		System.out.println("new game created");
+		logger.log(Level.INFO, "new game created");
 		return g;
 	}
 

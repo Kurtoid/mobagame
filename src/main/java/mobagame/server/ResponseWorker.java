@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.PlayerMover;
@@ -28,6 +30,8 @@ import mobagame.server.database.PlayerAccountDBO;
 import mobagame.server.game.ServerGame;
 
 public class ResponseWorker implements Runnable {
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	MasterGameRunner runner;
 	private List queue = new LinkedList();
 	public Queue<Packet> gameEvents = new LinkedBlockingQueue<Packet>();
@@ -60,39 +64,39 @@ public class ResponseWorker implements Runnable {
 			System.out.println(packetID);
 			switch (packetID) {
 			case Packet.PK_ID_AUTH_LOGIN:
-				System.out.println("login");
+				logger.log(Level.INFO, "login");
 				// System.out.println(new LoginPacket(chunkBuf));
 				LoginPacket p = new LoginPacket(chunkBuf);
 				handleLoginPacket(p, dataEvent);
 				break;
 			case Packet.PK_ID_AUTH_SIGNUP:
 				// System.out.println(new SignupPacket(chunkBuf));
-				System.out.println("Signup");
+				logger.log(Level.INFO, "Signup");
 				SignupPacket packet = new SignupPacket(chunkBuf);
 				handleSignupPacket(packet, dataEvent);
 				break;
 			case Packet.PK_ID_INIT:
-				System.out.println("Connection init");
+				logger.log(Level.INFO, "Connection init");
 				handleInitPacket(new InitPacket(chunkBuf), dataEvent);
 				break;
 			case Packet.PK_ID_CONN_DISCONNECT:
-				System.out.println("disconnect");
+				logger.log(Level.INFO, "disconnect");
 				handleDisconnectPacket(new DisconnectPacket(chunkBuf), dataEvent);
 				break;
 			case Packet.PK_ID_RANDOM_BS_PACKET:
-				System.out.println("BULLSHIT MODE");
+				logger.log(Level.INFO, "BULLSHIT MODE");
 				handleBullshitPacket(new SendRandomDataPacket(chunkBuf), dataEvent);
 				break;
 			case Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME:
-				System.out.println("request enter game");
+				logger.log(Level.INFO, "request enter game");
 				handleRequestEnterGamePacket(new RequestEnterGamePacket(chunkBuf), dataEvent);
 				break;
 			case Packet.PK_ID_PLAYER_REQUEST_MOVEMENT:
-				System.out.println("player movement");
+				logger.log(Level.INFO, "player movement");
 				handleRequestMovementPacket(new RequestPlayerMovementPacket(chunkBuf), dataEvent);
 				break;
 			default:
-				System.out.println("bad pkt");
+				logger.log(Level.WARNING, "bad pkt");
 				break;
 			}
 
@@ -103,7 +107,7 @@ public class ResponseWorker implements Runnable {
 
 	private void handleRequestMovementPacket(RequestPlayerMovementPacket requestPlayerMovementPacket,
 			ServerDataEvent dataEvent) {
-		System.out.println("conn id " + dataEvent.connectionID);
+		logger.log(Level.INFO, "conn id " + dataEvent.connectionID);
 		runner.getPlayer(dataEvent.connectionID).mover.setTarget(requestPlayerMovementPacket.x,
 				requestPlayerMovementPacket.y);
 	}
@@ -118,7 +122,7 @@ public class ResponseWorker implements Runnable {
 		p.mover = new PlayerMover(g.map, p);
 		runner.addToGame(g, p, dataEvent.connectionID);
 
-		System.out.println("resp with gameid " + g.getGameID());
+		logger.log(Level.INFO, "resp with gameid " + g.getGameID());
 		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g);
 		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
@@ -152,22 +156,22 @@ public class ResponseWorker implements Runnable {
 			try {
 				tmp = dbo.getAccountByEmail(packet.getEmailAddress());
 			} catch (SQLException e1) {
-				System.out.println("not email");
+				logger.log(Level.INFO, "not email");
 				// skip
 			}
 			if (tmp != null) {
-				System.out.println("bad email");
+				logger.log(Level.INFO, "bad email");
 				response.status = SignupResponsePacket.FAILED_EMAIL;
 			}
 			tmp = null;
 			try {
 				tmp = dbo.getAccountByUsername(packet.getUsername());
 			} catch (SQLException e1) {
-				System.out.println("not username");
+				logger.log(Level.INFO, "not username");
 				// skip
 			}
 			if (tmp != null) {
-				System.out.println("bad username");
+				logger.log(Level.INFO, "bad username");
 				response.status = SignupResponsePacket.FAILED_USERNAME;
 			}
 		}

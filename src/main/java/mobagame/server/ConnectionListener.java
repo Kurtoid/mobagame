@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mobagame.core.game.InGamePlayer;
 import mobagame.launcher.networking.ChangeRequest;
@@ -23,6 +25,8 @@ import mobagame.server.game.ServerGame;
 
 //http://rox-xmlrpc.sourceforge.net/niotut/#The client
 public class ConnectionListener implements Runnable {
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	// The host:port combination to listen on
 	private InetAddress hostAddress;
 	private int port;
@@ -128,7 +132,7 @@ public class ConnectionListener implements Runnable {
 
 		// Accept the connection and make it non-blocking
 		SocketChannel socketChannel = serverSocketChannel.accept();
-		System.out.println("accepted " + nextConnectionID);
+		logger.log(Level.FINE, "accepted " + nextConnectionID);
 		ConnectionIDs.put(socketChannel, nextConnectionID++);
 		Socket socket = socketChannel.socket();
 		socketChannel.configureBlocking(false);
@@ -151,7 +155,7 @@ public class ConnectionListener implements Runnable {
 		} catch (IOException e) {
 			// The remote forcibly closed the connection, cancel
 			// the selection key and close the channel.
-			System.out.println("connection cutoff " + ConnectionIDs.get(socketChannel));
+			logger.log(Level.INFO, "connection cutoff " + ConnectionIDs.get(socketChannel));
 			key.cancel();
 			socketChannel.close();
 			removePlayerFromGame(ConnectionIDs.get(socketChannel));
@@ -161,7 +165,7 @@ public class ConnectionListener implements Runnable {
 		if (numRead == -1) {
 			// Remote entity shut the socket down cleanly. Do the
 			// same from our end and cancel the channel.
-			System.out.println("closed connection " + ConnectionIDs.get(socketChannel));
+			logger.log(Level.INFO, "closed connection " + ConnectionIDs.get(socketChannel));
 			key.channel().close();
 			key.cancel();
 			removePlayerFromGame(ConnectionIDs.get(socketChannel));

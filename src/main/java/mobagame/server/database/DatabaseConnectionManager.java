@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mobagame.core.settings.SettingManager;
 
@@ -15,6 +17,8 @@ import mobagame.core.settings.SettingManager;
  * @author Kurt Wilson
  */
 public class DatabaseConnectionManager {
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	private Connection con;
 	private static DatabaseConnectionManager dbObject = null;
 
@@ -31,12 +35,12 @@ public class DatabaseConnectionManager {
 		String connString = manager.getSetting("server.dbconnectionstring").getValue();
 
 		if (useConnectionString) {
-			System.out.println("Connecting with only string");
+			logger.log(Level.INFO, "Connecting with only string");
 			con = DriverManager.getConnection(connString);
 		} else {
 			String username = manager.getSetting("server.dbusername").getValue();
 			String password = manager.getSetting("server.dbpassword").getValue();
-			System.out.println("Connecting with username and password");
+			logger.log(Level.INFO, "Connecting with username and password");
 			con = DriverManager.getConnection(connString, username, password);
 
 		}
@@ -44,10 +48,10 @@ public class DatabaseConnectionManager {
 		try {
 			if (con != null) {
 				DatabaseMetaData dm = (DatabaseMetaData) con.getMetaData();
-				System.out.println("Driver name: " + dm.getDriverName());
-				System.out.println("Driver version: " + dm.getDriverVersion());
-				System.out.println("Product name: " + dm.getDatabaseProductName());
-				System.out.println("Product version: " + dm.getDatabaseProductVersion());
+				logger.log(Level.INFO, "Driver name: " + dm.getDriverName());
+				logger.log(Level.INFO, "Driver version: " + dm.getDriverVersion());
+				logger.log(Level.INFO, "Product name: " + dm.getDatabaseProductName());
+				logger.log(Level.INFO, "Product version: " + dm.getDatabaseProductVersion());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
