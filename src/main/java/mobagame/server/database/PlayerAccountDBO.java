@@ -13,6 +13,7 @@ import java.sql.SQLException;
  *
  */
 public class PlayerAccountDBO {
+
 	private static int ITERATIONS = 10000;
 	private static final int KEY_LENGTH = 128;
 	DatabaseConnectionManager db;

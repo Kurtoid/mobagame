@@ -7,7 +7,11 @@ import mobagame.core.networking.packets.PlayerPositionPacket;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ServerGame extends Game {
+	Logger logger = Logger.getLogger(ServerGame.class.getName());
 	public static MasterGameRunner runner;
 
 	public ServerGame(MainMap m) {
@@ -20,7 +24,7 @@ public class ServerGame extends Game {
 		for (InGamePlayer player : players) {
 			player.mover.update();
 			if (player.mover.atTarget()) {
-				System.out.println("player reached target");
+				logger.log(Level.INFO, "player reached target");
 			}
 		}
 	}
@@ -32,7 +36,7 @@ public class ServerGame extends Game {
 			posPak.y = p.getY();
 			posPak.playerID = p.getPlayerID();
 			for (InGamePlayer player : players) {
-				System.out.println("sending state" + posPak.toString());
+				logger.log(Level.INFO, "sending state" + posPak.toString());
 				conn.send(runner.conn.playerToConnection.get(player), posPak.getBytes().array());
 			}
 		}
