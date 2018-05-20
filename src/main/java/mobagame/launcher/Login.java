@@ -1,6 +1,8 @@
 package mobagame.launcher;
 //Carson Mango 4/24/18
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -22,6 +24,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import mobagame.core.networking.packets.LoginPacket;
 import mobagame.core.networking.packets.LoginStatusPacket;
@@ -57,7 +60,8 @@ public class Login extends JFrame implements ActionListener {
 	public Font menuFont = new Font(font, Font.PLAIN, fontSize);
 	
 	Login() {
-
+		UIManager.put("OptionPane.buttonFont", menuFont);
+		
 		try {
 			settings = new SettingManager(SettingManager.SettingFile.CLIENT_SETTINGS);
 		} catch (FileNotFoundException e) {
@@ -205,6 +209,8 @@ public class Login extends JFrame implements ActionListener {
 		login.add(picture);
 		login.add(boxes);
 		login.setVisible(true);
+		
+		changeFontRecursive(login, menuFont);
 	}
 
 	public void actionPerformed(ActionEvent ae) {
@@ -261,6 +267,15 @@ public class Login extends JFrame implements ActionListener {
 			fogotButto.setEnabled(true);
 			createAccButto.setEnabled(true);
 			forgotPassword.setVisible(false);
+		}
+	}
+	
+	public void changeFontRecursive(Container root, Font font) {
+		for (Component c : root.getComponents()) {
+			c.setFont(font);
+			if (c instanceof Container) {
+				changeFontRecursive((Container) c, font);
+			}
 		}
 	}
 

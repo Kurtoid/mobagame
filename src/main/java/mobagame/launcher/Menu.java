@@ -72,11 +72,7 @@ public class Menu extends JFrame implements ActionListener {
 		JLabel messageLabel = new JLabel("Welcome " + playerName + " to " + gameName);
 
 		// Font Setup
-		profileButton.setFont(menuFont);
-		settingsButton.setFont(menuFont);
-		playButton.setFont(menuFont);
-		adminButton.setFont(menuFont);
-		messageLabel.setFont(menuFont);
+		UIManager.put("OptionPane.buttonFont", menuFont);
 
 		// make layout
 		JPanel pane = new JPanel(new GridBagLayout());

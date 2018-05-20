@@ -53,6 +53,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private static String MENU = "menu";
 
 	private JPanel inventory;
+	private JScrollPane chat;
 
 	private JFrame controllingFrame; // needed for dialogs
 
@@ -86,6 +87,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 		UIManager.put("OptionPane.messageFont", chatFont);
 		UIManager.put("OptionPane.buttonFont", menuFont);
+		
 		gameMap = new MainMap();
 		gameMap.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
 		gameMap.makeMap();
@@ -136,7 +138,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		layered.setSize(SCREEN_SIZE);
 		JPanel front = new JPanel(gbl);
 		front.setSize(SCREEN_SIZE);
-		JScrollPane chat = new JScrollPane(chatLabel);
+		chat = new JScrollPane(chatLabel);
 		chat.setSize((int) SCREEN_SIZE.width / 4, (int) SCREEN_SIZE.height / 2);
 		JPanel stats = new JPanel(gbl);
 		d.setSize((int) (SCREEN_SIZE.width / 4), (int) (SCREEN_SIZE.height));
@@ -270,6 +272,10 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			}
 			user.setGoldAmount(user.getGoldAmount() + 1);
 			gold.setText("$" + user.getGoldAmount());
+			JViewport v = new JViewport();
+			v.add(new JLabel("" + chatWrap + user));
+			chat.setViewport(v);
+			chat.repaint();
 			user.setCurrentMana((int) Math.random() * 300);
 			user.setCurrentHealth((int) Math.random() * 300);
 			refreshInventory();
