@@ -3,6 +3,7 @@ package mobagame.core.networking.packets;
 import java.nio.ByteBuffer;
 
 import mobagame.core.game.Game;
+import mobagame.core.game.InGamePlayer;
 
 public class RequestEnterGameResponsePacket extends Packet {
 	static final int STATUS_FAILED = 1;
@@ -10,11 +11,12 @@ public class RequestEnterGameResponsePacket extends Packet {
 
 	int status;
 	public int gameID = -1;
-	int playerID;
+	public int playerID;
 
-	public RequestEnterGameResponsePacket(Game g) {
+	public RequestEnterGameResponsePacket(Game g, InGamePlayer p) {
 		status = STATUS_ACCEPT;
 		gameID = g.getGameID();
+		playerID = p.getPlayerID();
 	}
 
 	public RequestEnterGameResponsePacket() {

@@ -9,11 +9,12 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import mobagame.core.game.Character;
-import mobagame.core.game.Game;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
+import mobagame.core.game.PlayerMover;
 import mobagame.core.game.maps.MainMap;
 import mobagame.launcher.game.ClientGame;
+import mobagame.server.database.PlayerAccount;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -66,9 +67,19 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	ClientGame game;
 
 	// open menu window for playerName
-	public GameScreen(ClientGame game) {
+	public GameScreen(int gameID, PlayerAccount player, int playerID) {
 		super(gameName);
-		this.game = game;
+		System.out.println(gameID);
+		ClientGame g = new ClientGame(gameID);
+		InGamePlayer p = new InGamePlayer(playerID);
+		g.setPlayerPlayer(p);
+		g.getPlayerPlayer().mover = new PlayerMover(g.map, g.getPlayerPlayer());
+		g.players.add(p);
+		g.map = new MainMap();
+		g.map.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
+		g.map.makeMap();
+		this.game = g;
+
 		UIManager.put("OptionPane.messageFont", chatFont);
 		UIManager.put("OptionPane.buttonFont", menuFont);
 		gameMap = new MainMap();
@@ -408,7 +419,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public static void main(String[] args) {
 		testing = true;
 		Dimension SCREEN_SIZE = new JFrame().getToolkit().getScreenSize();
-		new GameScreen(new ClientGame(new MainMap(SCREEN_SIZE.width, SCREEN_SIZE.height).makeMap()));
+		new GameScreen(5, new PlayerAccount("gfhedhkjuw"), 1);
 	}
 
 	// Not used interface methods

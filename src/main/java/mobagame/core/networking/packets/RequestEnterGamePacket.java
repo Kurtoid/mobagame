@@ -46,6 +46,7 @@ public class RequestEnterGamePacket extends Packet {
 		buff.rewind();
 		playerID = buff.getInt(5);
 		characterID = buff.getInt();
+		gameID = buff.getInt();
 	}
 
 }

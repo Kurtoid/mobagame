@@ -38,6 +38,7 @@ public class PublicPlayerDataPacket extends Packet{
 		buff.position(0);
 		player = new PlayerAccount();
 		player.id = buff.getInt(5);
+		System.out.println("Player id " + player.id);
 		player.username = getStringFromBuffer(buff, buff.position(), MAX_USERNAME_LENGTH);
 		player.level = buff.getInt();
 	}

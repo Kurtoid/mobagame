@@ -1,5 +1,7 @@
 package mobagame.core.game;
 
+import java.awt.geom.Rectangle2D;
+
 public class Character {
 
 	private String charName;
@@ -27,6 +29,8 @@ public class Character {
 	private Ability abiw;
 	private Ability abie;
 	private Ability abir;
+	public int width = 10;
+	public int height = 10;
 
 	public int getMaxHealthScale() {
 		return maxHealthScale;

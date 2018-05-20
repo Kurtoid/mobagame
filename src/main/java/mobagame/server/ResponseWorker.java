@@ -122,8 +122,8 @@ public class ResponseWorker implements Runnable {
 		p.mover = new PlayerMover(g.map, p);
 		runner.addToGame(g, p, dataEvent.connectionID);
 
-		logger.log(Level.INFO, "resp with gameid " + g.getGameID());
-		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g);
+		logger.log(Level.INFO, "resp with gameid " + g.getGameID() + " and player id " + p.getPlayerID());
+		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g,p);
 		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
 

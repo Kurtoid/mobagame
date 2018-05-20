@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 
 import mobagame.core.game.maps.MainMap;
 import mobagame.launcher.GameScreen;
+import org.w3c.dom.css.Rect;
 
 public class InGamePlayer {
 	private int playerID;
@@ -141,10 +142,7 @@ public class InGamePlayer {
 	public Item[][] inventory = { { (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) },
 			{ (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) } };
 
-	private Shape playerShape;
-
 	public InGamePlayer(Character chara) {
-		setDefaultShape();
 		maxHealth = chara.getMaxHealth();
 		maxMana = chara.getMaxMana();
 		phyPow = chara.getBasePhyPow();
@@ -159,10 +157,6 @@ public class InGamePlayer {
 		abiw = chara.getAbiw();
 		abie = chara.getAbie();
 		abir = chara.getAbir();
-	}
-
-	private void setDefaultShape() {
-		setPlayerShape(new Rectangle2D.Double(getX(), getY(), MainMap.normalizeWidth(20, 100), MainMap.normalizeHeight(20, 100)));
 	}
 
 	public int getGoldAmount() {
@@ -213,14 +207,6 @@ public class InGamePlayer {
 
 	public InGamePlayer(int playerID) {
 		this.playerID = playerID;
-	}
-
-	public Shape getPlayerShape() {
-		return playerShape;
-	}
-
-	public void setPlayerShape(Shape playerShape) {
-		this.playerShape = playerShape;
 	}
 
 	public void setX(double x) {

@@ -1,6 +1,7 @@
 package mobagame.launcher;
 
 import mobagame.core.game.Game;
+import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.maps.MainMap;
 import mobagame.core.networking.packets.PlayerPositionPacket;
 import mobagame.core.networking.packets.RequestPlayerMovementPacket;
@@ -20,6 +21,7 @@ import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 
 public class MapPanel extends JPanel implements Runnable {
@@ -155,6 +157,7 @@ public class MapPanel extends JPanel implements Runnable {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D graphics = (Graphics2D) g;
+		graphics.setColor(Color.black);
 		graphics.setStroke(new BasicStroke(getHeight() / 100));
 		Path2D tmp = (Path2D) map.getMap().clone();
 		tmp.transform(getCurrentTransform());
@@ -169,8 +172,16 @@ public class MapPanel extends JPanel implements Runnable {
 		p.y = (int) convertWidthFromServer(p.y, map.width);
 
 		getCurrentTransform().transform(p, p);
-
+		graphics.setColor(Color.GREEN);
 		graphics.fillRect((int)p.getX(), (int)p.getY(), marker.width, marker.height);
+		graphics.setColor(Color.RED);
+			for(InGamePlayer player : game.players){
+				Point.Double point = new Point2D.Double(player.getX(), player.getY());
+				point.x = convertWidthFromServer(point.getX(), map.width)+20;
+				point.y = convertHeightFromServer(point.getY(), map.height)+20;
+				getCurrentTransform().transform(point, point);
+				graphics.fillRect((int) point.getX(), (int)point.getY(), 40, 40);
+			}
 //		}
 	}
 
@@ -231,9 +242,11 @@ public class MapPanel extends JPanel implements Runnable {
 					System.out.println("updating from server");
 					PlayerPositionPacket p = (PlayerPositionPacket) h.getResponse(PlayerPositionPacket.class);
 					if (p != null) {
-						marker.x = p.x;
-						marker.y = p.y;
-						System.out.println(p.x + " " + p.y);
+						InGamePlayer player = game.getPlayer(p.playerID);
+						System.out.println("found a player");
+						player.setX(p.x);
+						player.setY(p.y);
+//						System.out.println(p.x + " " + p.y);
 
 					}
 

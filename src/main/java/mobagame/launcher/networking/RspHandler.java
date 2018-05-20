@@ -70,7 +70,7 @@ public class RspHandler extends Thread {
 	 */
 	public synchronized void waitForResponse(int amount, long timeout) throws TimeoutException{
 		long currentTime = System.currentTimeMillis();
-		System.out.println("waiting for response " + amount);
+//		System.out.println("waiting for response " + amount);
 		while (packets.size() < amount) {
 			try {
 				this.wait(timeout);
@@ -80,7 +80,7 @@ public class RspHandler extends Thread {
 				throw new TimeoutException("the server took too long");
 			}
 		}
-		System.out.println("resp recieved");
+//		System.out.println("resp recieved");
 	}
 
 	/**
@@ -93,16 +93,16 @@ public class RspHandler extends Thread {
 			ByteBuffer b = null;
 			try {
 				b = responses.take();
-				System.out.println("proccessing response");
+//				System.out.println("proccessing response");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("arrayin: " + Arrays.toString(b.array()));
+//			System.out.println("arrayin: " + Arrays.toString(b.array()));
 			while (b.remaining() > 0) {
-				System.out.println("remaining " + b.toString());
+//				System.out.println("remaining " + b.toString());
 				int len = b.getInt();
-				System.out.println("len " + len);
+//				System.out.println("len " + len);
 				if (len > 0) {
 					ByteBuffer pkt = ByteBuffer.allocate(len);
 					pkt.putInt(len);

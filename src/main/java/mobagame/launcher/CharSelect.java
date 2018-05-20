@@ -205,21 +205,17 @@ public class CharSelect implements Runnable {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO: second arguement is character id
+				System.out.println("sending with player id " + player.id);
 				RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
 				RspHandler h = new RspHandler();
 				try {
 					conn.send(req.getBytes().array(), h);
 					h.waitForResponse();
 					RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
-					System.out.println(game.gameID);
-					ClientGame g = new ClientGame(game.gameID);
-					g.setPlayerPlayer(new InGamePlayer(player.id));
-					g.getPlayerPlayer().mover = new PlayerMover(g.map, g.getPlayerPlayer());
-					g.map = new MainMap();
-					g.map.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
-					g.map.makeMap();
+					System.out.println(game.playerID);
 					selectionScreen.setVisible(false);
-					new GameScreen(g);
+
+					new GameScreen(game.gameID, player, game.playerID);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
