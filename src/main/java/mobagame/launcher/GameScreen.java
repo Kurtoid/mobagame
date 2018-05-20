@@ -58,6 +58,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	MainMap gameMap;
 	ClientGame game;
+	private MyCanvas[][] inventoryCanvase;
 
 	// open menu window for playerName
 	public GameScreen(int gameID, PlayerAccount player, int playerID) {
@@ -72,6 +73,16 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		g.map.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
 		g.map.makeMap();
 		this.game = g;
+		user= p;
+	inventoryCanvase = new MyCanvas[][]{
+			{ MyCanvas.load(p.inventory[0][0].getImageLocation(), SCREEN_SIZE.width / 40),
+					 MyCanvas.load(p.inventory[0][1].getImageLocation(), SCREEN_SIZE.width / 40),
+					MyCanvas.load(p.inventory[0][2].getImageLocation(), SCREEN_SIZE.width / 40),
+					MyCanvas.load(p.inventory[0][3].getImageLocation(), SCREEN_SIZE.width / 40) },
+			{ MyCanvas.load(p.inventory[1][0].getImageLocation(), SCREEN_SIZE.width / 40),
+					MyCanvas.load(p.inventory[1][1].getImageLocation(), SCREEN_SIZE.width / 40),
+					 MyCanvas.load(p.inventory[1][2].getImageLocation(), SCREEN_SIZE.width / 40),
+					 MyCanvas.load(p.inventory[1][3].getImageLocation(), SCREEN_SIZE.width / 40) } };
 
 		UIManager.put("OptionPane.messageFont", chatFont);
 		UIManager.put("OptionPane.buttonFont", menuFont);
@@ -138,7 +149,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		GridBagConstraints c = new GridBagConstraints();
 
 		// set layout
-		user.setInventory(inventory);
+//		user.setInventory(inventory);
 
 		// inventory
 		c.gridwidth = 1;
@@ -261,7 +272,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			gold.setText("$" + user.getGoldAmount());
 			user.setCurrentMana((int) Math.random() * 300);
 			user.setCurrentHealth((int) Math.random() * 300);
-			user.refreshInventory(inventory);
+//			user.refreshInventory(inventory);
 		}
 	}
 

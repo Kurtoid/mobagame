@@ -25,7 +25,11 @@ public class MyCanvas extends JComponent {
 		this.setPreferredSize(new Dimension(width,  height));
 //		System.out.println("Info: Square Image Created");
 	}
-	
+
+	public static MyCanvas load(String imageLocation, int i) {
+		return new MyCanvas(imageLocation, i);
+	}
+
 	public void setImageLocation(String imageLocation) {
 		this.imageLocation = imageLocation;
 	}
