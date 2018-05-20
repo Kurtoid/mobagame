@@ -439,4 +439,27 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public void mouseExited(MouseEvent me) {
 		// System.out.println("Mouse exited");
 	}
+	public void setInventory(JPanel inventory) {
+		GridBagConstraints c = new GridBagConstraints();
+		for (int y = 0; y < user.getInventory().length; y++) {
+			for (int x = 0; x < user.getInventory()[y].length; x++) {
+				c.gridy = y;
+				c.gridx = x;
+				inventory.add(inventoryCanvase[y][x], c);
+			}
+		}
+		System.out.println("Info: Inventory set");
+	}
+
+	public void refreshInventory(JPanel inventory) {
+
+		for (int y = 0; y < user.getInventory().length; y++) {
+			for (int x = 0; x < user.getInventory()[y].length; x++) {
+				inventoryCanvase[y][x].setImageLocation(user.getInventory()[y][x].getImageLocation());;
+			}
+		}
+		inventory.repaint();
+		System.out.println("Info: Inventory repainted");
+	}
+
 }
