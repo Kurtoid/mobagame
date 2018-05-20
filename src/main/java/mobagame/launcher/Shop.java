@@ -75,6 +75,7 @@ public class Shop extends JFrame implements ActionListener {
 		c.gridwidth = 0;
 		c.fill = 0;
 		shop.add(list, c);
+		setResizable(false);
 
 		setSize(500, 1000);
 		add(list);

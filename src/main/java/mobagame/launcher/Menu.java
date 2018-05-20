@@ -71,9 +71,6 @@ public class Menu extends JFrame implements ActionListener {
 
 		JLabel messageLabel = new JLabel("Welcome " + playerName + " to " + gameName);
 
-		// Font Setup
-		UIManager.put("OptionPane.buttonFont", menuFont);
-
 		// make layout
 		JPanel pane = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -127,8 +124,18 @@ public class Menu extends JFrame implements ActionListener {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		}
 		setVisible(true);
+		changeFontRecursive(this, menuFont);
 	}
 
+	public void changeFontRecursive(Container root, Font font) {
+		for (Component c : root.getComponents()) {
+			c.setFont(font);
+			if (c instanceof Container) {
+				changeFontRecursive((Container) c, font);
+			}
+		}
+	}
+	
 	public void actionPerformed(ActionEvent ae) { // TODO Send to appropriate windows
 		String cmd = ae.getActionCommand();
 
