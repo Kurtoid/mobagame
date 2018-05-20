@@ -43,6 +43,13 @@ public class CharSelect implements Runnable {
 	public ImageIcon placeHolderImage = new ImageIcon("resources//Black.png");
 	public ImageIcon reaperCharPic = new ImageIcon("resources//Reaper.png");
 
+	public int windowHeight = SCREEN_SIZE.height * 4 / 5;
+	public int windowWidth = (int) (windowHeight * 1.875);
+
+	private int fontSize = (int) ((windowWidth / 90) * 1.5);
+	private static String font = "Old English Text MT";
+	public Font menuFont = new Font(font, Font.PLAIN, fontSize);
+	
 	JButton startButton;
 	PlayerAccount player;
 	ServerConnection conn;
@@ -78,18 +85,18 @@ public class CharSelect implements Runnable {
 			e1.printStackTrace();
 		}
 		//Setting up character select menu
-		blueTeamSelect.setSize(750, 400);
-		redTeamSelect.setSize(750, 400);
-		blue1.setSize(150, 400);
-		blue2.setSize(150, 400);
-		blue3.setSize(150, 400);
-		blue4.setSize(150, 400);
-		blue5.setSize(150, 400);
-		red1.setSize(150, 400);
-		red2.setSize(150, 400);
-		red3.setSize(150, 400);
-		red4.setSize(150, 400);
-		red5.setSize(150, 400);
+		blueTeamSelect.setSize((int)(windowWidth / 2.6), (int)(windowHeight / 3.125));
+		redTeamSelect.setSize((int)(windowWidth / 2.6), (int)(windowHeight / 3.125));
+		blue1.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
+		blue2.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
+		blue3.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
+		blue4.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
+		blue5.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
+		red1.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
+		red2.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
+		red3.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
+		red4.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
+		red5.setSize((int)(windowWidth / 10), (int)(windowHeight / 3.125));
 		JLabel blue1CharImage = new JLabel(placeHolderImage);
 		JLabel blue2CharImage = new JLabel(reaperCharPic);
 		JLabel blue3CharImage = new JLabel(placeHolderImage);
@@ -103,16 +110,16 @@ public class CharSelect implements Runnable {
 		red5CharImage.setHorizontalAlignment(SwingConstants.RIGHT);
 		JLabel test = new JLabel(reaperCharPic);
 		JLabel test2 = new JLabel("Hi");
-		blue1CharImage.setSize(150, 150);
-		blue2CharImage.setSize(150, 150);
-		blue3CharImage.setSize(150, 150);
-		blue4CharImage.setSize(150, 150);
-		blue5CharImage.setSize(150, 150);
-		red1CharImage.setSize(150, 150);
-		red2CharImage.setSize(150, 150);
-		red3CharImage.setSize(150, 150);
-		red4CharImage.setSize(150, 150);
-		red5CharImage.setSize(150, 150);
+		blue1CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
+		blue2CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
+		blue3CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
+		blue4CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
+		blue5CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
+		red1CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
+		red2CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
+		red3CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
+		red4CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
+		red5CharImage.setSize((int)(windowWidth / 10), (int)(windowWidth / 10));
 		JLabel blue1User = new JLabel("Temp");
 		JLabel blue2User = new JLabel("Temp");
 		JLabel blue3User = new JLabel("Temp");
@@ -130,7 +137,7 @@ public class CharSelect implements Runnable {
 		red5User.setHorizontalAlignment(JLabel.RIGHT);
 		selectionScreen.setLayout(new GridBagLayout());
 		selectionScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		selectionScreen.setSize(1500, 800);
+		selectionScreen.setSize(windowWidth, windowHeight);
 		blueTeamSelect.setLayout(new GridLayout(5, 1, 5, 5));
 		redTeamSelect.setLayout(new GridLayout(5, 1, 5, 5));
 		blue1.setLayout(new GridLayout(1, 2, 0, 0));
