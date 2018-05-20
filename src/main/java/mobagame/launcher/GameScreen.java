@@ -278,8 +278,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			v.add(l);
 			chat.setViewport(v);
 			chat.repaint();
-			user.setCurrentMana((int) Math.random() * 300);
-			user.setCurrentHealth((int) Math.random() * 300);
 			refreshInventory();
 		}
 	}
@@ -374,42 +372,42 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		case KeyEvent.VK_1:
 			// USE inventory slot 1
 			System.out.println("USE inventory slot 1");
-			// charater.UseItem(1);
+			user.inventory[0][0] = user.inventory[0][0].use(user);
 			break;
 		case KeyEvent.VK_2:
 			// USE inventory slot 2
 			System.out.println("USE inventory slot 2");
-			// charater.UseItem(2);
+			user.inventory[0][1] = user.inventory[0][1].use(user);
 			break;
 		case KeyEvent.VK_3:
 			// USE inventory slot 3
 			System.out.println("USE inventory slot 3");
-			// charater.UseItem(3);
+			user.inventory[0][2] = user.inventory[0][2].use(user);
 			break;
 		case KeyEvent.VK_4:
 			// USE inventory slot 4
 			System.out.println("USE inventory slot 4");
-			// charater.UseItem(4);
+			user.inventory[0][3] = user.inventory[0][3].use(user);
 			break;
 		case KeyEvent.VK_5:
 			// USE inventory slot 5
 			System.out.println("USE inventory slot 5");
-			// charater.UseItem(5);
+			user.inventory[1][0] = user.inventory[1][0].use(user);
 			break;
 		case KeyEvent.VK_6:
 			// USE inventory slot 6
 			System.out.println("USE inventory slot 6");
-			// charater.UseItem(6);
+			user.inventory[1][1] = user.inventory[1][1].use(user);
 			break;
 		case KeyEvent.VK_7:
 			// USE inventory slot 7
 			System.out.println("USE inventory slot 7");
-			// charater.UseItem(7);
+			user.inventory[1][2] = user.inventory[1][2].use(user);
 			break;
 		case KeyEvent.VK_8:
 			// USE inventory slot 8
 			System.out.println("USE inventory slot 8");
-			// charater.UseItem(8);
+			user.inventory[1][3] = user.inventory[1][3].use(user);
 			break;
 		case KeyEvent.VK_ESCAPE:
 			// Escape pressed

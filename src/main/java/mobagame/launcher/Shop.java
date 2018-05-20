@@ -27,13 +27,13 @@ public class Shop extends JFrame implements ActionListener {
 
 	// items
 	public static Item empty = new Item("empty", "resources/Items/emptySlot.png", 0, 0, false);
-	public static Item item1 = new Item("item1", "resources/Items/item1.png", 100, 100, false);
-	public static Item item2 = new Item("item2", "resources/Items/item2.png", 50, 50, false);
-	public static Item item3 = new Item("item3", "resources/Items/item3.png", 30, 30, false);
-	public static Item item4 = new Item("item4", "resources/Items/item4.png", 10, 10, false);
+	public static Item item1 = new Item("item1", "resources/Items/item1.png", 100, ItemType.Speed, 100, false);
+	public static Item item2 = new Item("item2", "resources/Items/item2.png", 50, ItemType.Mana, 50, false);
+	public static Item item3 = new Item("item3", "resources/Items/item3.png", 30, ItemType.Health, 30, false);
+	public static Item item4 = new Item("item4", "resources/Items/item4.png", 10, ItemType.Armor, 10, false);
 	public static Item knife = new Item("knife", "resources/Items/knife.png", 500, ItemType.PhysicalPower, 100, false);
-	public static Item berry = new Item("berry", "resources/Items/strawberry.png", 5, 100, true);
-	public static Item item5 = new Item("Reaper", "resources/Reaper.png", 30, 0, false);
+	public static Item berry = new Item("berry", "resources/Items/strawberry.png", 5, ItemType.Health, 100, true);
+	public static Item item5 = new Item("Reaper", "resources/Reaper.png", 30, ItemType.AttackSpecial, 0, false);
 
 	private Dimension SCREEN_SIZE = getToolkit().getScreenSize();
 	private InGamePlayer user;

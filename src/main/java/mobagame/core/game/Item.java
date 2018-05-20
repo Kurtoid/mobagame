@@ -127,7 +127,7 @@ public class Item {
 					break;
 				}
 			}
-			return null;
+			return Shop.empty;
 		}
 		return this;
 	}
