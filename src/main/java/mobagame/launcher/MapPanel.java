@@ -259,6 +259,9 @@ public class MapPanel extends JPanel implements Runnable {
 							PlayerPositionPacket pkt = (PlayerPositionPacket) p;
 							if (pkt != null) {
 								InGamePlayer player = game.getPlayer(pkt.playerID);
+								if(player==null){
+									continue;
+								}
 //								System.out.println("found a player");
 								player.setX(pkt.x);
 								player.setY(pkt.y);

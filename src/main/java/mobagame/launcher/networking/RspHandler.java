@@ -184,17 +184,17 @@ public class RspHandler extends Thread {
 	 */
 	public synchronized Packet getResponse(Class c) {
 		Iterator<Packet> i = packets.iterator();
-		System.out.println(packets.size() + " to search");
+//		System.out.println(packets.size() + " to search");
 		while (i.hasNext()) {
 			Packet tmp = i.next();
-			System.out.println("looking at " + tmp.getClass().getName());
+//			System.out.println("looking at " + tmp.getClass().getName());
 			if (c.isInstance(tmp)) {
 				i.remove();
-				System.out.println(tmp.getClass().getName() + " found");
+//				System.out.println(tmp.getClass().getName() + " found");
 				return tmp;
 			}
 		}
-		System.out.println("Cant find packet type " + c.getName());
+//		System.out.println("Cant find packet type " + c.getName());
 		return null;
 	}
 
