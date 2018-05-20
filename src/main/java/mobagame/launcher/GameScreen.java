@@ -273,7 +273,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			user.setGoldAmount(user.getGoldAmount() + 1);
 			gold.setText("$" + user.getGoldAmount());
 			JViewport v = new JViewport();
-			v.add(new JLabel("" + chatWrap + user));
+			JLabel l = new JLabel("" + chatWrap + user);
+			l.setFont(chatFont);
+			v.add(l);
 			chat.setViewport(v);
 			chat.repaint();
 			user.setCurrentMana((int) Math.random() * 300);
