@@ -8,6 +8,8 @@ import mobagame.core.networking.packets.PlayerPositionPacket;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
 
+import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,10 +49,21 @@ public class ServerGame extends Game {
 		NotifyPlayerJoinedGamePacket p = new NotifyPlayerJoinedGamePacket();
 		p.playerID = newPlayer.getPlayerID();
 		for(InGamePlayer player : players){
-			if(player!=newPlayer){
+			if(!player.equals(newPlayer)){
 				runner.conn.send(runner.conn.playerToConnection.get(player), p.getBytes().array());
 			}
 		}
 
 	}
+	public void tellClientAboutExistingPlayers(InGamePlayer newPlayer, SocketChannel sock) {
+		for(InGamePlayer player : players){
+			if(!player.equals(newPlayer)){
+				NotifyPlayerJoinedGamePacket p = new NotifyPlayerJoinedGamePacket();
+				p.playerID = player.getPlayerID();
+				runner.conn.send(sock, p.getBytes().array());
+			}
+		}
+
+	}
+
 }
