@@ -1,8 +1,10 @@
 package mobagame.server;
 
 import mobagame.core.game.InGamePlayer;
+import mobagame.server.database.DatabaseConnectionManager;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +21,12 @@ public class MainServer {
 		// required, TODO: make this neater later
 		worker.runner = gRunner;
 		new Thread(worker).start();
+		try {
+			DatabaseConnectionManager.getInstance();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println("connected to database");
 		logger.log(Level.INFO, "started message parser");
 		ConnectionListener conn = null;
 		try {

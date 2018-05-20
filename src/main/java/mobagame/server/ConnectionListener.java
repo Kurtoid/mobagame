@@ -49,6 +49,8 @@ public class ConnectionListener implements Runnable {
 	private Map pendingData = new HashMap();
 	Map<SocketChannel, Integer> ConnectionIDs = new HashMap<SocketChannel, Integer>();
 	public Map<InGamePlayer, SocketChannel> playerToConnection = new HashMap<InGamePlayer, SocketChannel>();
+	public Map<SocketChannel, Integer> connectionToPlayerID = new HashMap<>();
+
 	int nextConnectionID = 0;
 
 	public ConnectionListener(InetAddress hostAddress, int port, ResponseWorker worker) throws IOException {
@@ -179,7 +181,8 @@ public class ConnectionListener implements Runnable {
 	private void removePlayerFromGame(Integer connID) {
 		InGamePlayer p = worker.runner.connectionToPlayer.remove(connID);
 		ServerGame g = worker.runner.playerToGame.remove(p);
-		playerToConnection.remove(p);
+		SocketChannel c = playerToConnection.remove(p);
+		connectionToPlayerID.remove(c);
 		g.players.remove(p);
 	}
 
@@ -242,4 +245,7 @@ public class ConnectionListener implements Runnable {
 	}
 
 
+	public int connectionToPlayerID(SocketChannel socket) {
+		return connectionToPlayerID.get(socket);
+	}
 }

@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
  * @author Kurt Wilson
  */
 public class RequestEnterGamePacket extends Packet {
-	public int playerID;
 	public int characterID;
 	public int gameID;
 
@@ -28,13 +27,12 @@ public class RequestEnterGamePacket extends Packet {
 
 	@Override
 	public ByteBuffer getBytes() {
-		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 4 + 4;
+		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 4;
 		// player id and character, and, either a specific lobby, or -1 for random
 		ByteBuffer buff = ByteBuffer.allocate(dataSize);
 		buff.putInt(dataSize);
 		setPacketType(buff, PK_ID_PLAYER_REQUEST_ENTER_GAME);
 
-		buff.putInt(playerID);
 		buff.putInt(characterID);
 		buff.putInt(gameID);
 
@@ -44,7 +42,6 @@ public class RequestEnterGamePacket extends Packet {
 	@Override
 	void readData(ByteBuffer buff) {
 		buff.rewind();
-		playerID = buff.getInt(5);
 		characterID = buff.getInt();
 		gameID = buff.getInt();
 	}
