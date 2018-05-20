@@ -40,7 +40,7 @@ public class MyCanvas extends JComponent {
 		this.width = width;
 		this.height = height;
 		this.setPreferredSize(new Dimension(width,  height));
-		System.out.println("Info: Rectangle Image Created");
+//		System.out.println("Info: Rectangle Image Created");
 	}
 
 	public void paint(Graphics g) {

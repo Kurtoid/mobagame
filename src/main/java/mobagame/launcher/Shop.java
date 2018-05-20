@@ -29,7 +29,8 @@ public class Shop extends JFrame implements ActionListener {
 	public static Item item3 = new Item("item3", "resources/Items/item3.png", 30, 0, false);
 	public static Item item4 = new Item("item4", "resources/Items/item4.png", 10, 0, false);
 	public static Item knife = new Item("knife", "resources/Items/knife.png", 500, 0, false);
-	public static Item berry = new Item("berry", "resources/Items/berry.png", 5, 0, false);
+	public static Item berry = new Item("berry", "resources/Items/strawberry.png", 5, 0, false);
+	public static Item item5 = new Item("Reaper", "resources/Reaper.png", 30, 0, false);
 
 	private Dimension SCREEN_SIZE = getToolkit().getScreenSize();
 	private InGamePlayer user;
@@ -50,6 +51,7 @@ public class Shop extends JFrame implements ActionListener {
 		items.add(item4);
 		items.add(knife);
 		items.add(berry);
+		items.add(item5);
 
 		JPanel shop = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();

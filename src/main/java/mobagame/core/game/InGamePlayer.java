@@ -57,7 +57,6 @@ public class InGamePlayer {
 		return abie;
 	}
 
-
 	public Ability getAbir() {
 		return abir;
 	}
@@ -149,6 +148,7 @@ public class InGamePlayer {
 	public void setPlayerID(int playerID) {
 		this.playerID = playerID;
 	}
+
 	@SuppressWarnings("unused")
 	private int level = 1;
 	public PlayerMover mover;
@@ -227,6 +227,7 @@ public class InGamePlayer {
 	public void setY(double y) {
 		this.y = y;
 	}
+
 	public void levelUp() {
 		level = level + 1;
 		maxHealth += character.getMaxHealthScale() * (level - 1);
@@ -236,6 +237,7 @@ public class InGamePlayer {
 		armor += character.getArmorScale() * (level - 1);
 		magicResist += character.getMagicResistScale() * (level - 1);
 	}
+
 	public void recieveDamage(Ability a) {
 	if(a.getDamageType() == Ability.DamageType.PHYSICAL) {
 			currentHealth = a.getDamage() - this.armor;
@@ -243,6 +245,6 @@ public class InGamePlayer {
 			currentHealth = a.getDamage() - this.magicResist;
 		}
 	}
-
+	
 
 }

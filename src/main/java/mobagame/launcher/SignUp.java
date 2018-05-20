@@ -4,6 +4,7 @@
 
 package mobagame.launcher;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -29,13 +30,14 @@ import mobagame.launcher.networking.ServerConnection;
 @SuppressWarnings("serial")
 public class SignUp extends JFrame implements ActionListener {
 
-	public static int windowHeight = 800; // 800
-	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
+	public final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
 
-	private static double fontMultiple = 1.5;
-	private static int fontSize = (int) ((windowWidth / 100) * fontMultiple); // 30
+	public int windowHeight = SCREEN_SIZE.height * 4 / 5;
+	public int windowWidth = (int) (windowHeight * 1.875);
+
+	private int fontSize = (int) ((windowWidth / 90) * 1.5);
 	private static String font = "Old English Text MT";
-	public static Font menuFont = new Font(font, Font.PLAIN, fontSize);
+	public Font menuFont = new Font(font, Font.PLAIN, fontSize);
 
 	private static String OK = "ok";
 	private static String DROP = "drop";

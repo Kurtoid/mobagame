@@ -13,9 +13,14 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class Menu extends JFrame implements ActionListener {
 
-	public static int windowHeight = 800; // 800
-	public static int windowWidth = (int) (windowHeight * 1.875); // 1500
-	private static Font menuFont = SignUp.menuFont;
+	public final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
+
+	public int windowHeight = SCREEN_SIZE.height * 4 / 5;
+	public int windowWidth = (int) (windowHeight * 1.875);
+
+	private int fontSize = (int) ((windowWidth / 90) * 1.5);
+	private static String font = "Old English Text MT";
+	public Font menuFont = new Font(font, Font.PLAIN, fontSize);
 
 	public static String gameName = "[INSERT AWESOME GAME NAME HERE]";
 	private static boolean isAdmin;
@@ -138,18 +143,18 @@ public class Menu extends JFrame implements ActionListener {
 
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
 			JOptionPane.showMessageDialog(controllingFrame, "TO Profile", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-//			new Profile(playerName);
-//			setVisible(false);
+			// new Profile(playerName);
+			// setVisible(false);
 
 		} else if (SETTINGS.equals(cmd)) { // GO TO Settings
 			JOptionPane.showMessageDialog(controllingFrame, "TO Settings", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-//			 new Settings(playerName);
-//			 setVisible(false);
+			// new Settings(playerName);
+			// setVisible(false);
 
 		} else if (ADMIN.equals(cmd) && isAdmin) {// GO TO Admin
 			JOptionPane.showMessageDialog(controllingFrame, "TO Admin", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-//			 new Admin(playerName);
-//			 setVisible(false);
+			// new Admin(playerName);
+			// setVisible(false);
 		} else {
 			JOptionPane.showMessageDialog(controllingFrame, "Something went wrong", "Error Message",
 					JOptionPane.ERROR_MESSAGE);
