@@ -1,13 +1,22 @@
 package mobagame.core.game;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 import mobagame.core.game.maps.MainMap;
+import mobagame.launcher.Shop;
+import mobagame.launcher.MyCanvas;
 import mobagame.launcher.GameScreen;
-import org.w3c.dom.css.Rect;
 
 public class InGamePlayer {
+
+
 	private int playerID;
 	private double x;
 	private double y;
@@ -18,7 +27,7 @@ public class InGamePlayer {
 	private int maxMana;
 	private int speed;
 	private int armor;
-	//Need to fix these
+	// Need to fix these
 	private Ability abiq;
 	private Ability abiw;
 	private Ability abie;
@@ -28,6 +37,10 @@ public class InGamePlayer {
 	private int currentHealth;
 	private int currentMana;
 	private int goldAmount = 0;
+
+	public Item[][] inventory = { { (Shop.empty), (Shop.empty), (Shop.empty), (Shop.empty) },
+			{ (Shop.empty), (Shop.empty), (Shop.empty), (Shop.empty) } };
+
 	public Character getCharacter() {
 		return character;
 	}
@@ -139,8 +152,6 @@ public class InGamePlayer {
 	@SuppressWarnings("unused")
 	private int level = 1;
 	public PlayerMover mover;
-	public Item[][] inventory = { { (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) },
-			{ (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) } };
 
 	public InGamePlayer(Character chara) {
 		maxHealth = chara.getMaxHealth();
@@ -226,9 +237,9 @@ public class InGamePlayer {
 		magicResist += character.getMagicResistScale() * (level - 1);
 	}
 	public void recieveDamage(Ability a) {
-		if(a.getDamageType() == Ability.DamageType.PHYSICAL) {
+	if(a.getDamageType() == Ability.DamageType.PHYSICAL) {
 			currentHealth = a.getDamage() - this.armor;
-		}else {
+		} else {
 			currentHealth = a.getDamage() - this.magicResist;
 		}
 	}

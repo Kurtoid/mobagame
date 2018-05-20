@@ -37,21 +37,12 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	private InGamePlayer user = new InGamePlayer(new Character(300, 300), 300, 300);
 
-	private int goldAmount = 0;
 	private int goldPerSecond = 3;
 	private JButton gold;
 
 	// icons
 	public static String placeHolderImage = ("resources/Black.png");
 	public static String backgroundImage = ("resources/Untitled.png");
-
-	// items
-	public static Item item1 = new Item("item1", "resources/Items/item1.png", 100, 0, false);
-	public static Item item2 = new Item("item2", "resources/Items/item2.png", 50, 0, false);
-	public static Item item3 = new Item("item3", "resources/Items/item3.png", 30, 0, false);
-	public static Item item4 = new Item("item4", "resources/Items/item4.png", 1, 0, false);
-	public static Item knife = new Item("knife", "resources/Items/knife.png", 500, 0, false);
-	public static Item empty = new Item("empty", "resources/Items/emptySlot.png", 0, 0, false);
 
 	// abilities
 	private String[] abilities = { (placeHolderImage), (placeHolderImage), (placeHolderImage), (placeHolderImage) };
@@ -60,6 +51,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	private static String SHOP = "shop";
 	private static String MENU = "menu";
+
+	private JPanel inventory;
 
 	private JFrame controllingFrame; // needed for dialogs
 
@@ -88,12 +81,14 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 		// set up things
 
+		user.setGoldAmount(0);
+
 		// listeners
 		this.addKeyListener(this);
 		this.addMouseListener(this);
 
 		// create
-		gold = new JButton("$" + goldAmount);
+		gold = new JButton("$" + user.getGoldAmount());
 		gold.setActionCommand(SHOP);
 		gold.addActionListener(this);
 
@@ -135,7 +130,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		JPanel stats = new JPanel(gbl);
 		d.setSize((int) (SCREEN_SIZE.width / 4), (int) (SCREEN_SIZE.height));
 		stats.setMaximumSize(d);
-		JPanel inventory = new JPanel(gbl);
+		inventory = new JPanel(gbl);
 		inventory.setSize((int) SCREEN_SIZE.width / 5, (int) SCREEN_SIZE.height / 10);
 		JPanel map = new JPanel(gbl);
 		map.setSize((int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
@@ -143,6 +138,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		GridBagConstraints c = new GridBagConstraints();
 
 		// set layout
+		user.setInventory(inventory);
 
 		// inventory
 		c.gridwidth = 1;
@@ -150,20 +146,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		c.weightx = 1;
 		c.gridy = 0;
 		c.gridx = 0;
-
-		// temporary item test
-		user.inventory[0][0] = (item1);
-		user.inventory[0][2] = (knife);
-		user.inventory[1][1] = (item3);
-		user.inventory[1][3] = (item4);
-
-		for (int y = 0; y < user.inventory.length; y++) {
-			for (int x = 0; x < user.inventory[y].length; x++) {
-				c.gridy = y;
-				c.gridx = x;
-				inventory.add(new MyCanvas(user.inventory[y][x].getImageLocation(), SCREEN_SIZE.width / 40), c);
-			}
-		}
 
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridwidth = 4;
@@ -251,8 +233,6 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		layered.add(front, new Integer(1), 0);
 
 		MapPanel background = new MapPanel(game);
-		// background.add(new MyCanvas(backgroundImage, SCREEN_SIZE.width,
-		// SCREEN_SIZE.height));
 		background.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		background.resetPanAndZoom();
 		layered.add(background, new Integer(0), 0);
@@ -277,11 +257,11 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 				Thread.sleep(1000 / goldPerSecond);
 			} catch (InterruptedException e) {
 			}
-			goldAmount += 1;
-			gold.setText("$" + goldAmount);
-			user.setGoldAmount(goldAmount);
+			user.setGoldAmount(user.getGoldAmount() + 1);
+			gold.setText("$" + user.getGoldAmount());
 			user.setCurrentMana((int) Math.random() * 300);
 			user.setCurrentHealth((int) Math.random() * 300);
+			user.refreshInventory(inventory);
 		}
 	}
 
@@ -312,13 +292,12 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			break;
 		case KeyEvent.VK_P:
 			// GOTO Shop
-			System.out.println("GOTO Shop");
-			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			new Shop(user);
+			break;
 		case KeyEvent.VK_M:
 			// GOTO In-Game
 			System.out.println("GOTO In-Game");
 			JOptionPane.showMessageDialog(controllingFrame, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
-			// new Shop();
 			break;
 		case KeyEvent.VK_Q:
 			// USE Q ability
@@ -406,8 +385,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		String cmd = ae.getActionCommand();
 
 		if (SHOP.equals(cmd)) { // GOTO Shop
-			JOptionPane.showMessageDialog(controllingFrame, "TO Shop", "GOTO", JOptionPane.INFORMATION_MESSAGE);
-			// new Shop();
+			new Shop(user);
 		} else if (MENU.equals(cmd)) { // GOTO In-Game
 			JOptionPane.showMessageDialog(controllingFrame, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 		} else {
