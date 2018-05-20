@@ -1,6 +1,10 @@
 package mobagame.core.game;
 
+import java.awt.Component;
+
 import mobagame.launcher.GameScreen;
+import mobagame.launcher.MyCanvas;
+import mobagame.launcher.Shop;
 
 public class Item {
 	private String name;
@@ -35,13 +39,11 @@ public class Item {
 	}
 
 	public void buy(InGamePlayer user) {
-		int gold = user.getGoldAmount();
 		for (int y = 0; y < user.inventory.length; y++) {
 			for (int x = 0; x < user.inventory[y].length; x++) {
-				if (user.inventory[y][x] == GameScreen.empty) {
-					if (gold >= price) {
-						gold -= price;
-						user.setGoldAmount(gold);
+				if (user.inventory[y][x] == Shop.empty) {
+					if (user.getGoldAmount() >= price) {
+						user.setGoldAmount(user.getGoldAmount() - price);
 						user.inventory[y][x] = this;
 						if (!isConsumable) {
 							for (int z = 0; z < type.length; z++) {
@@ -79,7 +81,8 @@ public class Item {
 						System.out.println("You bought a " + this.name);
 						return;
 					} else {
-						System.out.println("Not enought gold to buy " + this.name);
+						System.out.println("Not enought gold to buy " + this.name + "\n\t"
+								+ "You need " + (price - user.getGoldAmount()) + " more gold");
 						return;
 					}
 				}
@@ -126,6 +129,10 @@ public class Item {
 	}
 	
 	public String toString() {
+//		String temp = "Effects";
+//		for (int x = 0; x < type.length; x++) {
+//			temp += "\n\t +" + effectPoints[x] + "" + type[x];
+//		}
 		return name + ": "
 				+ "$" +	price;
 	}

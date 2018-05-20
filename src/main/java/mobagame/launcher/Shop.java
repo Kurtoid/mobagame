@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -19,27 +20,45 @@ import mobagame.core.game.Item;
 @SuppressWarnings("serial")
 public class Shop extends JFrame implements ActionListener {
 	// DNW
-	private Item[] items;
-	
-	private static Item knife = new Item("knife", "resources/Items/knife.png", 500, 10, false);
-	
+	private ArrayList<Item> items = new ArrayList<Item>();
+
+	// items
+	public static Item empty = new Item("empty", "resources/Items/emptySlot.png", 0, 0, false);
+	public static Item item1 = new Item("item1", "resources/Items/item1.png", 100, 0, false);
+	public static Item item2 = new Item("item2", "resources/Items/item2.png", 50, 0, false);
+	public static Item item3 = new Item("item3", "resources/Items/item3.png", 30, 0, false);
+	public static Item item4 = new Item("item4", "resources/Items/item4.png", 10, 0, false);
+	public static Item knife = new Item("knife", "resources/Items/knife.png", 500, 0, false);
+	public static Item berry = new Item("berry", "resources/Items/berry.png", 5, 0, false);
+
 	private Dimension SCREEN_SIZE = getToolkit().getScreenSize();
-	private InGamePlayer user = new InGamePlayer(0);
+	private InGamePlayer user;
 
 	public Shop() {
+		this(new InGamePlayer(0));
+	}
+
+	public Shop(InGamePlayer user) {
 		super("Shop");
 
-		int numOfItems = 1;
+		this.user = user;
+
+		// add items to list
+		items.add(item1);
+		items.add(item2);
+		items.add(item3);
+		items.add(item4);
+		items.add(knife);
+		items.add(berry);
+
 		JPanel shop = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel itemList = new JPanel(new GridLayout(0, 5));
 		JScrollPane list = new JScrollPane(itemList);
 		list.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		items = new Item[numOfItems];
-		addItems(knife, numOfItems);
-		for (Item w : items) {
-			Button temp =  new Button(w + "");
-			temp.setActionCommand(w.getName());
+		for (int x = 0; x < items.size(); x++) {
+			Button temp = new Button(items.get(x) + "");
+			temp.setActionCommand(items.get(x).getName());
 			temp.addActionListener(this);
 			itemList.add(temp);
 		}
@@ -59,28 +78,20 @@ public class Shop extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 
-	private void addItems(Item item, int x) {
-		if (x > 0) {
-			items[x - 1] = item;
-			addItems(item, x - 1);
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		String cmd = ae.getActionCommand();
+		for (int x = 0; x < items.size(); x++) {
+			if (cmd.equals(items.get(x).getName())) {
+				items.get(x).buy(user);
+				return;
+			}
 		}
+		System.out.println("Error: Not valid item");
 	}
 
 	public static void main(String[] args) {
 		Shop x = new Shop();
 		x.user.setGoldAmount(500);
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent ae) {
-		String cmd = ae.getActionCommand();
-		switch (cmd) {
-		case "knife":
-			knife.buy(user);
-			break;
-		default:
-			break;
-		}
-	}
-
 }

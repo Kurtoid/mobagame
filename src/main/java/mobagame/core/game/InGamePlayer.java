@@ -1,12 +1,22 @@
 package mobagame.core.game;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
-import mobagame.core.game.maps.MainMap;
-import mobagame.launcher.GameScreen;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class InGamePlayer {
+import mobagame.core.game.maps.MainMap;
+import mobagame.launcher.Shop;
+import mobagame.launcher.MyCanvas;
+
+public class InGamePlayer extends JFrame {
+
+	public final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
+
 	private int playerID;
 	private double x;
 	private double y;
@@ -17,7 +27,7 @@ public class InGamePlayer {
 	private int maxMana;
 	private int speed;
 	private int armor;
-	//Need to fix these
+	// Need to fix these
 	private Ability abiq;
 	private Ability abiw;
 	private Ability abie;
@@ -27,6 +37,19 @@ public class InGamePlayer {
 	private int currentHealth;
 	private int currentMana;
 	private int goldAmount = 0;
+
+	public Item[][] inventory = { { (Shop.empty), (Shop.empty), (Shop.empty), (Shop.empty) },
+			{ (Shop.empty), (Shop.empty), (Shop.empty), (Shop.empty) } };
+	private MyCanvas[][] inventoryCanvases = {
+			{ new MyCanvas(inventory[0][0].getImageLocation(), SCREEN_SIZE.width / 40),
+					new MyCanvas(inventory[0][1].getImageLocation(), SCREEN_SIZE.width / 40),
+					new MyCanvas(inventory[0][2].getImageLocation(), SCREEN_SIZE.width / 40),
+					new MyCanvas(inventory[0][3].getImageLocation(), SCREEN_SIZE.width / 40) },
+			{ new MyCanvas(inventory[1][0].getImageLocation(), SCREEN_SIZE.width / 40),
+						new MyCanvas(inventory[1][1].getImageLocation(), SCREEN_SIZE.width / 40),
+						new MyCanvas(inventory[1][2].getImageLocation(), SCREEN_SIZE.width / 40),
+						new MyCanvas(inventory[1][3].getImageLocation(), SCREEN_SIZE.width / 40) } };
+
 	public Character getCharacter() {
 		return character;
 	}
@@ -42,7 +65,6 @@ public class InGamePlayer {
 	public Ability getAbie() {
 		return abie;
 	}
-
 
 	public Ability getAbir() {
 		return abir;
@@ -135,11 +157,10 @@ public class InGamePlayer {
 	public void setPlayerID(int playerID) {
 		this.playerID = playerID;
 	}
+
 	@SuppressWarnings("unused")
 	private int level = 1;
 	public PlayerMover mover;
-	public Item[][] inventory = { { (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) },
-			{ (GameScreen.empty), (GameScreen.empty), (GameScreen.empty), (GameScreen.empty) } };
 
 	private Shape playerShape;
 
@@ -162,7 +183,8 @@ public class InGamePlayer {
 	}
 
 	private void setDefaultShape() {
-		setPlayerShape(new Rectangle2D.Double(getX(), getY(), MainMap.normalizeWidth(20, 100), MainMap.normalizeHeight(20, 100)));
+		setPlayerShape(new Rectangle2D.Double(getX(), getY(), MainMap.normalizeWidth(20, 100),
+				MainMap.normalizeHeight(20, 100)));
 	}
 
 	public int getGoldAmount() {
@@ -185,12 +207,12 @@ public class InGamePlayer {
 		return currentMana;
 	}
 
-	public double getX() {
-		return x;
+	public int getX() {
+		return (int) x;
 	}
 
-	public double getY() {
-		return y;
+	public int getY() {
+		return (int) y;
 	}
 
 	public int getPlayerID() {
@@ -230,6 +252,7 @@ public class InGamePlayer {
 	public void setY(double y) {
 		this.y = y;
 	}
+
 	public void levelUp() {
 		level = level + 1;
 		maxHealth += character.getMaxHealthScale() * (level - 1);
@@ -239,13 +262,36 @@ public class InGamePlayer {
 		armor += character.getArmorScale() * (level - 1);
 		magicResist += character.getMagicResistScale() * (level - 1);
 	}
+
 	public void recieveDamage(Ability a) {
-		if(a.getDamageType() == "Physical") {
+		if (a.getDamageType() == "Physical") {
 			currentHealth = a.getDamage() - this.armor;
-		}else {
+		} else {
 			currentHealth = a.getDamage() - this.magicResist;
 		}
 	}
+	
+	public void setInventory(JPanel inventory) {
+		GridBagConstraints c = new GridBagConstraints();
+		for (int y = 0; y < this.inventory.length; y++) {
+			for (int x = 0; x < this.inventory[y].length; x++) {
+				c.gridy = y;
+				c.gridx = x;
+				inventory.add(inventoryCanvases[y][x], c);
+			}
+		}
+		System.out.println("Info: Inventory set");
+	}
 
+	public void refreshInventory(JPanel inventory) {
+
+		for (int y = 0; y < this.inventory.length; y++) {
+			for (int x = 0; x < this.inventory[y].length; x++) {
+				inventoryCanvases[y][x].setImageLocation(this.inventory[y][x].getImageLocation());;
+			}
+		}
+		inventory.repaint();
+		System.out.println("Info: Inventory repainted");
+	}
 
 }

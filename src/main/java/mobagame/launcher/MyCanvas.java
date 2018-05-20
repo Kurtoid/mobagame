@@ -13,32 +13,36 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class MyCanvas extends JComponent {
 
-	String location;
-	int height;
-	int width;
+	private String imageLocation;
+	private int height;
+	private int width;
 
-	public MyCanvas(String location, int scale) {
+	public MyCanvas(String imageLocation, int scale) {
 		super();
-		this.location = location;
+		this.imageLocation = imageLocation;
 		this.width = scale;
 		this.height = scale;
 		this.setPreferredSize(new Dimension(width,  height));
-		System.out.println("Square Image Created");
+//		System.out.println("Info: Square Image Created");
 	}
 	
-	public MyCanvas(String location, int width, int height) {
+	public void setImageLocation(String imageLocation) {
+		this.imageLocation = imageLocation;
+	}
+
+	public MyCanvas(String imageLocation, int width, int height) {
 		super();
-		this.location = location;
+		this.imageLocation = imageLocation;
 		this.width = width;
 		this.height = height;
 		this.setPreferredSize(new Dimension(width,  height));
-		System.out.println("Rectangle Image Created");
+		System.out.println("Info: Rectangle Image Created");
 	}
 
 	public void paint(Graphics g) {
 		BufferedImage img1 = null;
 		try {
-			img1 = ImageIO.read(new File(location));
+			img1 = ImageIO.read(new File(imageLocation));
 
 			// explicitly specify width (w) and height (h)
 			g.drawImage(img1, 0, 0, (int) width, (int) height, this);
