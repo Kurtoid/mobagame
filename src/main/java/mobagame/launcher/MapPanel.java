@@ -272,8 +272,9 @@ public class MapPanel extends JPanel implements Runnable {
 						} else if ( NotifyPlayerJoinedGamePacket.class.isInstance(p)) {
 							NotifyPlayerJoinedGamePacket pkt = (NotifyPlayerJoinedGamePacket) p;
 							System.out.println("new player!");
-							if(game.getPlayer(pkt.playerID) !=null)
+							if(game.getPlayer(pkt.playerID) == null)
 								game.players.add(new InGamePlayer(pkt.playerID));
+								System.out.println("new player added");
 						}
 					}
 
