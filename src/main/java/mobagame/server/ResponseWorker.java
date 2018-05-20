@@ -128,7 +128,7 @@ public class ResponseWorker implements Runnable {
 		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
 		g.notifyPlayerJoinedGame(p);
-		g.tellClientAboutExistingPlayers(p, dataEvent.socket);
+		g.tellClientAboutExistingPlayers(p);
 
 	}
 
