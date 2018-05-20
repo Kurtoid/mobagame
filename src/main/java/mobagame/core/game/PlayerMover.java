@@ -31,14 +31,14 @@ public class PlayerMover {
 			/*
 			 * if (x < targetx) { x++; } if (x > targetx) { x--; } //
 			 */
-			if (map.getMap().intersects(x, player.getY(), 5, 5)) {
+			if (map.getMap().intersects(x-20, player.getY()-20, 40, 40)) {
 				x = oldx;
 			}
 
 			/*
 			 * if (y > targety) { y--; } if (y < targety) { y++; } //
 			 */
-			if (map.getMap().intersects(x, y, 5, 5)) {
+			if (map.getMap().intersects(x-20, y-20, 40, 40)) {
 				y = oldy;
 			}
 		}

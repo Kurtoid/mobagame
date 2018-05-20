@@ -114,8 +114,9 @@ public class ResponseWorker implements Runnable {
 
 	private void handleRequestEnterGamePacket(RequestEnterGamePacket requestEnterGamePacket,
 			ServerDataEvent dataEvent) {
-		ServerGame g = runner.findGame(requestEnterGamePacket.playerID);
-		InGamePlayer p = new InGamePlayer(requestEnterGamePacket.playerID);
+		int playerID = dataEvent.server.connectionToPlayerID(dataEvent.socket);
+		ServerGame g = runner.findGame(playerID);
+		InGamePlayer p = new InGamePlayer(playerID);
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
 		p.setX(110);
 		p.setY(890);
@@ -191,6 +192,7 @@ public class ResponseWorker implements Runnable {
 		loginPak.success = player != null;
 		dataEvent.server.send(dataEvent.socket, loginPak.getBytes().array());
 		if (player != null) {
+			dataEvent.server.connectionToPlayerID.put(dataEvent.socket, player.id);
 			dataEvent.server.send(dataEvent.socket, new PublicPlayerDataPacket(player).getBytes().array());
 		}
 		// }

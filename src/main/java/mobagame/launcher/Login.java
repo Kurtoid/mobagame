@@ -229,7 +229,7 @@ public class Login extends JFrame implements ActionListener {
 				System.out.println(status.success ? "logged in" : "not logged in");
 				if (status.success) {
 					// user logged in
-					h.waitForResponse(1, 3000); // wait for one (maybe two) packets, or three seconds
+					h.waitForResponse(1, 5000); // wait for one (maybe two) packets, or three seconds
 
 					PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) h.getResponse(PublicPlayerDataPacket.class);
 					System.out.println(playerData.player.toString());
