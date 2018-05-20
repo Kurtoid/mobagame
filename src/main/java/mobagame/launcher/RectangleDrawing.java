@@ -25,6 +25,7 @@ public class RectangleDrawing extends JComponent {
 		g.setColor(color);
 		if (isFill) {
 			g.fillRect(xPos, yPos, width, height);
+			
 		} else {
 			g.drawRect(xPos, yPos, width, height);
 		}
@@ -34,6 +35,7 @@ public class RectangleDrawing extends JComponent {
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setBounds(30, 30, 300, 300);
+		window.getContentPane().add(new RectangleDrawing(0, 0, 10, 200, Color.pink, true));
 		window.getContentPane().add(new RectangleDrawing(0, 0, 10, 200, Color.magenta, false));
 		window.setVisible(true);
 	}

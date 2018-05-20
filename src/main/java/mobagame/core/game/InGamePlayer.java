@@ -16,7 +16,6 @@ import mobagame.launcher.GameScreen;
 
 public class InGamePlayer {
 
-
 	private int playerID;
 	private double x;
 	private double y;
@@ -202,6 +201,13 @@ public class InGamePlayer {
 		return playerID;
 	}
 
+	@Override
+	public String toString() {
+		return "phyPow = " + phyPow + ", abiPow = " + abiPow + ", maxHealth = " + maxHealth + ", maxMana = " + maxMana
+				+ ", speed = " + speed + ", armor = " + armor + ", magicResist = " + magicResist + ", currentHealth = "
+				+ currentHealth + ", currentMana = " + currentMana;
+	}
+
 	public void setCurrentHealth(int currentHealth) {
 		this.currentHealth = currentHealth;
 	}
@@ -239,12 +245,11 @@ public class InGamePlayer {
 	}
 
 	public void recieveDamage(Ability a) {
-	if(a.getDamageType() == Ability.DamageType.PHYSICAL) {
+		if (a.getDamageType() == Ability.DamageType.PHYSICAL) {
 			currentHealth = a.getDamage() - this.armor;
 		} else {
 			currentHealth = a.getDamage() - this.magicResist;
 		}
 	}
-	
 
 }

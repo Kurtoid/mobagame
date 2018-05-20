@@ -24,6 +24,10 @@ public class Item {
 		this.isConsumable = isConsumable;
 	}
 
+	public Item(String name, String imageLocation, int price, ItemType type, int effectPoints, boolean isConsumable) {
+		this(name, imageLocation, price, makeItemTypeArray(type), makeIntArray(effectPoints), isConsumable);
+	}
+
 	public Item(String name, String imageLocation, int price, int effectPoints, boolean isConsumable) {
 		this(name, imageLocation, price, makeItemTypeArray(ItemType.Health), makeIntArray(effectPoints), isConsumable);
 	}
@@ -81,8 +85,8 @@ public class Item {
 						System.out.println("You bought a " + this.name);
 						return;
 					} else {
-						System.out.println("Not enought gold to buy " + this.name + "\n\t"
-								+ "You need " + (price - user.getGoldAmount()) + " more gold");
+						System.out.println("Not enought gold to buy " + this.name + "\n\t" + "You need "
+								+ (price - user.getGoldAmount()) + " more gold");
 						return;
 					}
 				}
@@ -98,7 +102,7 @@ public class Item {
 	public int getPrice() {
 		return price;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -127,14 +131,13 @@ public class Item {
 		}
 		return this;
 	}
-	
+
 	public String toString() {
-//		String temp = "Effects";
-//		for (int x = 0; x < type.length; x++) {
-//			temp += "\n\t +" + effectPoints[x] + "" + type[x];
-//		}
-		return name + ": "
-				+ "$" +	price;
+		// String temp = "Effects";
+		// for (int x = 0; x < type.length; x++) {
+		// temp += "\n\t +" + effectPoints[x] + "" + type[x];
+		// }
+		return name + ": " + "$" + price;
 	}
 
 	public static void main(String[] args) {

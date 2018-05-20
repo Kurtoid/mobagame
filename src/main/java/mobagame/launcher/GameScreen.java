@@ -104,7 +104,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		gold.addActionListener(this);
 
 		String mapImage = (placeHolderImage);
-		JLabel chatLabel = new JLabel(chatWrap + "Welcome to " + gameName + "\n");
+		JLabel chatLabel = new JLabel(chatWrap + user.toString());
 		chatLabel.setBounds(0, SCREEN_SIZE.height / 2, SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
 		JPanel health = new JPanel();
 		JPanel mana = new JPanel();
@@ -149,7 +149,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		GridBagConstraints c = new GridBagConstraints();
 
 		// set layout
-//		user.setInventory(inventory);
+		setInventory();
 
 		// inventory
 		c.gridwidth = 1;
@@ -272,7 +272,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			gold.setText("$" + user.getGoldAmount());
 			user.setCurrentMana((int) Math.random() * 300);
 			user.setCurrentHealth((int) Math.random() * 300);
-//			user.refreshInventory(inventory);
+			refreshInventory();
 		}
 	}
 
@@ -290,6 +290,29 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		t.start();
 	}
 
+	public void setInventory() {
+		GridBagConstraints c = new GridBagConstraints();
+		for (int y = 0; y < user.getInventory().length; y++) {
+			for (int x = 0; x < user.getInventory()[y].length; x++) {
+				c.gridy = y;
+				c.gridx = x;
+				inventory.add(inventoryCanvase[y][x], c);
+			}
+		}
+		System.out.println("Info: Inventory set");
+	}
+
+	public void refreshInventory() {
+
+		for (int y = 0; y < user.getInventory().length; y++) {
+			for (int x = 0; x < user.getInventory()[y].length; x++) {
+				inventoryCanvase[y][x].setImageLocation(user.getInventory()[y][x].getImageLocation());;
+			}
+		}
+		inventory.repaint();
+		System.out.println("Info: Inventory repainted");
+	}
+	
 	public void keyPressed(KeyEvent ke) {
 		int pressed = ke.getKeyCode();
 		System.out.println("KEY PRESSED: " + pressed);
@@ -407,8 +430,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	public static void main(String[] args) {
 		testing = true;
-		Dimension SCREEN_SIZE = new JFrame().getToolkit().getScreenSize();
-		new GameScreen(5, new PlayerAccount("gfhedhkjuw"), 1);
+		new GameScreen(5, new PlayerAccount("ktaces"), 1);
 	}
 
 	// Not used interface methods
@@ -439,27 +461,4 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	public void mouseExited(MouseEvent me) {
 		// System.out.println("Mouse exited");
 	}
-	public void setInventory(JPanel inventory) {
-		GridBagConstraints c = new GridBagConstraints();
-		for (int y = 0; y < user.getInventory().length; y++) {
-			for (int x = 0; x < user.getInventory()[y].length; x++) {
-				c.gridy = y;
-				c.gridx = x;
-				inventory.add(inventoryCanvase[y][x], c);
-			}
-		}
-		System.out.println("Info: Inventory set");
-	}
-
-	public void refreshInventory(JPanel inventory) {
-
-		for (int y = 0; y < user.getInventory().length; y++) {
-			for (int x = 0; x < user.getInventory()[y].length; x++) {
-				inventoryCanvase[y][x].setImageLocation(user.getInventory()[y][x].getImageLocation());;
-			}
-		}
-		inventory.repaint();
-		System.out.println("Info: Inventory repainted");
-	}
-
 }
