@@ -3,6 +3,7 @@ package mobagame.server.game;
 import mobagame.core.game.Game;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
 import mobagame.core.networking.packets.PlayerPositionPacket;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
@@ -40,5 +41,16 @@ public class ServerGame extends Game {
 				conn.send(runner.conn.playerToConnection.get(player), posPak.getBytes().array());
 			}
 		}
+	}
+
+	public void notifyPlayerJoinedGame(InGamePlayer newPlayer) {
+		NotifyPlayerJoinedGamePacket p = new NotifyPlayerJoinedGamePacket();
+		p.playerID = newPlayer.getPlayerID();
+		for(InGamePlayer player : players){
+			if(player!=newPlayer){
+				runner.conn.send(runner.conn.playerToConnection.get(player), p.getBytes().array());
+			}
+		}
+
 	}
 }

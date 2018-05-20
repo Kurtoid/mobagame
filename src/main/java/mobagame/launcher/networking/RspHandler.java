@@ -139,6 +139,10 @@ public class RspHandler extends Thread {
 							System.out.println("player_movement");
 							addToPackets(new PlayerPositionPacket(pkt));
 							break;
+						case Packet.PK_ID_NOTIFY_PLAYER_JOINED:
+							System.out.println("player joined");
+							addToPackets(new NotifyPlayerJoinedGamePacket(pkt));
+							break;
 						default:
 							System.out.println("unknown packet " + Packet.getPacketID(pkt));
 							break;
@@ -200,4 +204,6 @@ public class RspHandler extends Thread {
 		packets = new LinkedBlockingQueue<>();
 		start();
 	}
+
+	public int getWaitingPackets(){ return packets.size();}
 }

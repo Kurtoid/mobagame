@@ -30,6 +30,8 @@ public abstract class Packet {
 	public static final byte PK_ID_SIGNUP_RESPONSE = 10;
 	public static final byte PK_ID_PUBLIC_PLAYER_DATA = 11;
 	public static final byte PK_ID_PLAYER_MOVEMENT = 12;
+	public static final byte PK_ID_NOTIFY_PLAYER_JOINED = 13;
+
 	public static final byte PK_ID_RANDOM_BS_PACKET = 69;
 
 	public static int BYTES_PER_CHARACTER = 1;

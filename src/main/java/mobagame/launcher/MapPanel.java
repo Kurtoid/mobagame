@@ -3,11 +3,14 @@ package mobagame.launcher;
 import mobagame.core.game.Game;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
+import mobagame.core.networking.packets.Packet;
 import mobagame.core.networking.packets.PlayerPositionPacket;
 import mobagame.core.networking.packets.RequestPlayerMovementPacket;
 import mobagame.launcher.game.gamePlayObjects.ClickMarker;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
+import mobagame.server.database.PlayerAccount;
 
 import javax.swing.*;
 import java.awt.*;
@@ -239,15 +242,36 @@ public class MapPanel extends JPanel implements Runnable {
 				while (now - lastUpdateTime > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
 					// updateGame();
 					// do server pings here
-					System.out.println("updating from server");
-					PlayerPositionPacket p = (PlayerPositionPacket) h.getResponse(PlayerPositionPacket.class);
-					if (p != null) {
-						InGamePlayer player = game.getPlayer(p.playerID);
-						System.out.println("found a player");
-						player.setX(p.x);
-						player.setY(p.y);
+					int processed = 0;
+//					System.out.println("updating from server");
+
+					while (processed < 5) {
+						Packet p = h.getResponse(Packet.class);
+						processed++;
+						if (p == null) {
+//							System.out.println("no resposnes");
+							break;
+						}
+//						System.out.println("responses to process!");
+						System.out.println(p.getClass());
+						if (PlayerPositionPacket.class.isInstance(p)) {
+//							System.out.println("new player position");
+							PlayerPositionPacket pkt = (PlayerPositionPacket) p;
+							if (pkt != null) {
+								InGamePlayer player = game.getPlayer(pkt.playerID);
+//								System.out.println("found a player");
+								player.setX(pkt.x);
+								player.setY(pkt.y);
 //						System.out.println(p.x + " " + p.y);
 
+							}
+
+						} else if ( NotifyPlayerJoinedGamePacket.class.isInstance(p)) {
+							NotifyPlayerJoinedGamePacket pkt = (NotifyPlayerJoinedGamePacket) p;
+							System.out.println("new player!");
+							if(game.getPlayer(pkt.playerID) !=null)
+								game.players.add(new InGamePlayer(pkt.playerID));
+						}
 					}
 
 					

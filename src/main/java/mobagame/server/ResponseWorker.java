@@ -127,6 +127,7 @@ public class ResponseWorker implements Runnable {
 		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g,p);
 		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
+		g.notifyPlayerJoinedGame(p);
 
 	}
 
