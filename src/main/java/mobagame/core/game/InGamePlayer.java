@@ -264,7 +264,7 @@ public class InGamePlayer extends JFrame {
 	}
 
 	public void recieveDamage(Ability a) {
-		if (a.getDamageType() == "Physical") {
+	if(a.getDamageType() == Ability.DamageType.PHYSICAL) {
 			currentHealth = a.getDamage() - this.armor;
 		} else {
 			currentHealth = a.getDamage() - this.magicResist;

@@ -1,6 +1,7 @@
 package mobagame.core.game;
 
 public class Ability {
+	public enum DamageType{PHYSICAL, MAGICAL};
 private String abiName;
 private int manaCost;
 private int baseDamage;
@@ -22,7 +23,7 @@ public void setCaster(InGamePlayer caster) {
 //private AbilityType abiType;
 private int range;
 private String imageLocation;
-private String damageType;
+private DamageType damageType;
 private InGamePlayer caster;
 public String getAbiName() {
 	return abiName;
@@ -66,15 +67,15 @@ public String getImageLocation() {
 public void setImageLocation(String imageLocation) {
 	this.imageLocation = imageLocation;
 }
-public String getDamageType() {
+public DamageType getDamageType() {
 	return damageType;
 }
-public void setDamageType(String damageType) {
+public void setDamageType(DamageType damageType) {
 	this.damageType = damageType;
 }
 public int getDamage() {
 	int damage;
-	if(this.damageType == "Physical") {
+	if(this.damageType == DamageType.PHYSICAL) {
 		damage = caster.getPhyPow() * this.phyPowRatio + this.baseDamage;
 	}else{
 		damage = caster.getAbiPow() * this.abiPowRatio + this.baseDamage;
