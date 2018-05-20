@@ -284,7 +284,6 @@ public class InGamePlayer extends JFrame {
 	}
 
 	public void refreshInventory(JPanel inventory) {
-
 		for (int y = 0; y < this.inventory.length; y++) {
 			for (int x = 0; x < this.inventory[y].length; x++) {
 				inventoryCanvases[y][x].setImageLocation(this.inventory[y][x].getImageLocation());;
