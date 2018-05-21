@@ -11,18 +11,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
-public class Menu extends JFrame implements ActionListener {
+public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 
-	public final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
-
-	public int windowHeight = SCREEN_SIZE.height * 4 / 5;
-	public int windowWidth = (int) (windowHeight * 1.875);
-
-	private int fontSize = (int) ((windowWidth / 90) * 1.5);
-	private static String font = "Old English Text MT";
-	public Font menuFont = new Font(font, Font.PLAIN, fontSize);
-
-	public static String gameName = "[INSERT AWESOME GAME NAME HERE]";
 	private static boolean isAdmin;
 	private static String playerName;
 
@@ -43,13 +33,13 @@ public class Menu extends JFrame implements ActionListener {
 
 	// open menu window for playerName
 	public Menu(PlayerAccount name, boolean admin) {
-		super(gameName);
+		super(GAME_NAME);
 		player = name;
 
 		isAdmin = admin;
 		playerName = name.username;
 
-		setSize(windowWidth, windowHeight);
+		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		setResizable(false);
 
 		// create
@@ -69,7 +59,7 @@ public class Menu extends JFrame implements ActionListener {
 		adminButton.setActionCommand(ADMIN);
 		adminButton.addActionListener(this);
 
-		JLabel messageLabel = new JLabel("Welcome " + playerName + " to " + gameName);
+		JLabel messageLabel = new JLabel("Welcome " + playerName + " to " + GAME_NAME);
 
 		// make layout
 		JPanel pane = new JPanel(new GridBagLayout());
@@ -124,7 +114,7 @@ public class Menu extends JFrame implements ActionListener {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		}
 		setVisible(true);
-		changeFontRecursive(this, menuFont);
+		changeFontRecursive(this, MENU_FONT);
 	}
 
 	public void changeFontRecursive(Container root, Font font) {
@@ -146,17 +136,17 @@ public class Menu extends JFrame implements ActionListener {
 
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
 			JOptionPane.showMessageDialog(controllingFrame, "TO Profile", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-			// new Profile(playerName);
-			// setVisible(false);
+			 new Profile(player);
+			 setVisible(false);
 
 		} else if (SETTINGS.equals(cmd)) { // GO TO Settings
 			JOptionPane.showMessageDialog(controllingFrame, "TO Settings", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-			// new Settings(playerName);
+			// new Settings(player);
 			// setVisible(false);
 
 		} else if (ADMIN.equals(cmd) && isAdmin) {// GO TO Admin
 			JOptionPane.showMessageDialog(controllingFrame, "TO Admin", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-			// new Admin(playerName);
+			// new Admin(player);
 			// setVisible(false);
 		} else {
 			JOptionPane.showMessageDialog(controllingFrame, "Something went wrong", "Error Message",

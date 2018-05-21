@@ -21,7 +21,7 @@ import mobagame.core.game.Item;
 import mobagame.core.game.ItemType;
 
 @SuppressWarnings("serial")
-public class Shop extends JFrame implements ActionListener {
+public class Shop extends JFrame implements ActionListener, MobaGameLauncher {
 	// DNW
 	private ArrayList<Item> items = new ArrayList<Item>();
 
@@ -35,7 +35,6 @@ public class Shop extends JFrame implements ActionListener {
 	public static Item berry = new Item("berry", "resources/Items/strawberry.png", 5, ItemType.Health, 100, true);
 	public static Item item5 = new Item("Reaper", "resources/Reaper.png", 30, ItemType.AttackSpecial, 0, false);
 
-	private Dimension SCREEN_SIZE = getToolkit().getScreenSize();
 	private InGamePlayer user;
 
 	public Shop() {

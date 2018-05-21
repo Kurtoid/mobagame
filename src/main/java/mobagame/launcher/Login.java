@@ -34,8 +34,8 @@ import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
 import mobagame.server.database.PlayerAccount;
 
-public class Login extends JFrame implements ActionListener {
-	public JFrame login = new JFrame("Welcome to _______________________");
+public class Login implements ActionListener, MobaGameLauncher {
+	public JFrame login = new JFrame("Welcome to " + GAME_NAME);
 	public JPanel picture = new JPanel();
 	public JPanel boxes = new JPanel();
 	public JTextField Username = new JTextField("");
@@ -50,17 +50,7 @@ public class Login extends JFrame implements ActionListener {
 	ServerConnection server;
 	SettingManager settings;
 
-	public final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
-
-	public int windowHeight = SCREEN_SIZE.height * 4 / 5;
-	public int windowWidth = (int) (windowHeight * 1.875);
-
-	private int fontSize = (int) ((windowWidth / 90) * 1.5);
-	private static String font = "Old English Text MT";
-	public Font menuFont = new Font(font, Font.PLAIN, fontSize);
-
 	Login() {
-		UIManager.put("OptionPane.buttonFont", menuFont);
 
 		try {
 			settings = new SettingManager(SettingManager.SettingFile.CLIENT_SETTINGS);
@@ -84,7 +74,7 @@ public class Login extends JFrame implements ActionListener {
 		// Creates all of the windows
 		forgotPassword.setLayout(new GridLayout(5, 1, 6, 6));
 		forgotPassword.setAlwaysOnTop(true);
-		forgotPassword.setSize((int)(windowWidth / 2.6), (int)(windowHeight / 3.125));
+		forgotPassword.setSize((int)(WINDOW_WIDTH / 2.6), (int)(WINDOW_HEIGHT / 3.125));
 		JLabel emailIndicator = new JLabel("Enter Email");
 		emailIndicator.setHorizontalAlignment(SwingConstants.CENTER);
 		JLabel question = new JLabel("Security Question");
@@ -98,12 +88,12 @@ public class Login extends JFrame implements ActionListener {
 		forgotPassword.setResizable(false);
 		login.setLayout(new GridLayout(2, 1, 5, 5));
 		login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		login.setSize(windowWidth, windowHeight);
+		login.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		login.setResizable(false);
 		picture.setLayout(new GridBagLayout());
-		picture.setSize(1500, 750);
+		picture.setSize(WINDOW_WIDTH, (int) (WINDOW_HEIGHT * .9375));
 		boxes.setLayout(new GridBagLayout());
-		boxes.setSize(1500, 50);
+		boxes.setSize(WINDOW_WIDTH, (int) (WINDOW_HEIGHT * .0625));
 		fogotButto.addActionListener(this);
 		loginButto.addActionListener(this);
 		createAccButto.addActionListener(this);
@@ -210,7 +200,7 @@ public class Login extends JFrame implements ActionListener {
 		login.add(boxes);
 		login.setVisible(true);
 
-		changeFontRecursive(login, menuFont);
+		changeFontRecursive(login, MENU_FONT);
 	}
 
 	public void actionPerformed(ActionEvent ae) {
