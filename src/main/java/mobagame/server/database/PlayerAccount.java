@@ -28,4 +28,19 @@ public class PlayerAccount {
 	public String getUsername() {
 		return username;
 	}
+
+	public String getKDARatio() {
+//		return kills + "/" + deaths + "/" + assists;
+		return "0/0/0";
+	}
+
+	public String getWLRatio() {
+//		return wins + "/" + loses;
+		return "0/0";
+	}
+
+	public String getFavoritChar() {
+//		return favChar.getName;
+		return "Reaper";
+	}
 }
