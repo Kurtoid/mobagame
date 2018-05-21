@@ -6,7 +6,6 @@ import mobagame.core.game.maps.MainMap;
 
 public abstract class Game {
 	public ArrayList<InGamePlayer> players;
-	Map<Integer, InGamePlayer> playerMap;
 	private InGamePlayer playerPlayer;
 	public MainMap map;
 	final static int MAX_PLAYERS = 10;
@@ -14,7 +13,6 @@ public abstract class Game {
 
 	public Game() {
 		map = new MainMap();
-		playerMap = new HashMap<>();
 		map.setServerMode();
 		map.makeMap();
 		players = new ArrayList<>();
@@ -23,7 +21,6 @@ public abstract class Game {
 
 	public Game(MainMap m) {
 		map = m;
-		playerMap = new HashMap<>();
 		map.setServerMode();
 		map.makeMap();
 		players = new ArrayList<>();

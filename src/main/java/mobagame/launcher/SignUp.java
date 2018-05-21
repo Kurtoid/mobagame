@@ -178,7 +178,7 @@ public class SignUp extends JFrame implements ActionListener {
 			if (isPasswordValid(passwordChar)) {
 				if (isEmailValid(email)) {
 					SignupPacket p = new SignupPacket(username, password, email, question, answer);
-					RspHandler h = new RspHandler();
+					RspHandler h = RspHandler.getInstance();
 					try {
 						conn.send(p.getBytes().array(), h);
 						h.waitForResponse(3000);

@@ -207,7 +207,7 @@ public class CharSelect implements Runnable {
 				// TODO: second arguement is character id
 				System.out.println("sending with player id " + player.id);
 				RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
-				RspHandler h = new RspHandler();
+				RspHandler h = RspHandler.getInstance();
 				try {
 					conn.send(req.getBytes().array(), h);
 					h.waitForResponse();

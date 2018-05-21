@@ -38,7 +38,7 @@ public class UserLoginTester2 {
 		ByteBuffer buff = p.getBytes();
 		buff.flip();
 		// System.out.println(Arrays.toString(buff.array()));
-		RspHandler h = new RspHandler();
+		RspHandler h = RspHandler.getInstance();
 		h.start();
 		try {
 			server.send(buff.array(), h);
@@ -55,7 +55,7 @@ public class UserLoginTester2 {
 			e.printStackTrace();
 		}
 
-		h = new RspHandler();
+		h.clear();
 
 		try {
 			server.send(buff.array(), h);

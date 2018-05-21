@@ -56,7 +56,7 @@ public class ServerConnection extends Thread {
 		this.start();
 	}
 	public RspHandler getHandler(){
-		RspHandler h = new RspHandler();
+		RspHandler h = RspHandler.getInstance();
 		this.rspHandlers.put(serverConn, h);
 		return h;
 	}
@@ -282,7 +282,7 @@ public class ServerConnection extends Thread {
 			Thread t = new Thread(client);
 			t.setDaemon(true);
 			t.start();
-			RspHandler handler = new RspHandler();
+			RspHandler handler = RspHandler.getInstance();
 			client.send(new LoginPacket("Kurtoid", "PASS").getBytes().array(), handler);
 			handler.waitForResponse();
 		} catch (Exception e) {

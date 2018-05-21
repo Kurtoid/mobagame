@@ -55,12 +55,12 @@ public class ServerGame extends Game {
 		}
 
 	}
-	public void tellClientAboutExistingPlayers(InGamePlayer newPlayer) {
+	public void tellClientAboutExistingPlayers(InGamePlayer newPlayer, SocketChannel socket) {
 		for(InGamePlayer player : players){
 			if(!player.equals(newPlayer)){
 				NotifyPlayerJoinedGamePacket p = new NotifyPlayerJoinedGamePacket();
 				p.playerID = player.getPlayerID();
-				runner.conn.send(runner.conn.playerToConnection.get(player), p.getBytes().array());
+				runner.conn.send(socket, p.getBytes().array());
 			}
 		}
 

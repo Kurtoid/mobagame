@@ -13,8 +13,7 @@ public class RspHandler extends Thread {
 
 	private BlockingQueue<ByteBuffer> responses;
 	private BlockingQueue<Packet> packets;
-
-
+	static RspHandler instance;
 	/**
 	 * called by the server thread
 	 * dont use this anywhere else
@@ -198,12 +197,24 @@ public class RspHandler extends Thread {
 		return null;
 	}
 
-	public RspHandler() {
+	private RspHandler() {
 		System.out.println("construct RspHandler");
 		responses = new LinkedBlockingQueue<ByteBuffer>();
 		packets = new LinkedBlockingQueue<>();
 		start();
 	}
 
+	public static RspHandler getInstance() {
+		if(instance == null) {
+			instance = new RspHandler();
+		}
+		return instance;
+	}
+
 	public int getWaitingPackets(){ return packets.size();}
+
+	public void clear() {
+		responses = new LinkedBlockingQueue<ByteBuffer>();
+		packets = new LinkedBlockingQueue<>();
+	}
 }

@@ -171,9 +171,6 @@ public class MapPanel extends JPanel implements Runnable {
 
 //		if (System.currentTimeMillis() - marker.timeCreated > 3000) {
 		Point.Double p = new Point.Double(marker.x, marker.y);
-		p.x = (int) convertHeightFromServer(p.x, map.width);
-		p.y = (int) convertWidthFromServer(p.y, map.width);
-
 		getCurrentTransform().transform(p, p);
 		graphics.setColor(Color.GREEN);
 		graphics.fillRect((int)p.getX(), (int)p.getY(), marker.width, marker.height);
@@ -260,6 +257,7 @@ public class MapPanel extends JPanel implements Runnable {
 							if (pkt != null) {
 								InGamePlayer player = game.getPlayer(pkt.playerID);
 								if(player==null){
+									System.out.println("Skipped player " + pkt.playerID);
 									continue;
 								}
 //								System.out.println("found a player");
@@ -272,13 +270,14 @@ public class MapPanel extends JPanel implements Runnable {
 						} else if ( NotifyPlayerJoinedGamePacket.class.isInstance(p)) {
 							NotifyPlayerJoinedGamePacket pkt = (NotifyPlayerJoinedGamePacket) p;
 							System.out.println("new player!");
-							if(game.getPlayer(pkt.playerID) == null)
+							if(game.getPlayer(pkt.playerID) == null) {
 								game.players.add(new InGamePlayer(pkt.playerID));
 								System.out.println("new player added");
+							}
 						}
 					}
 
-					
+
 					lastUpdateTime += TIME_BETWEEN_UPDATES;
 					updateCount++;
 				}

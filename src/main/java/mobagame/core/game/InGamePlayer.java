@@ -17,8 +17,8 @@ import mobagame.launcher.GameScreen;
 public class InGamePlayer {
 
 	private int playerID;
-	private double x;
 	private double y;
+	private double x;
 	private Character character;
 	private int phyPow;
 	private int abiPow;

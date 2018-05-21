@@ -58,10 +58,10 @@ public class Login extends JFrame implements ActionListener {
 	private int fontSize = (int) ((windowWidth / 90) * 1.5);
 	private static String font = "Old English Text MT";
 	public Font menuFont = new Font(font, Font.PLAIN, fontSize);
-	
+
 	Login() {
 		UIManager.put("OptionPane.buttonFont", menuFont);
-		
+
 		try {
 			settings = new SettingManager(SettingManager.SettingFile.CLIENT_SETTINGS);
 		} catch (FileNotFoundException e) {
@@ -209,7 +209,7 @@ public class Login extends JFrame implements ActionListener {
 		login.add(picture);
 		login.add(boxes);
 		login.setVisible(true);
-		
+
 		changeFontRecursive(login, menuFont);
 	}
 
@@ -221,7 +221,7 @@ public class Login extends JFrame implements ActionListener {
 			// to do check database for if this is a valid user and their correct password
 			// then if it is valid log them in
 			// and send them to the main menu
-			RspHandler h = new RspHandler();
+			RspHandler h = RspHandler.getInstance();
 			try {
 
 				server.send(new LoginPacket(User, pass).getBytes().array(), h);
@@ -269,7 +269,7 @@ public class Login extends JFrame implements ActionListener {
 			forgotPassword.setVisible(false);
 		}
 	}
-	
+
 	public void changeFontRecursive(Container root, Font font) {
 		for (Component c : root.getComponents()) {
 			c.setFont(font);
