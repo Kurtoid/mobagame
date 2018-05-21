@@ -136,17 +136,17 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
 			JOptionPane.showMessageDialog(controllingFrame, "TO Profile", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-			// new Profile(playerName);
-			// setVisible(false);
+			 new Profile(player);
+			 setVisible(false);
 
 		} else if (SETTINGS.equals(cmd)) { // GO TO Settings
 			JOptionPane.showMessageDialog(controllingFrame, "TO Settings", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-			// new Settings(playerName);
+			// new Settings(player);
 			// setVisible(false);
 
 		} else if (ADMIN.equals(cmd) && isAdmin) {// GO TO Admin
 			JOptionPane.showMessageDialog(controllingFrame, "TO Admin", "GO TO", JOptionPane.INFORMATION_MESSAGE);
-			// new Admin(playerName);
+			// new Admin(player);
 			// setVisible(false);
 		} else {
 			JOptionPane.showMessageDialog(controllingFrame, "Something went wrong", "Error Message",

@@ -1,5 +1,6 @@
 package mobagame.server.database;
 
+import java.awt.Component;
 import java.util.*;
 
 /**
@@ -22,5 +23,9 @@ public class PlayerAccount {
 	 */
 	public PlayerAccount(String name){
 		username = name;
+	}
+
+	public String getUsername() {
+		return username;
 	}
 }
