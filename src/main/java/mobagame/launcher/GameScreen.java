@@ -20,20 +20,13 @@ import java.awt.*;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
-public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable {
+public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable, MobaGameLauncher {
 
-	public final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
-	private final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
-
-	private Font menuFont = new Font("Old English Text MT", Font.PLAIN, (int) (SCREEN_SIZE.getWidth() / 100 * 9 / 5));
-	private Font gameFont = new Font("Times New Roman", Font.BOLD, (int) (SCREEN_SIZE.getWidth() / 100));
-	private Font chatFont = new Font("Times New Roman", Font.PLAIN, (int) (SCREEN_SIZE.getWidth() / 100 * 3 / 2));
-	// I think in game font should be TNR since it is easy to read at a smaller
-	// print
-
-	private static boolean testing = false;
-	private static boolean usePadAndBar = false;
-	private static boolean lefty = false;
+	public final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
+	
+	private boolean testing = false;
+	private boolean usePadAndBar = false;
+	private boolean lefty = false;
 
 	private InGamePlayer user = new InGamePlayer(new Character(300, 300), 300, 300);
 
@@ -47,7 +40,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	// abilities
 	private String[] abilities = { (placeHolderImage), (placeHolderImage), (placeHolderImage), (placeHolderImage) };
 
-	private static String gameName = Menu.gameName;
+	private static String gameName = Menu.GAME_NAME;
 
 	private static String SHOP = "shop";
 	private static String MENU = "menu";
@@ -85,8 +78,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 					 MyCanvas.load(p.inventory[1][2].getImageLocation(), SCREEN_SIZE.width / 40),
 					 MyCanvas.load(p.inventory[1][3].getImageLocation(), SCREEN_SIZE.width / 40) } };
 
-		UIManager.put("OptionPane.messageFont", chatFont);
-		UIManager.put("OptionPane.buttonFont", menuFont);
+		UIManager.put("OptionPane.messageFont", CHAT_FONT);
+		UIManager.put("OptionPane.buttonFont", MENU_FONT);
 		
 		gameMap = new MainMap();
 		gameMap.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
@@ -123,10 +116,10 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		Border frame = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
 		// health & mana borders
 		TitledBorder healthBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Health: ",
-				TitledBorder.CENTER, TitledBorder.TOP, gameFont);
+				TitledBorder.CENTER, TitledBorder.TOP, GAME_FONT);
 		health.setBorder(healthBorder);
 		TitledBorder manaBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Mana: ",
-				TitledBorder.CENTER, TitledBorder.TOP, gameFont);
+				TitledBorder.CENTER, TitledBorder.TOP, GAME_FONT);
 		mana.setBorder(manaBorder);
 
 		// make layouts
@@ -255,8 +248,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 		System.out.println("visisble");
 		setVisible(true);
-		changeFontRecursive(this, menuFont);
-		chatLabel.setFont(chatFont);
+		changeFontRecursive(this, MENU_FONT);
+		chatLabel.setFont(CHAT_FONT);
 		// next line to be deleted when fixed
 		// JOptionPane.showMessageDialog(controllingFrame, "Pressing tab breaks
 		// everything", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -274,7 +267,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			gold.setText("$" + user.getGoldAmount());
 			JViewport v = new JViewport();
 			JLabel l = new JLabel("" + chatWrap + user);
-			l.setFont(chatFont);
+			l.setFont(CHAT_FONT);
 			v.add(l);
 			chat.setViewport(v);
 			chat.repaint();
@@ -435,8 +428,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	}
 
 	public static void main(String[] args) {
-		testing = true;
-		new GameScreen(5, new PlayerAccount("ktaces"), 1);
+		GameScreen gs = new GameScreen(5, new PlayerAccount("ktaces"), 1);
+		gs.testing = true;
 	}
 
 	// Not used interface methods

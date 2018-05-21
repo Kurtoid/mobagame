@@ -28,16 +28,7 @@ import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
 
 @SuppressWarnings("serial")
-public class SignUp extends JFrame implements ActionListener {
-
-	public final Dimension SCREEN_SIZE = getToolkit().getScreenSize();
-
-	public int windowHeight = SCREEN_SIZE.height * 4 / 5;
-	public int windowWidth = (int) (windowHeight * 1.875);
-
-	private int fontSize = (int) ((windowWidth / 90) * 1.5);
-	private static String font = "Old English Text MT";
-	public Font menuFont = new Font(font, Font.PLAIN, fontSize);
+public class SignUp extends JFrame implements ActionListener, MobaGameLauncher  {
 
 	private static String OK = "ok";
 	private static String DROP = "drop";
@@ -58,7 +49,7 @@ public class SignUp extends JFrame implements ActionListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		setSize((int) (windowWidth / 3.75), (int) (windowHeight / 1.6));
+		setSize((int) (WINDOW_WIDTH / 3.75), (int) (WINDOW_HEIGHT / 1.6));
 		setResizable(false);
 
 		// Create everything.
@@ -99,17 +90,17 @@ public class SignUp extends JFrame implements ActionListener {
 		answerLabel.setLabelFor(answerField);
 
 		// Font Setup
-		usernameLabel.setFont(menuFont);
-		usernameField.setFont(menuFont);
-		passwordLabel.setFont(menuFont);
-		passwordField.setFont(menuFont);
-		emailLabel.setFont(menuFont);
-		emailField.setFont(menuFont);
-		questionLabel.setFont(menuFont);
-		questionField.setFont(new Font(font, Font.PLAIN, (int) (fontSize / 1.5)));
-		answerLabel.setFont(menuFont);
-		answerField.setFont(menuFont);
-		okButton.setFont(menuFont);
+		usernameLabel.setFont(MENU_FONT);
+		usernameField.setFont(MENU_FONT);
+		passwordLabel.setFont(MENU_FONT);
+		passwordField.setFont(MENU_FONT);
+		emailLabel.setFont(MENU_FONT);
+		emailField.setFont(MENU_FONT);
+		questionLabel.setFont(MENU_FONT);
+		questionField.setFont(new Font(FONT, Font.PLAIN, (int) (FONT_SIZE / 1.5)));
+		answerLabel.setFont(MENU_FONT);
+		answerField.setFont(MENU_FONT);
+		okButton.setFont(MENU_FONT);
 
 		// Lay out everything.
 		JPanel pane = new JPanel(new GridLayout(0, 1, 5, 5));
