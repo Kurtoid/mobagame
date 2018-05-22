@@ -27,10 +27,10 @@ public class InGamePlayer {
 	private int speed;
 	private int armor;
 	// Need to fix these
-	private Ability abiq;
-	private Ability abiw;
-	private Ability abie;
-	private Ability abir;
+	private Ability abiq = new Ability();
+	private Ability abiw = new Ability();
+	private Ability abie = new Ability();
+	private Ability abir = new Ability();
 	//
 	private int magicResist;
 	private int currentHealth;

@@ -135,7 +135,6 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 			setVisible(false);
 
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
-			JOptionPane.showMessageDialog(controllingFrame, "TO Profile", "GO TO", JOptionPane.INFORMATION_MESSAGE);
 			 new Profile(player);
 			 setVisible(false);
 

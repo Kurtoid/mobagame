@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import mobagame.core.game.Ability;
 import mobagame.core.game.Character;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
@@ -20,10 +21,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 @SuppressWarnings("serial")
-public class GameScreen extends JFrame implements ActionListener, KeyListener, MouseListener, Runnable, MobaGameLauncher {
+public class GameScreen extends JFrame
+		implements ActionListener, KeyListener, MouseListener, Runnable, MobaGameLauncher {
 
 	public final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
-	
+
 	private boolean testing = false;
 	private boolean usePadAndBar = false;
 	private boolean lefty = false;
@@ -34,11 +36,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 	private JButton gold;
 
 	// icons
-	public static String placeHolderImage = ("resources/Black.png");
-	public static String backgroundImage = ("resources/Untitled.png");
+	public static String map = ("resources/Black.png");
 
 	// abilities
-	private String[] abilities = { (placeHolderImage), (placeHolderImage), (placeHolderImage), (placeHolderImage) };
 
 	private static String gameName = Menu.GAME_NAME;
 
@@ -47,6 +47,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 	private JPanel inventory;
 	private JScrollPane chat;
+	private JLabel health = new JLabel("Loading health");
+	private JLabel mana = new JLabel("Loading mana");
 
 	private JFrame controllingFrame; // needed for dialogs
 
@@ -67,20 +69,25 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		g.map.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
 		g.map.makeMap();
 		this.game = g;
-		user= p;
-	inventoryCanvase = new MyCanvas[][]{
-			{ MyCanvas.load(p.inventory[0][0].getImageLocation(), SCREEN_SIZE.width / 40),
-					 MyCanvas.load(p.inventory[0][1].getImageLocation(), SCREEN_SIZE.width / 40),
-					MyCanvas.load(p.inventory[0][2].getImageLocation(), SCREEN_SIZE.width / 40),
-					MyCanvas.load(p.inventory[0][3].getImageLocation(), SCREEN_SIZE.width / 40) },
-			{ MyCanvas.load(p.inventory[1][0].getImageLocation(), SCREEN_SIZE.width / 40),
-					MyCanvas.load(p.inventory[1][1].getImageLocation(), SCREEN_SIZE.width / 40),
-					 MyCanvas.load(p.inventory[1][2].getImageLocation(), SCREEN_SIZE.width / 40),
-					 MyCanvas.load(p.inventory[1][3].getImageLocation(), SCREEN_SIZE.width / 40) } };
+		user = p;
+		
+		//temp setup
+		Character reaper = new Character("rescorce/Black.png");
+		user.setCharacter(reaper);
+		
+		inventoryCanvase = new MyCanvas[][] {
+				{ MyCanvas.load(p.inventory[0][0].getImageLocation(), SCREEN_SIZE.width / 40),
+						MyCanvas.load(p.inventory[0][1].getImageLocation(), SCREEN_SIZE.width / 40),
+						MyCanvas.load(p.inventory[0][2].getImageLocation(), SCREEN_SIZE.width / 40),
+						MyCanvas.load(p.inventory[0][3].getImageLocation(), SCREEN_SIZE.width / 40) },
+				{ MyCanvas.load(p.inventory[1][0].getImageLocation(), SCREEN_SIZE.width / 40),
+						MyCanvas.load(p.inventory[1][1].getImageLocation(), SCREEN_SIZE.width / 40),
+						MyCanvas.load(p.inventory[1][2].getImageLocation(), SCREEN_SIZE.width / 40),
+						MyCanvas.load(p.inventory[1][3].getImageLocation(), SCREEN_SIZE.width / 40) } };
 
 		UIManager.put("OptionPane.messageFont", CHAT_FONT);
 		UIManager.put("OptionPane.buttonFont", MENU_FONT);
-		
+
 		gameMap = new MainMap();
 		gameMap.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
 		gameMap.makeMap();
@@ -98,11 +105,9 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		gold.setActionCommand(SHOP);
 		gold.addActionListener(this);
 
-		String mapImage = (placeHolderImage);
+		String mapImage = (map);
 		JLabel chatLabel = new JLabel(chatWrap + user.toString());
 		chatLabel.setBounds(0, SCREEN_SIZE.height / 2, SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
-		JPanel health = new JPanel();
-		JPanel mana = new JPanel();
 
 		// make border
 		Border red = BorderFactory.createLineBorder(Color.RED, 1);
@@ -118,9 +123,11 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		TitledBorder healthBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Health: ",
 				TitledBorder.CENTER, TitledBorder.TOP, GAME_FONT);
 		health.setBorder(healthBorder);
+		health.setHorizontalAlignment((int) JPanel.CENTER_ALIGNMENT);
 		TitledBorder manaBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Mana: ",
 				TitledBorder.CENTER, TitledBorder.TOP, GAME_FONT);
 		mana.setBorder(manaBorder);
+		mana.setHorizontalAlignment((int) JPanel.CENTER_ALIGNMENT);
 
 		// make layouts
 		GridBagLayout gbl = new GridBagLayout();
@@ -168,12 +175,14 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 		// chat
 		chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
+		
 		// stats
 		c.gridy = 0;
+		Ability[] abilities = { (user.getAbiq()), (user.getAbiw()), (user.getAbie()), (user.getAbir()) };
+
 		for (int x = 0; x < abilities.length; x++) {
 			c.gridx = x;
-			stats.add(new MyCanvas(abilities[x], SCREEN_SIZE.width / 40), c);
+			stats.add(new MyCanvas(abilities[x].getImageLocation(), SCREEN_SIZE.width / 40), c);
 		}
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -250,6 +259,7 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 		setVisible(true);
 		changeFontRecursive(this, MENU_FONT);
 		chatLabel.setFont(CHAT_FONT);
+		gold.setFont(MENU_FONT);
 		// next line to be deleted when fixed
 		// JOptionPane.showMessageDialog(controllingFrame, "Pressing tab breaks
 		// everything", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -271,6 +281,8 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 			v.add(l);
 			chat.setViewport(v);
 			chat.repaint();
+			health.setText(user.getCurrentHealth() + " / " + user.getMaxHealth());
+			mana.setText(user.getCurrentMana() + " / " + user.getMaxMana());
 			refreshInventory();
 		}
 	}
@@ -305,13 +317,14 @@ public class GameScreen extends JFrame implements ActionListener, KeyListener, M
 
 		for (int y = 0; y < user.getInventory().length; y++) {
 			for (int x = 0; x < user.getInventory()[y].length; x++) {
-				inventoryCanvase[y][x].setImageLocation(user.getInventory()[y][x].getImageLocation());;
+				inventoryCanvase[y][x].setImageLocation(user.getInventory()[y][x].getImageLocation());
+				;
 			}
 		}
 		inventory.repaint();
 		System.out.println("Info: Inventory repainted");
 	}
-	
+
 	public void keyPressed(KeyEvent ke) {
 		int pressed = ke.getKeyCode();
 		System.out.println("KEY PRESSED: " + pressed);
