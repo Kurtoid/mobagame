@@ -178,12 +178,17 @@ public class ConnectionListener implements Runnable {
 		this.worker.processData(this, socketChannel, this.readBuffer.array(), numRead, ConnectionIDs.get(socketChannel));
 	}
 
+	/**
+	 * removes a player from their current game, and removes their trackers from this
+	 * @param connID
+	 */
 	private void removePlayerFromGame(Integer connID) {
 		InGamePlayer p = worker.runner.connectionToPlayer.remove(connID);
 		ServerGame g = worker.runner.playerToGame.remove(p);
 		SocketChannel c = playerToConnection.remove(p);
 		connectionToPlayerID.remove(c);
 		g.players.remove(p);
+		g.notifyPlayersAboutDisconnect(p);
 	}
 
 	private void write(SelectionKey key) throws IOException {

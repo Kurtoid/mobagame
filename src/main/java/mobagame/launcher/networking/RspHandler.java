@@ -142,6 +142,10 @@ public class RspHandler extends Thread {
 							System.out.println("player joined");
 							addToPackets(new NotifyPlayerJoinedGamePacket(pkt));
 							break;
+						case Packet.PK_ID_NOTIFY_PLAYER_DISCONNECT:
+							System.out.println("Player disconnected");
+							addToPackets(new NotifyPlayerDisconnectedPacket(pkt));
+							break;
 						default:
 							System.out.println("unknown packet " + Packet.getPacketID(pkt));
 							break;

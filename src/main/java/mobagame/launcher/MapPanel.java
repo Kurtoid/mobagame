@@ -3,6 +3,7 @@ package mobagame.launcher;
 import mobagame.core.game.Game;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.NotifyPlayerDisconnectedPacket;
 import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
 import mobagame.core.networking.packets.Packet;
 import mobagame.core.networking.packets.PlayerPositionPacket;
@@ -274,6 +275,9 @@ public class MapPanel extends JPanel implements Runnable {
 								game.players.add(new InGamePlayer(pkt.playerID));
 								System.out.println("new player added");
 							}
+						}else if(NotifyPlayerDisconnectedPacket.class.isInstance(p)) {
+							NotifyPlayerDisconnectedPacket pkt = (NotifyPlayerDisconnectedPacket) p;
+							game.players.remove(game.getPlayer(pkt.playerID));
 						}
 					}
 

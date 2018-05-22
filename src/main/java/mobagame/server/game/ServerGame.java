@@ -3,6 +3,7 @@ package mobagame.server.game;
 import mobagame.core.game.Game;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.NotifyPlayerDisconnectedPacket;
 import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
 import mobagame.core.networking.packets.PlayerPositionPacket;
 import mobagame.server.ConnectionListener;
@@ -65,5 +66,16 @@ public class ServerGame extends Game {
 		}
 
 	}
+	private void removePlayer(InGamePlayer p) {
+		players.remove(p);
+	}
 
+	public void notifyPlayersAboutDisconnect(InGamePlayer p) {
+		NotifyPlayerDisconnectedPacket pkt = new NotifyPlayerDisconnectedPacket();
+		pkt.playerID = p.getPlayerID();
+		pkt.disconnectReason = NotifyPlayerDisconnectedPacket.MANUAL_DISCONNECT;
+		for(InGamePlayer player : players){
+				runner.conn.send(runner.conn.playerToConnection.get(player), pkt.getBytes().array());
+			}
+	}
 }
