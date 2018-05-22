@@ -12,6 +12,7 @@ import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,17 +30,17 @@ public class Shop extends JFrame implements ActionListener, MobaGameLauncher {
 	public static Item empty = new Item("empty", "resources/Items/emptySlot.png", 0, 0, false);
 	public static Item speedBow = new Item("Speed Bow", "resources/Items/item1.png", 100, ItemType.Speed, 100, false);
 	public static Item manaSword = new Item("Mana Sword", "resources/Items/item2.png", 50, ItemType.Mana, 50, false);
-	public static Item healthNumchucks = new Item("Health Numchucks", "resources/Items/item3.png", 30, ItemType.Health, 30, false);
+	public static Item healthNumchucks = new Item("Health Numchucks", "resources/Items/item3.png", 30, ItemType.Health,
+			30, false);
 	public static Item armorBow = new Item("Armor Bow", "resources/Items/item4.png", 10, ItemType.Armor, 10, false);
-	public static Item powerKnife = new Item("Power Knife", "resources/Items/knife.png", 500, ItemType.PhysicalPower, 100, false);
-	public static Item healingBerry = new Item("Healing Berry", "resources/Items/strawberry.png", 5, ItemType.Health, 100, true);
-	public static Item attackingReaper = new Item("Reaper", "resources/Reaper.png", 30, ItemType.AttackSpecial, 0, false);
+	public static Item powerKnife = new Item("Power Knife", "resources/Items/knife.png", 500, ItemType.PhysicalPower,
+			100, false);
+	public static Item healingBerry = new Item("Healing Berry", "resources/Items/strawberry.png", 5, ItemType.Health,
+			100, true);
+	public static Item attackingReaper = new Item("Reaper", "resources/Reaper.png", 30, ItemType.AttackSpecial, 0,
+			false);
 
 	private InGamePlayer user;
-
-	public Shop() {
-		this(new InGamePlayer(0));
-	}
 
 	public Shop(InGamePlayer user) {
 		super("Shop");
@@ -57,7 +58,7 @@ public class Shop extends JFrame implements ActionListener, MobaGameLauncher {
 
 		JPanel shop = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		JPanel itemList = new JPanel(new GridLayout(0, 5));
+		JPanel itemList = new JPanel(new GridLayout(0, 3));
 		JScrollPane list = new JScrollPane(itemList);
 		list.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		for (int x = 0; x < items.size(); x++) {
@@ -67,7 +68,7 @@ public class Shop extends JFrame implements ActionListener, MobaGameLauncher {
 			itemList.add(temp);
 		}
 
-		itemList.setSize(SCREEN_SIZE.height - SCREEN_SIZE.height / 100, SCREEN_SIZE.width / 3);
+		itemList.setSize(SCREEN_SIZE.width / 3, SCREEN_SIZE.height * 2 / 3);
 		c.gridy = 1;
 		c.gridx = 0;
 		c.anchor = GridBagConstraints.SOUTH;
@@ -76,22 +77,11 @@ public class Shop extends JFrame implements ActionListener, MobaGameLauncher {
 		shop.add(list, c);
 		setResizable(false);
 
-		setSize(500, 1000);
+		setSize((SCREEN_SIZE.width / 9 + SCREEN_SIZE.width / 15) * 2, SCREEN_SIZE.height * 2 / 3);
 		add(list);
-		addFocusListener(new FocusListener() {
 
-			@Override
-			public void focusLost(FocusEvent fe) {
-				fe.getComponent().setVisible(false);
-			}
-
-			@Override
-			public void focusGained(FocusEvent fe) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setAlwaysOnTop(true);
 		setVisible(true);
 	}
 
@@ -108,7 +98,8 @@ public class Shop extends JFrame implements ActionListener, MobaGameLauncher {
 	}
 
 	public static void main(String[] args) {
-		Shop x = new Shop();
-		x.user.setGoldAmount(500);
+		InGamePlayer x = new InGamePlayer(846512);
+		Shop t = new Shop(x);
+		x.setGoldAmount(500);
 	}
 }
