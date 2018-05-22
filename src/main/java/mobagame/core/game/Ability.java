@@ -8,6 +8,11 @@ private int baseDamage;
 private int abiPowRatio;
 private int phyPowRatio;
 private int damScale;
+
+public Ability() {
+	imageLocation = "resorces/Blank.png";
+}
+
 public int getDamScale() {
 	return damScale;
 }

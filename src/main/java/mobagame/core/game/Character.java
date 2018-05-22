@@ -10,7 +10,7 @@ public class Character {
 
 	// abilitys
 	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
-	private Ability[] abilitys = new Ability[5];
+	private Ability[] abilitys = { new Ability(), new Ability(), new Ability(), new Ability(), new Ability() };
 
 	private int range; // Measured in custom units ru
 	private int basePhyPow;
@@ -24,11 +24,11 @@ public class Character {
 	private int magicResistScale;
 	private int maxHealthScale;
 	private int maxManaScale;
-	//Need to fix these
-	private Ability abiq;
-	private Ability abiw;
-	private Ability abie;
-	private Ability abir;
+	// Need to fix these
+	private Ability abiq = new Ability();
+	private Ability abiw = new Ability();
+	private Ability abie = new Ability();
+	private Ability abir = new Ability();
 	public int width = 10;
 	public int height = 10;
 
@@ -154,10 +154,16 @@ public class Character {
 
 	private String imageLocation;
 
-	// testing item
+	// testing
 	public Character(int maxHealth, int maxMana) {
 		this.maxHealth = maxHealth;
 		this.maxMana = maxMana;
+	}
+
+	public Character(String imageLocation) {
+		for (int x = 0; x < abilitys.length; x++) {
+			abilitys[x] = new Ability();
+		}
 	}
 
 	public int getMaxHealth() {
@@ -201,7 +207,7 @@ public class Character {
 	}
 
 	public int getAbiPow() {
-		return  baseAbiPow;
+		return baseAbiPow;
 	}
 
 	public int getPhyPowScale() {
