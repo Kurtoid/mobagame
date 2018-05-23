@@ -4,7 +4,7 @@ public class Passive {
 	private PassiveType pass;
 	private StatEffectType SET;
 	private StatRatioType SRT;
-	private int statRatio;
+	private int statRatio; 
 
 public Passive() {
 		if (pass == PassiveType.StatEffect) {
