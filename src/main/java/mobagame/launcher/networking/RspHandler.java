@@ -146,6 +146,10 @@ public class RspHandler extends Thread {
 							System.out.println("Player disconnected");
 							addToPackets(new NotifyPlayerDisconnectedPacket(pkt));
 							break;
+						case Packet.PK_ID_PLAYER_REQUEST_BUY_ITEM_RESPONSE:
+							System.out.println("Buy item response");
+							addToPackets(new RequestPlayerBuyItemResponsePacket(pkt));
+							break;
 						default:
 							System.out.println("unknown packet " + Packet.getPacketID(pkt));
 							break;

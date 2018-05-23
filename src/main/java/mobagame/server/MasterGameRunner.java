@@ -82,6 +82,7 @@ public class MasterGameRunner extends Thread {
 				int thisSecond = (int) (lastUpdateTime / 1000000000);
 				if (thisSecond > lastSecondTime) {
 					// System.out.println("NEW SECOND " + thisSecond + " " + updateCount);
+					incrementGold();
 					fps = updateCount;
 					updateCount = 0;
 					lastSecondTime = thisSecond;
@@ -108,6 +109,12 @@ public class MasterGameRunner extends Thread {
 			}
 		}
 
+	}
+
+	private void incrementGold() {
+		for(ServerGame g : games) {
+			g.incrementGold();
+		}
 	}
 
 	private void updateGame() {

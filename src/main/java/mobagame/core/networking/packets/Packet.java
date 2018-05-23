@@ -32,6 +32,9 @@ public abstract class Packet {
 	public static final byte PK_ID_PLAYER_MOVEMENT = 12;
 	public static final byte PK_ID_NOTIFY_PLAYER_JOINED = 13;
 	public static final byte PK_ID_NOTIFY_PLAYER_DISCONNECT = 14;
+	public static final byte PK_ID_PLAYER_REQUEST_BUY_ITEM = 15;
+	public static final byte PK_ID_PLAYER_REQUEST_BUY_ITEM_RESPONSE = 16;
+
 
 	public static final byte PK_ID_RANDOM_BS_PACKET = 69;
 

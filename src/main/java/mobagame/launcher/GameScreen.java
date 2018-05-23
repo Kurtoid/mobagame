@@ -70,11 +70,11 @@ public class GameScreen extends JFrame
 		g.map.makeMap();
 		this.game = g;
 		user = p;
-		
+
 		//temp setup
 		Character reaper = new Character("rescorce/Black.png");
 		user.setCharacter(reaper);
-		
+
 		inventoryCanvase = new MyCanvas[][] {
 				{ MyCanvas.load(p.inventory[0][0].getImageLocation(), SCREEN_SIZE.width / 40),
 						MyCanvas.load(p.inventory[0][1].getImageLocation(), SCREEN_SIZE.width / 40),
@@ -175,7 +175,7 @@ public class GameScreen extends JFrame
 
 		// chat
 		chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
+
 		// stats
 		c.gridy = 0;
 		Ability[] abilities = { (user.getAbiq()), (user.getAbiw()), (user.getAbie()), (user.getAbir()) };

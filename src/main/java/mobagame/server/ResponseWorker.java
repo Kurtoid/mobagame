@@ -11,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.PlayerMover;
 import mobagame.core.networking.packets.DisconnectPacket;
@@ -21,6 +22,8 @@ import mobagame.core.networking.packets.Packet;
 import mobagame.core.networking.packets.PublicPlayerDataPacket;
 import mobagame.core.networking.packets.RequestEnterGamePacket;
 import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
+import mobagame.core.networking.packets.RequestPlayerBuyItemPacket;
+import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
 import mobagame.core.networking.packets.RequestPlayerMovementPacket;
 import mobagame.core.networking.packets.SendRandomDataPacket;
 import mobagame.core.networking.packets.SignupPacket;
@@ -95,6 +98,10 @@ public class ResponseWorker implements Runnable {
 				logger.log(Level.INFO, "player movement");
 				handleRequestMovementPacket(new RequestPlayerMovementPacket(chunkBuf), dataEvent);
 				break;
+			case Packet.PK_ID_PLAYER_REQUEST_BUY_ITEM:
+				logger.log(Level.INFO, "Player buy item");
+				handleBuyItemRequestPacket(new RequestPlayerBuyItemPacket(chunkBuf), dataEvent);
+				break;
 			default:
 				logger.log(Level.WARNING, "bad pkt");
 				break;
@@ -103,6 +110,15 @@ public class ResponseWorker implements Runnable {
 			// Return to sender
 			// dataEvent.server.send(dataEvent.socket, dataEvent.data);
 		}
+	}
+
+	private void handleBuyItemRequestPacket(RequestPlayerBuyItemPacket requestPlayerBuyItemPacket, ServerDataEvent dataEvent) {
+		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID)).buyItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerBuyItemPacket.itemID);
+		RequestPlayerBuyItemResponsePacket resp = new RequestPlayerBuyItemResponsePacket();
+		resp.status = status;
+		resp.itemID = requestPlayerBuyItemPacket.itemID;
+		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
+
 	}
 
 	private void handleRequestMovementPacket(RequestPlayerMovementPacket requestPlayerMovementPacket,

@@ -1,10 +1,14 @@
 package mobagame.core.game;
 
 import java.awt.Component;
+import java.io.IOException;
 
+import mobagame.core.networking.packets.RequestPlayerBuyItemPacket;
 import mobagame.launcher.GameScreen;
 import mobagame.launcher.MyCanvas;
 import mobagame.launcher.Shop;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection;
 
 public class Item {
 	private String name;
@@ -19,7 +23,7 @@ public class Item {
 		this.name = name;
 		this.imageLocation = imageLocation;
 		this.price = price;
-		this.type = type;
+		this.type =type;
 		this.effectPoints = effectPoints;
 		this.isConsumable = isConsumable;
 	}
@@ -43,56 +47,14 @@ public class Item {
 	}
 
 	public void buy(InGamePlayer user) {
-		for (int y = 0; y < user.inventory.length; y++) {
-			for (int x = 0; x < user.inventory[y].length; x++) {
-				if (user.inventory[y][x] == Shop.empty) {
-					if (user.getGoldAmount() >= price) {
-						user.setGoldAmount(user.getGoldAmount() - price);
-						user.inventory[y][x] = this;
-						if (!isConsumable) {
-							for (int z = 0; z < type.length; z++) {
-								switch (type[z]) {
-								case Health:
-									user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
-									break;
-								case Mana:
-									user.setMaxMana(user.getMaxMana() + effectPoints[z]);
-									break;
-								case PhysicalPower:
-									user.setMaxHealth(user.getMaxHealth() + effectPoints[z]);
-									break;
-								case AbilityPower:
-									user.setPhyPow(user.getPhyPow() + effectPoints[z]);
-									break;
-								case Speed:
-									user.setSpeed(user.getSpeed() + effectPoints[z]);
-									break;
-								case AttackSpecial:
-									user.setAbiPow(user.getAbiPow() + effectPoints[z]);
-									break;
-								case Armor:
-									user.setArmor(user.getArmor() + effectPoints[z]);
-									break;
-								case MagicResistance:
-									user.setMagicResist(user.getMagicResist() + effectPoints[z]);
-									break;
-								default:
-									System.out.println("ERROR: Unknown item type");
-									break;
-								}
-							}
-						}
-						System.out.println("You bought a " + this.name);
-						return;
-					} else {
-						System.out.println("Not enought gold to buy " + this.name + "\n\t" + "You need "
-								+ (price - user.getGoldAmount()) + " more gold");
-						return;
-					}
-				}
-			}
+		RequestPlayerBuyItemPacket pkt = new RequestPlayerBuyItemPacket();
+		pkt.itemID = GameItems.allGameItemsLookup.indexOf(this);
+		try {
+			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		System.out.println("No space in inventory to buy " + this.name);
 	}
 
 	public String getImageLocation() {
@@ -114,8 +76,8 @@ public class Item {
 	public Item use(InGamePlayer user) {
 		if (isConsumable) {
 			// do stuff
-			for (int x = 0; x < type.length; x++) {
-				switch (type[x]) {
+			for (int x = 0; x < getType().length; x++) {
+				switch (getType()[x]) {
 				case Health:
 					user.setCurrentHealth(user.getCurrentHealth() + effectPoints[x]);
 					break;
@@ -127,7 +89,7 @@ public class Item {
 					break;
 				}
 			}
-			return Shop.empty;
+			return GameItems.empty;
 		}
 		return this;
 	}
@@ -148,4 +110,18 @@ public class Item {
 		user.setGoldAmount(500);
 		knife.buy(user);
 	}
+
+	public boolean isConsumable() {
+		return isConsumable;
+	}
+
+	public ItemType[] getType() {
+		return type;
+	}
+
+	public int[] getEffectPoints() {
+		return effectPoints;
+	}
+
+
 }

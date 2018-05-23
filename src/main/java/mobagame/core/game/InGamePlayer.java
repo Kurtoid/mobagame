@@ -37,8 +37,8 @@ public class InGamePlayer {
 	private int currentMana;
 	private int goldAmount = 0;
 
-	public Item[][] inventory = { { (Shop.empty), (Shop.empty), (Shop.empty), (Shop.empty) },
-			{ (Shop.empty), (Shop.empty), (Shop.empty), (Shop.empty) } };
+	public Item[][] inventory = { { (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty) },
+			{ (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty) } };
 
 	public Character getCharacter() {
 		return character;
