@@ -108,17 +108,7 @@ public class GameScreen extends JFrame
 		JLabel chatLabel = new JLabel(chatWrap + user.toString());
 		chatLabel.setBounds(0, SCREEN_SIZE.height / 2, SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
 
-		// make border
-		Border red = BorderFactory.createLineBorder(Color.RED, 1);
-		Border orange = BorderFactory.createLineBorder(Color.ORANGE, 1);
-		Border yellow = BorderFactory.createLineBorder(Color.YELLOW, 1);
-		Border green = BorderFactory.createLineBorder(Color.GREEN, 1);
-		Border blue = BorderFactory.createLineBorder(Color.BLUE, 1);
-		Border purple = BorderFactory.createLineBorder(Color.MAGENTA, 1);
-		Border raisedBevel = BorderFactory.createRaisedBevelBorder();
-		Border loweredBevel = BorderFactory.createLoweredBevelBorder();
-		Border frame = BorderFactory.createCompoundBorder(raisedBevel, loweredBevel);
-		// health & mana borders
+				// health & mana borders
 		TitledBorder healthBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Health: ",
 				TitledBorder.CENTER, TitledBorder.TOP, GAME_FONT);
 		health.setBorder(healthBorder);

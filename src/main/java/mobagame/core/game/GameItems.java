@@ -17,15 +17,13 @@ public class GameItems {
 			ItemType.PhysicalPower, 100, false);
 	public final static Item healingBerry = new Item("Healing Berry", "resources/Items/strawberry.png", 1,
 			ItemType.Health, 100, true);
-	public final static Item attackingReaper = new Item("Reaper", "resources/Reaper.png", 1, ItemType.AttackSpecial, 0,
-			false);
 	public final static Item manaPizza = new Item("Mana Pizza", "resources/Items/pizza.png", 1, ItemType.Mana, 100,
 			true);
-	public final static Item protectiveFeather = new Item("Protective Feather", "resources/Items/feather.png", 1, ItemType.Armor, 100,
-			true);
+	public final static Item protectiveFeather = new Item("Protective Feather", "resources/Items/feather.png", 1,
+			ItemType.Armor, 100, true);
 
 	public static final Item[] allGameItems = { empty, speedBow, armorBow, manaSword, healthNumchucks, armorBow,
-			powerKnife, healingBerry, attackingReaper, manaPizza, protectiveFeather };
+			powerKnife, healingBerry, manaPizza, protectiveFeather };
 	public static final List<Item> allGameItemsLookup = Arrays.asList(allGameItems);
 
 }
