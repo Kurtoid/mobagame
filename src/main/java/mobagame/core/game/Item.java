@@ -197,10 +197,6 @@ public class Item implements MobaGameLauncher {
 	}
 
 	public String toString() {
-		// String temp = "Effects";
-		// for (int x = 0; x < type.length; x++) {
-		// temp += "\n\t +" + effectPoints[x] + "" + type[x];
-		// }
 		return name + ": " + "$" + price;
 	}
 
