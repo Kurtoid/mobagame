@@ -1,11 +1,15 @@
 package mobagame.core.game;
 
 import java.awt.Component;
+import java.io.IOException;
 
+import mobagame.core.networking.packets.RequestPlayerBuyItemPacket;
 import mobagame.launcher.GameScreen;
 import mobagame.launcher.MobaGameLauncher;
 import mobagame.launcher.MyCanvas;
 import mobagame.launcher.Shop;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection;
 
 public class Item implements MobaGameLauncher {
 	private String name;
@@ -46,7 +50,7 @@ public class Item implements MobaGameLauncher {
 	public void buy(InGamePlayer user) {
 		for (int y = 0; y < user.inventory.length; y++) {
 			for (int x = 0; x < user.inventory[y].length; x++) {
-				if (user.inventory[y][x] == empty) {
+				if (user.inventory[y][x] == GameItems.empty) {
 					if (user.getGoldAmount() >= price) {
 						user.setGoldAmount(user.getGoldAmount() - price);
 						user.inventory[y][x] = this;
@@ -92,17 +96,24 @@ public class Item implements MobaGameLauncher {
 					}
 				}
 			}
+			RequestPlayerBuyItemPacket pkt = new RequestPlayerBuyItemPacket();
+			pkt.itemID = GameItems.allGameItemsLookup.indexOf(this);
+			try {
+				ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		System.out.println("No space in inventory to buy " + this.name);
 	}
-	
+
 	public void sell(InGamePlayer user) {
 		for (int y = 0; y < user.inventory.length; y++) {
 			for (int x = 0; x < user.inventory[y].length; x++) {
 				if (user.inventory[y][x] == this) {
-					if (user.inventory[y][x] != empty) {
+					if (user.inventory[y][x] != GameItems.empty) {
 						user.setGoldAmount(user.getGoldAmount() + price);
-						user.inventory[y][x] = empty;
+						user.inventory[y][x] = GameItems.empty;
 						if (!isConsumable) {
 							for (int z = 0; z < type.length; z++) {
 								switch (type[z]) {
@@ -167,8 +178,8 @@ public class Item implements MobaGameLauncher {
 	public Item use(InGamePlayer user) {
 		if (isConsumable) {
 			// do stuff
-			for (int x = 0; x < type.length; x++) {
-				switch (type[x]) {
+			for (int x = 0; x < getType().length; x++) {
+				switch (getType()[x]) {
 				case Health:
 					user.setCurrentHealth(user.getCurrentHealth() + effectPoints[x]);
 					break;
@@ -180,7 +191,7 @@ public class Item implements MobaGameLauncher {
 					break;
 				}
 			}
-			return Shop.empty;
+			return GameItems.empty;
 		}
 		return this;
 	}
@@ -201,4 +212,17 @@ public class Item implements MobaGameLauncher {
 		user.setGoldAmount(500);
 		knife.buy(user);
 	}
+
+	public boolean isConsumable() {
+		return isConsumable;
+	}
+
+	public ItemType[] getType() {
+		return type;
+	}
+
+	public int[] getEffectPoints() {
+		return effectPoints;
+	}
+
 }

@@ -71,7 +71,6 @@ public class GameScreen extends JFrame
 		this.game = g;
 		user = p;
 
-		// temp setup
 		Character reaper = new Character("rescorce/Black.png");
 		user.setCharacter(reaper);
 

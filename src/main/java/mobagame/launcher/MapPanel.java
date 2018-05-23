@@ -1,12 +1,15 @@
 package mobagame.launcher;
 
 import mobagame.core.game.Game;
+import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
+import mobagame.core.game.Item;
 import mobagame.core.game.maps.MainMap;
 import mobagame.core.networking.packets.NotifyPlayerDisconnectedPacket;
 import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
 import mobagame.core.networking.packets.Packet;
 import mobagame.core.networking.packets.PlayerPositionPacket;
+import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
 import mobagame.core.networking.packets.RequestPlayerMovementPacket;
 import mobagame.launcher.game.gamePlayObjects.ClickMarker;
 import mobagame.launcher.networking.RspHandler;
@@ -278,6 +281,24 @@ public class MapPanel extends JPanel implements Runnable {
 						}else if(NotifyPlayerDisconnectedPacket.class.isInstance(p)) {
 							NotifyPlayerDisconnectedPacket pkt = (NotifyPlayerDisconnectedPacket) p;
 							game.players.remove(game.getPlayer(pkt.playerID));
+						}else if(RequestPlayerBuyItemResponsePacket.class.isInstance(p)) {
+							RequestPlayerBuyItemResponsePacket pkt = (RequestPlayerBuyItemResponsePacket) p;
+							if(pkt.status == pkt.SUCCESSFUL) {
+								Item i = GameItems.allGameItems[pkt.itemID];
+								boolean foundSlot = false;
+								for (int y = 0; y < game.getPlayerPlayer().inventory.length && !foundSlot; y++) {
+									for (int x = 0; x < game.getPlayerPlayer().inventory[y].length && !foundSlot; x++) {
+										if (game.getPlayerPlayer().inventory[y][x] == GameItems.empty) {
+												game.getPlayerPlayer().setGoldAmount(game.getPlayerPlayer().getGoldAmount() - i.getPrice());
+												game.getPlayerPlayer().inventory[y][x] = i;
+												System.out.println("You bought a " + i.getName());
+												foundSlot = true;
+										}
+									}
+								}
+								System.out.println("No space in inventory to buy " + i.getName());
+
+							}
 						}
 					}
 

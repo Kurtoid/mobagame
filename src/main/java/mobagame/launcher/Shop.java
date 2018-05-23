@@ -13,12 +13,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
-import mobagame.core.game.ItemType;
 
 @SuppressWarnings("serial")
 public class Shop implements ActionListener, MobaGameLauncher {
+
 
 	// Item Array
 	public final static ArrayList<Item> items = new ArrayList<Item>();
@@ -33,14 +34,17 @@ public class Shop implements ActionListener, MobaGameLauncher {
 		this.user = user;
 
 		// add items to list
-		items.add(speedBow);
-		items.add(manaSword);
-		items.add(healthNumchucks);
-		items.add(armorBow);
-		items.add(powerKnife);
-		items.add(healingBerry);
-		items.add(attackingReaper);
-		items.add(manaPizza);
+
+		items.add(GameItems.speedBow);
+		items.add(GameItems.manaSword);
+		items.add(GameItems.healthNumchucks);
+		items.add(GameItems.armorBow);
+		items.add(GameItems.powerKnife);
+		items.add(GameItems.healingBerry);
+		items.add(GameItems.attackingReaper);
+		items.add(GameItems.manaPizza);
+		items.add(GameItems.protectiveFeather);
+
 
 		JPanel shop = new JPanel(new GridLayout(1, 2));
 		GridBagConstraints c = new GridBagConstraints();

@@ -35,9 +35,9 @@ public class PublicPlayerDataPacket extends Packet{
 
 	@Override
 	void readData(ByteBuffer buff) {
-		buff.position(0);
+		buff.position(5);
 		player = new PlayerAccount();
-		player.id = buff.getInt(5);
+		player.id = buff.getInt();
 		System.out.println("Player id " + player.id);
 		player.username = getStringFromBuffer(buff, buff.position(), MAX_USERNAME_LENGTH);
 		player.level = buff.getInt();
