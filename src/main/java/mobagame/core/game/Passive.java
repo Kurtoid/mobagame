@@ -6,7 +6,7 @@ public class Passive {
 	private StatRatioType SRT;
 	private int statRatio;
 
-7	public Passive() {
+public Passive() {
 		if (pass == PassiveType.StatEffect) {
 			switch (SET) {
 			case StatRatio:
