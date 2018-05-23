@@ -222,7 +222,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			}
 		});
 		gbc.gridy = 4;
-		selectionScreen.add(startButton, gbc);
+		selectionScreen.add(startButton);
 		selectionScreen.setVisible(true);
 		start();
 	}
