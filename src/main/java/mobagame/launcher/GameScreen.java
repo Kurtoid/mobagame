@@ -70,11 +70,11 @@ public class GameScreen extends JFrame
 		g.map.makeMap();
 		this.game = g;
 		user = p;
-		
-		//temp setup
+
+		// temp setup
 		Character reaper = new Character("rescorce/Black.png");
 		user.setCharacter(reaper);
-		
+
 		inventoryCanvase = new MyCanvas[][] {
 				{ MyCanvas.load(p.inventory[0][0].getImageLocation(), SCREEN_SIZE.width / 40),
 						MyCanvas.load(p.inventory[0][1].getImageLocation(), SCREEN_SIZE.width / 40),
@@ -175,7 +175,7 @@ public class GameScreen extends JFrame
 
 		// chat
 		chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
+
 		// stats
 		c.gridy = 0;
 		Ability[] abilities = { (user.getAbiq()), (user.getAbiw()), (user.getAbie()), (user.getAbir()) };
@@ -307,6 +307,7 @@ public class GameScreen extends JFrame
 			for (int x = 0; x < user.getInventory()[y].length; x++) {
 				c.gridy = y;
 				c.gridx = x;
+				inventoryCanvase[y][x].addMouseListener(this);
 				inventory.add(inventoryCanvase[y][x], c);
 			}
 		}
@@ -466,11 +467,13 @@ public class GameScreen extends JFrame
 		// + me.getClickCount());
 	}
 
-	public void mouseEntered(MouseEvent me) {
-		// System.out.println("Mouse entered");
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	public void mouseExited(MouseEvent me) {
-		// System.out.println("Mouse exited");
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub		
 	}
+
 }

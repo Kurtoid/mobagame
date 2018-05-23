@@ -1,19 +1,15 @@
 package mobagame.launcher;
 
 import java.awt.Button;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -22,28 +18,17 @@ import mobagame.core.game.Item;
 import mobagame.core.game.ItemType;
 
 @SuppressWarnings("serial")
-public class Shop extends JFrame implements ActionListener, MobaGameLauncher {
-	// DNW
-	private ArrayList<Item> items = new ArrayList<Item>();
+public class Shop implements ActionListener, MobaGameLauncher {
 
-	// items
-	public static Item empty = new Item("empty", "resources/Items/emptySlot.png", 0, 0, false);
-	public static Item speedBow = new Item("Speed Bow", "resources/Items/item1.png", 100, ItemType.Speed, 100, false);
-	public static Item manaSword = new Item("Mana Sword", "resources/Items/item2.png", 50, ItemType.Mana, 50, false);
-	public static Item healthNumchucks = new Item("Health Numchucks", "resources/Items/item3.png", 30, ItemType.Health,
-			30, false);
-	public static Item armorBow = new Item("Armor Bow", "resources/Items/item4.png", 10, ItemType.Armor, 10, false);
-	public static Item powerKnife = new Item("Power Knife", "resources/Items/knife.png", 500, ItemType.PhysicalPower,
-			100, false);
-	public static Item healingBerry = new Item("Healing Berry", "resources/Items/strawberry.png", 5, ItemType.Health,
-			100, true);
-	public static Item attackingReaper = new Item("Reaper", "resources/Reaper.png", 30, ItemType.AttackSpecial, 0,
-			false);
+	// Item Array
+	public final static ArrayList<Item> items = new ArrayList<Item>();
 
 	private InGamePlayer user;
+	private JPanel display;
 
 	public Shop(InGamePlayer user) {
-		super("Shop");
+
+		JFrame f = new JFrame("Shop");
 
 		this.user = user;
 
@@ -55,15 +40,16 @@ public class Shop extends JFrame implements ActionListener, MobaGameLauncher {
 		items.add(powerKnife);
 		items.add(healingBerry);
 		items.add(attackingReaper);
+		items.add(manaPizza);
 
-		JPanel shop = new JPanel(new GridBagLayout());
+		JPanel shop = new JPanel(new GridLayout(1, 2));
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel itemList = new JPanel(new GridLayout(0, 3));
 		JScrollPane list = new JScrollPane(itemList);
 		list.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		for (int x = 0; x < items.size(); x++) {
-			Button temp = new Button(items.get(x) + "");
-			temp.setActionCommand(items.get(x).getName());
+			Button temp = new Button(items.get(x).toString());
+			temp.setActionCommand("d" + items.get(x).getName());
 			temp.addActionListener(this);
 			itemList.add(temp);
 		}
@@ -75,31 +61,42 @@ public class Shop extends JFrame implements ActionListener, MobaGameLauncher {
 		c.gridwidth = 0;
 		c.fill = 0;
 		shop.add(list, c);
-		setResizable(false);
+		f.setResizable(false);
 
-		setSize((SCREEN_SIZE.width / 9 + SCREEN_SIZE.width / 15) * 2, SCREEN_SIZE.height * 2 / 3);
-		add(list);
+		f.setSize((SCREEN_SIZE.width / 9 + SCREEN_SIZE.width / 15) * 2, SCREEN_SIZE.height * 2 / 3);
+		f.add(list);
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setAlwaysOnTop(true);
-		setVisible(true);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setAlwaysOnTop(true);
+		f.setVisible(true);
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent ae) {
-		String cmd = ae.getActionCommand();
+		String item = ae.getActionCommand().substring(1);
+		char action = ae.getActionCommand().charAt(0);
 		for (int x = 0; x < items.size(); x++) {
-			if (cmd.equals(items.get(x).getName())) {
-				items.get(x).buy(user);
-				return;
+			if (item.equals(items.get(x).getName())) {
+				if (action == 'b') {
+					items.get(x).buy(user);
+				} else if (action == 's') {
+					items.get(x).sell(user);
+				}
+			} else if (action == 'd') {
+				displayItem(items.get(x));
 			}
+			return;
 		}
 		System.out.println("Error: Not valid item");
+
+	}
+
+	private void displayItem(Item item) {
+		
 	}
 
 	public static void main(String[] args) {
 		InGamePlayer x = new InGamePlayer(846512);
-		Shop t = new Shop(x);
-		x.setGoldAmount(500);
+		new Shop(x);
+		x.setGoldAmount(50000);
 	}
 }

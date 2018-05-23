@@ -3,10 +3,11 @@ package mobagame.core.game;
 import java.awt.Component;
 
 import mobagame.launcher.GameScreen;
+import mobagame.launcher.MobaGameLauncher;
 import mobagame.launcher.MyCanvas;
 import mobagame.launcher.Shop;
 
-public class Item {
+public class Item implements MobaGameLauncher {
 	private String name;
 	private String imageLocation;
 	private int price;
@@ -45,7 +46,7 @@ public class Item {
 	public void buy(InGamePlayer user) {
 		for (int y = 0; y < user.inventory.length; y++) {
 			for (int x = 0; x < user.inventory[y].length; x++) {
-				if (user.inventory[y][x] == Shop.empty) {
+				if (user.inventory[y][x] == empty) {
 					if (user.getGoldAmount() >= price) {
 						user.setGoldAmount(user.getGoldAmount() - price);
 						user.inventory[y][x] = this;
@@ -93,6 +94,58 @@ public class Item {
 			}
 		}
 		System.out.println("No space in inventory to buy " + this.name);
+	}
+	
+	public void sell(InGamePlayer user) {
+		for (int y = 0; y < user.inventory.length; y++) {
+			for (int x = 0; x < user.inventory[y].length; x++) {
+				if (user.inventory[y][x] == this) {
+					if (user.inventory[y][x] != empty) {
+						user.setGoldAmount(user.getGoldAmount() + price);
+						user.inventory[y][x] = empty;
+						if (!isConsumable) {
+							for (int z = 0; z < type.length; z++) {
+								switch (type[z]) {
+								case Health:
+									user.setMaxHealth(user.getMaxHealth() - effectPoints[z]);
+									break;
+								case Mana:
+									user.setMaxMana(user.getMaxMana() - effectPoints[z]);
+									break;
+								case PhysicalPower:
+									user.setMaxHealth(user.getMaxHealth() - effectPoints[z]);
+									break;
+								case AbilityPower:
+									user.setPhyPow(user.getPhyPow() - effectPoints[z]);
+									break;
+								case Speed:
+									user.setSpeed(user.getSpeed() - effectPoints[z]);
+									break;
+								case AttackSpecial:
+									user.setAbiPow(user.getAbiPow() - effectPoints[z]);
+									break;
+								case Armor:
+									user.setArmor(user.getArmor() - effectPoints[z]);
+									break;
+								case MagicResistance:
+									user.setMagicResist(user.getMagicResist() - effectPoints[z]);
+									break;
+								default:
+									System.out.println("ERROR: Unknown item type");
+									break;
+								}
+							}
+						}
+						System.out.println("You sold a " + this.name);
+						return;
+					} else {
+						System.out.println("You cannot sell nothing");
+						return;
+					}
+				}
+			}
+		}
+		System.out.println("Error: Item not in inventory");
 	}
 
 	public String getImageLocation() {
