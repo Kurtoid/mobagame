@@ -74,7 +74,7 @@ public class Login implements ActionListener, MobaGameLauncher {
 		// Creates all of the windows
 		forgotPassword.setLayout(new GridLayout(5, 1, 6, 6));
 		forgotPassword.setAlwaysOnTop(true);
-		forgotPassword.setSize((int)(WINDOW_WIDTH / 2.6), (int)(WINDOW_HEIGHT / 3.125));
+		forgotPassword.setSize((int) (WINDOW_WIDTH / 2.6), (int) (WINDOW_HEIGHT / 3.125));
 		JLabel emailIndicator = new JLabel("Enter Email");
 		emailIndicator.setHorizontalAlignment(SwingConstants.CENTER);
 		JLabel question = new JLabel("Security Question");
@@ -229,17 +229,19 @@ public class Login implements ActionListener, MobaGameLauncher {
 
 					PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) h.getResponse(PublicPlayerDataPacket.class);
 					System.out.println(playerData.player.toString());
+					login.setVisible(false);
+
+
 					new Menu(playerData.player, false);
 				} else {
-					System.out.println("login faild");
+					System.out.println("login failed");
 				}
 			} catch (TimeoutException e) {
 				e.printStackTrace();
-				new Menu();
+//				new Menu();
 			}
 
 			// Add if statement to check if use is admin
-			login.setVisible(false);
 		} else if (ae.getActionCommand().equals("Forgot Password")) {
 			// opens the menu to get your password back
 			forgotPassword.setVisible(true);
@@ -275,5 +277,32 @@ public class Login implements ActionListener, MobaGameLauncher {
 				new Login();
 			}
 		});
+	}
+
+	public static void fakeLogin() {
+		RspHandler h = RspHandler.getInstance();
+		try {
+			ServerConnection server = ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port);
+			server.send(new LoginPacket("test", "testing").getBytes().array(), h);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			h.waitForResponse(1, 3000); // wait for one packets, or three seconds
+			LoginStatusPacket status = (LoginStatusPacket) h.getResponse(LoginStatusPacket.class);
+			System.out.println(status.success ? "logged in" : "not logged in");
+			if (status.success) {
+				// user logged in
+
+//				new Menu(playerData.player, false);
+			} else {
+				System.out.println("login failed");
+				System.exit(-1);
+			}
+		} catch (TimeoutException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
