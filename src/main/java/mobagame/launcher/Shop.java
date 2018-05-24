@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -19,6 +20,12 @@ import javax.swing.JScrollPane;
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
+import mobagame.core.networking.packets.PublicPlayerDataPacket;
+import mobagame.core.networking.packets.RequestEnterGamePacket;
+import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection;
+import mobagame.server.database.PlayerAccount;
 
 @SuppressWarnings("serial")
 public class Shop implements MobaGameLauncher {
@@ -34,7 +41,7 @@ public class Shop implements MobaGameLauncher {
 	private JButton sell = new JButton("Sell");
 
 	private static boolean testing = false;
-	int finalX = 0;
+	int activeItemID = 0;
 
 	public Shop(InGamePlayer user) {
 
@@ -54,13 +61,13 @@ public class Shop implements MobaGameLauncher {
 		list.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		for (int x = 0; x < items.size(); x++) {
 			JButton temp = new JButton(items.get(x).toString());
-			final int x1 = x;
+			final int tmp = x;
 			temp.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					finalX = tmp;
+					activeItemID = tmp;
 					System.out.println("display action");
-					displayItem(items.get(finalX));
+					displayItem(items.get(activeItemID));
 					display.repaint();
 				}
 			});
@@ -186,9 +193,22 @@ public class Shop implements MobaGameLauncher {
 	}
 
 	public static void main(String[] args) {
-		testing = true;
-		InGamePlayer x = new InGamePlayer(846512);
-		new Shop(x);
-		x.setGoldAmount(50000);
+		Login.fakeLogin();
+		RspHandler.getInstance().waitForResponse(); // wait for one (maybe two) packets, or three seconds
+		PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) RspHandler.getInstance().getResponse(PublicPlayerDataPacket.class);
+		PlayerAccount p = playerData.player;
+		RequestEnterGamePacket req = new RequestEnterGamePacket(p.id, 1);
+		try {
+			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(req.getBytes().array());
+			RspHandler.getInstance().waitForResponse();
+			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
+			System.out.println(game.playerID);
+
+			GameScreen s = new GameScreen(game.gameID, p, game.playerID);
+			s.testing = true;
+			s.game.getPlayerPlayer().setGoldAmount(5000);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

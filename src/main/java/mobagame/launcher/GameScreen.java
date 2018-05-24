@@ -32,7 +32,7 @@ public class GameScreen extends JFrame
 
 	public final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
 
-	private boolean testing = false;
+	public boolean testing = false;
 	private boolean usePadAndBar = false;
 	private boolean lefty = false;
 
