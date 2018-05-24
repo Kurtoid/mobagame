@@ -14,11 +14,17 @@ import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
 import mobagame.core.game.PlayerMover;
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.PublicPlayerDataPacket;
+import mobagame.core.networking.packets.RequestEnterGamePacket;
+import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
 import mobagame.launcher.game.ClientGame;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection;
 import mobagame.server.database.PlayerAccount;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 @SuppressWarnings("serial")
 public class GameScreen extends JFrame
@@ -431,9 +437,26 @@ public class GameScreen extends JFrame
 	}
 
 	public static void main(String[] args) {
-		GameScreen gs = new GameScreen(5, new PlayerAccount("ktaces"), 1);
-		gs.testing = true;
+		Login.fakeLogin();
+		RspHandler.getInstance().waitForResponse(); // wait for one (maybe two) packets, or three seconds
+		PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) RspHandler.getInstance().getResponse(PublicPlayerDataPacket.class);
+		PlayerAccount p = playerData.player;
+		RequestEnterGamePacket req = new RequestEnterGamePacket(p.id, 1);
+		try {
+			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(req.getBytes().array());
+			RspHandler.getInstance().waitForResponse();
+			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
+			System.out.println(game.playerID);
+
+			GameScreen s = new GameScreen(game.gameID, p, game.playerID);
+			s.testing = true;
+			s.game.getPlayerPlayer().setGoldAmount(5000);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
+
 
 	// Not used interface methods
 	public void keyTyped(KeyEvent ke) {

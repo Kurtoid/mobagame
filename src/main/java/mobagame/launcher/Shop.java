@@ -34,7 +34,7 @@ public class Shop implements MobaGameLauncher {
 	private JButton sell = new JButton("Sell");
 
 	private static boolean testing = false;
-	private int activeItemID = 0;
+	int finalX = 0;
 
 	public Shop(InGamePlayer user) {
 
@@ -55,16 +55,18 @@ public class Shop implements MobaGameLauncher {
 		for (int x = 0; x < items.size(); x++) {
 			JButton temp = new JButton(items.get(x).toString());
 			final int x1 = x;
-			temp.setActionCommand("d" + items.get(x).getName());
 			temp.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
-					activeItemID = x1;
-					displayItem(items.get(x1));
+					finalX = tmp;
+					System.out.println("display action");
+					displayItem(items.get(finalX));
+					display.repaint();
 				}
 			});
 			itemList.add(temp);
 		}
-		
+
 		displayItem(GameItems.healingBerry);
 
 		list.setSize((SCREEN_SIZE.width / 9 + SCREEN_SIZE.width / 15) * 2, SCREEN_SIZE.height * 2 / 3);
