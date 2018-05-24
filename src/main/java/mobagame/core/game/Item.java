@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.io.IOException;
 
 import mobagame.core.networking.packets.RequestPlayerBuyItemPacket;
+import mobagame.core.networking.packets.RequestPlayerSellItemPacket;
 import mobagame.launcher.GameScreen;
 import mobagame.launcher.MobaGameLauncher;
 import mobagame.launcher.MyCanvas;
@@ -61,54 +62,15 @@ public class Item implements MobaGameLauncher {
 	}
 
 	public void sell(InGamePlayer user) {
-		for (int y = 0; y < user.inventory.length; y++) {
-			for (int x = 0; x < user.inventory[y].length; x++) {
-				if (user.inventory[y][x] == this) {
-					if (user.inventory[y][x] != GameItems.empty) {
-						user.setGoldAmount(user.getGoldAmount() + price);
-						user.inventory[y][x] = GameItems.empty;
-						if (!isConsumable) {
-							for (int z = 0; z < type.length; z++) {
-								switch (type[z]) {
-								case Health:
-									user.setMaxHealth(user.getMaxHealth() - effectPoints[z]);
-									break;
-								case Mana:
-									user.setMaxMana(user.getMaxMana() - effectPoints[z]);
-									break;
-								case PhysicalPower:
-									user.setMaxHealth(user.getMaxHealth() - effectPoints[z]);
-									break;
-								case AbilityPower:
-									user.setPhyPow(user.getPhyPow() - effectPoints[z]);
-									break;
-								case Speed:
-									user.setSpeed(user.getSpeed() - effectPoints[z]);
-									break;
-								case AttackSpecial:
-									user.setAbiPow(user.getAbiPow() - effectPoints[z]);
-									break;
-								case Armor:
-									user.setArmor(user.getArmor() - effectPoints[z]);
-									break;
-								case MagicResistance:
-									user.setMagicResist(user.getMagicResist() - effectPoints[z]);
-									break;
-								default:
-									System.out.println("ERROR: Unknown item type");
-									break;
-								}
-							}
-						}
-						System.out.println("You sold a " + this.name);
-						return;
-					} else {
-						System.out.println("You cannot sell nothing");
-						return;
-					}
-				}
-			}
+		RequestPlayerSellItemPacket pkt = new RequestPlayerSellItemPacket();
+		pkt.itemID = GameItems.allGameItemsLookup.indexOf(this);
+		try {
+			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
+		} catch (IOException e) {
+//				 TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 		System.out.println("Error: Item not in inventory");
 	}
 

@@ -1,14 +1,8 @@
 package mobagame.server.game;
 
-import mobagame.core.game.Game;
-import mobagame.core.game.GameItems;
-import mobagame.core.game.InGamePlayer;
-import mobagame.core.game.Item;
+import mobagame.core.game.*;
 import mobagame.core.game.maps.MainMap;
-import mobagame.core.networking.packets.NotifyPlayerDisconnectedPacket;
-import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
-import mobagame.core.networking.packets.PlayerPositionPacket;
-import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
+import mobagame.core.networking.packets.*;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
 
@@ -16,6 +10,8 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static mobagame.core.game.ItemType.*;
 
 public class ServerGame extends Game {
 	Logger logger = Logger.getLogger(ServerGame.class.getName());
@@ -95,33 +91,33 @@ public class ServerGame extends Game {
 						if (!i.isConsumable()) {
 							for (int z = 0; z < i.getType().length; z++) {
 								switch (i.getType()[z]) {
-								case Health:
-									user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
-									break;
-								case Mana:
-									user.setMaxMana(user.getMaxMana() + i.getEffectPoints()[z]);
-									break;
-								case PhysicalPower:
-									user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
-									break;
-								case AbilityPower:
-									user.setPhyPow(user.getPhyPow() + i.getEffectPoints()[z]);
-									break;
-								case Speed:
-									user.setSpeed(user.getSpeed() + i.getEffectPoints()[z]);
-									break;
-								case AttackSpecial:
-									user.setAbiPow(user.getAbiPow() + i.getEffectPoints()[z]);
-									break;
-								case Armor:
-									user.setArmor(user.getArmor() + i.getEffectPoints()[z]);
-									break;
-								case MagicResistance:
-									user.setMagicResist(user.getMagicResist() + i.getEffectPoints()[z]);
-									break;
-								default:
-									System.out.println("ERROR: Unknown item type");
-									break;
+									case Health:
+										user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
+										break;
+									case Mana:
+										user.setMaxMana(user.getMaxMana() + i.getEffectPoints()[z]);
+										break;
+									case PhysicalPower:
+										user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
+										break;
+									case AbilityPower:
+										user.setPhyPow(user.getPhyPow() + i.getEffectPoints()[z]);
+										break;
+									case Speed:
+										user.setSpeed(user.getSpeed() + i.getEffectPoints()[z]);
+										break;
+									case AttackSpecial:
+										user.setAbiPow(user.getAbiPow() + i.getEffectPoints()[z]);
+										break;
+									case Armor:
+										user.setArmor(user.getArmor() + i.getEffectPoints()[z]);
+										break;
+									case MagicResistance:
+										user.setMagicResist(user.getMagicResist() + i.getEffectPoints()[z]);
+										break;
+									default:
+										System.out.println("ERROR: Unknown item type");
+										break;
 								}
 							}
 						}
@@ -137,6 +133,62 @@ public class ServerGame extends Game {
 		}
 		System.out.println("No space in inventory to buy " + i.getName());
 		return RequestPlayerBuyItemResponsePacket.NO_INVENTORY_SPACE;
+	}
+
+	public int sellItem(InGamePlayer user, int itemID) {
+		Item item = GameItems.allGameItemsLookup.get(itemID);
+		for (int y = 0; y < user.inventory.length; y++) {
+			for (int x = 0; x < user.inventory[y].length; x++) {
+				if (user.inventory[y][x] == item) {
+					if (user.inventory[y][x] != GameItems.empty) {
+						user.setGoldAmount(user.getGoldAmount() + item.getPrice());
+						user.inventory[y][x] = GameItems.empty;
+						if (!item.isConsumable()) {
+							for (int z = 0; z < item.getType().length; z++) {
+								switch (item.getType()[z]) {
+									case Health:
+										user.setMaxHealth(user.getMaxHealth() - item.getEffectPoints()[z]);
+										break;
+									case Mana:
+										user.setMaxMana(user.getMaxMana() - item.getEffectPoints()[z]);
+										break;
+									case PhysicalPower:
+										user.setMaxHealth(user.getMaxHealth() - item.getEffectPoints()[z]);
+										break;
+									case AbilityPower:
+										user.setPhyPow(user.getPhyPow() - item.getEffectPoints()[z]);
+										break;
+									case Speed:
+										user.setSpeed(user.getSpeed() - item.getEffectPoints()[z]);
+										break;
+									case AttackSpecial:
+										user.setAbiPow(user.getAbiPow() - item.getEffectPoints()[z]);
+										break;
+									case Armor:
+										user.setArmor(user.getArmor() - item.getEffectPoints()[z]);
+										break;
+									case MagicResistance:
+										user.setMagicResist(user.getMagicResist() - item.getEffectPoints()[z]);
+										break;
+									default:
+										System.out.println("ERROR: Unknown item type");
+										break;
+								}
+							}
+						}
+						System.out.println("You sold a " + item.getName());
+						// sold
+						return RequestPlayerSellItemResponsePacket.SUCCESSFUL;
+					} else {
+						System.out.println("You cannot sell nothing");
+						// failed
+						return RequestPlayerSellItemResponsePacket.NO_INVENTORY_SPACE;
+					}
+				}
+			}
+		}
+		return RequestPlayerSellItemResponsePacket.NO_INVENTORY_SPACE;
+
 	}
 
 	public void incrementGold() {

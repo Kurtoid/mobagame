@@ -14,20 +14,7 @@ import java.util.logging.Logger;
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.PlayerMover;
-import mobagame.core.networking.packets.DisconnectPacket;
-import mobagame.core.networking.packets.InitPacket;
-import mobagame.core.networking.packets.LoginPacket;
-import mobagame.core.networking.packets.LoginStatusPacket;
-import mobagame.core.networking.packets.Packet;
-import mobagame.core.networking.packets.PublicPlayerDataPacket;
-import mobagame.core.networking.packets.RequestEnterGamePacket;
-import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
-import mobagame.core.networking.packets.RequestPlayerBuyItemPacket;
-import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
-import mobagame.core.networking.packets.RequestPlayerMovementPacket;
-import mobagame.core.networking.packets.SendRandomDataPacket;
-import mobagame.core.networking.packets.SignupPacket;
-import mobagame.core.networking.packets.SignupResponsePacket;
+import mobagame.core.networking.packets.*;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 import mobagame.server.game.ServerGame;
@@ -102,6 +89,9 @@ public class ResponseWorker implements Runnable {
 				logger.log(Level.INFO, "Player buy item");
 				handleBuyItemRequestPacket(new RequestPlayerBuyItemPacket(chunkBuf), dataEvent);
 				break;
+				case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM:
+					logger.log(Level.INFO, "player sell item");
+					handleSellItemRequestPacket(new RequestPlayerSellItemPacket(chunkBuf), dataEvent);
 			default:
 				logger.log(Level.WARNING, "bad pkt");
 				break;
@@ -110,6 +100,15 @@ public class ResponseWorker implements Runnable {
 			// Return to sender
 			// dataEvent.server.send(dataEvent.socket, dataEvent.data);
 		}
+	}
+
+	private void handleSellItemRequestPacket(RequestPlayerSellItemPacket requestPlayerSellItemPacket, ServerDataEvent dataEvent) {
+		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID)).sellItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerSellItemPacket.itemID);
+		RequestPlayerSellItemResponsePacket resp = new RequestPlayerSellItemResponsePacket();
+		resp.status = status;
+		resp.itemID = requestPlayerSellItemPacket.itemID;
+		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
+
 	}
 
 	private void handleBuyItemRequestPacket(RequestPlayerBuyItemPacket requestPlayerBuyItemPacket, ServerDataEvent dataEvent) {
