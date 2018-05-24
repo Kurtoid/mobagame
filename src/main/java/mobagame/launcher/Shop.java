@@ -1,6 +1,5 @@
 package mobagame.launcher;
 
-import java.awt.Button;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
@@ -10,13 +9,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collection;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
@@ -31,6 +29,8 @@ public class Shop implements ActionListener, MobaGameLauncher {
 	private InGamePlayer user;
 	private GridBagConstraints c = new GridBagConstraints();
 	private JPanel display = new JPanel(new GridBagLayout());
+	
+	private static boolean testing = false;
 
 	public Shop(InGamePlayer user) {
 
@@ -49,7 +49,7 @@ public class Shop implements ActionListener, MobaGameLauncher {
 		JScrollPane list = new JScrollPane(itemList);
 		list.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		for (int x = 0; x < items.size(); x++) {
-			Button temp = new Button(items.get(x).toString());
+			JButton temp = new JButton(items.get(x).toString());
 			temp.setActionCommand("d" + items.get(x).getName());
 			temp.addActionListener(this);
 			itemList.add(temp);
@@ -75,12 +75,13 @@ public class Shop implements ActionListener, MobaGameLauncher {
 		f.add(shop);
 
 		changeFontRecursive(f, GAME_FONT);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		if (testing) {
+			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		}
 		f.setAlwaysOnTop(true);
 		f.setVisible(true);
 	}
 
-	@SuppressWarnings("unlikely-arg-type")
 	public void actionPerformed(ActionEvent ae) {
 		String item = ae.getActionCommand().substring(1, ae.getActionCommand().length());
 		char action = ae.getActionCommand().charAt(0);
@@ -106,17 +107,17 @@ public class Shop implements ActionListener, MobaGameLauncher {
 	private JLabel itemPrice = new JLabel();
 	private final JLabel labelEffect = new JLabel("Effects:");
 	private JPanel effectList = new JPanel(new GridLayout(0,1));
-	private Button buy = new Button("Buy");
-	private Button sell = new Button("Sell");
 
 	private void displayItem(Item item) {
+		JButton buy = new JButton("Buy");
+		JButton sell = new JButton("Sell");
 		itemName.setHorizontalAlignment(JLabel.CENTER);
 		itemPrice.setHorizontalAlignment(JLabel.CENTER);
 		labelEffect.setHorizontalAlignment(JLabel.CENTER);
 
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
-		display.removeAll();
+		effectList.removeAll();
 		c.gridwidth = 2;
 		c.gridy = 0;
 		itemName.setText(item.getName());
@@ -137,7 +138,7 @@ public class Shop implements ActionListener, MobaGameLauncher {
 		}
 		display.add(effectList, c);
 		
-		c.fill = GridBagConstraints.NONE;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridy = 5;
 		c.gridx = 0;
 		c.gridwidth = 1;
@@ -165,6 +166,7 @@ public class Shop implements ActionListener, MobaGameLauncher {
 	}
 
 	public static void main(String[] args) {
+		testing = true;
 		InGamePlayer x = new InGamePlayer(846512);
 		new Shop(x);
 		x.setGoldAmount(50000);
