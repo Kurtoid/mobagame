@@ -29,12 +29,12 @@ public class Shop implements MobaGameLauncher {
 	private InGamePlayer user;
 	private GridBagConstraints c = new GridBagConstraints();
 	private JPanel display = new JPanel(new GridBagLayout());
-<<<<<<< HEAD
-	
+
+	private JButton buy = new JButton("Buy");
+	private JButton sell = new JButton("Sell");
+
 	private static boolean testing = false;
-=======
 	private int activeItemID = 0;
->>>>>>> branch 'master' of https://ktaces@bitbucket.org/mmwjuniorproject2018/mobagame.git
 
 	public Shop(InGamePlayer user) {
 
@@ -53,16 +53,10 @@ public class Shop implements MobaGameLauncher {
 		JScrollPane list = new JScrollPane(itemList);
 		list.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		for (int x = 0; x < items.size(); x++) {
-<<<<<<< HEAD
 			JButton temp = new JButton(items.get(x).toString());
-=======
 			final int x1 = x;
-			Button temp = new Button(items.get(x).toString());
->>>>>>> branch 'master' of https://ktaces@bitbucket.org/mmwjuniorproject2018/mobagame.git
 			temp.setActionCommand("d" + items.get(x).getName());
 			temp.addActionListener(new ActionListener() {
-
-				@Override
 				public void actionPerformed(ActionEvent e) {
 					activeItemID = x1;
 					displayItem(items.get(x1));
@@ -70,7 +64,7 @@ public class Shop implements MobaGameLauncher {
 			});
 			itemList.add(temp);
 		}
-
+		
 		displayItem(GameItems.healingBerry);
 
 		list.setSize((SCREEN_SIZE.width / 9 + SCREEN_SIZE.width / 15) * 2, SCREEN_SIZE.height * 2 / 3);
@@ -109,8 +103,6 @@ public class Shop implements MobaGameLauncher {
 		c.gridwidth = 1;
 		c.anchor = GridBagConstraints.WEST;
 		buy.addActionListener(new ActionListener() {
-
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				items.get(activeItemID).buy(user);
 			}
@@ -119,8 +111,6 @@ public class Shop implements MobaGameLauncher {
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.EAST;
 		sell.addActionListener(new ActionListener() {
-
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				items.get(activeItemID).sell(user);
 			}
@@ -140,45 +130,14 @@ public class Shop implements MobaGameLauncher {
 		f.setVisible(true);
 	}
 
-<<<<<<< HEAD
-	public void actionPerformed(ActionEvent ae) {
-		String item = ae.getActionCommand().substring(1, ae.getActionCommand().length());
-		char action = ae.getActionCommand().charAt(0);
-		for (int x = 0; x < items.size(); x++) {
-			if (item.equals(items.get(x).getName())) {
-				if (action == 'b') {
-					items.get(x).buy(user);
-					return;
-				} else if (action == 's') {
-					items.get(x).sell(user);
-					return;
-				} else if (action == 'd') {
-					displayItem(items.get(x));
-					return;
-				}
-			}
-		}
-		System.out.println("Error: Not valid item");
-	}
-=======
->>>>>>> branch 'master' of https://ktaces@bitbucket.org/mmwjuniorproject2018/mobagame.git
 
 	private JLabel itemName = new JLabel();
 	private MyCanvas itemImage = new MyCanvas("", SCREEN_SIZE.width / 10);
 	private JLabel itemPrice = new JLabel();
 	private final JLabel labelEffect = new JLabel("Effects:");
-<<<<<<< HEAD
-	private JPanel effectList = new JPanel(new GridLayout(0,1));
-=======
 	private JPanel effectList = new JPanel(new GridLayout(0, 1));
-	private Button buy = new Button("Buy");
-	private Button sell = new Button("Sell");
->>>>>>> branch 'master' of https://ktaces@bitbucket.org/mmwjuniorproject2018/mobagame.git
 
 	private void displayItem(Item item) {
-<<<<<<< HEAD
-		JButton buy = new JButton("Buy");
-		JButton sell = new JButton("Sell");
 		itemName.setHorizontalAlignment(JLabel.CENTER);
 		itemPrice.setHorizontalAlignment(JLabel.CENTER);
 		labelEffect.setHorizontalAlignment(JLabel.CENTER);
@@ -188,8 +147,6 @@ public class Shop implements MobaGameLauncher {
 		effectList.removeAll();
 		c.gridwidth = 2;
 		c.gridy = 0;
-=======
->>>>>>> branch 'master' of https://ktaces@bitbucket.org/mmwjuniorproject2018/mobagame.git
 		itemName.setText(item.getName());
 		itemImage.setImageLocation(item.getImageLocation());
 		itemPrice.setText("$" + item.getPrice());
@@ -199,26 +156,19 @@ public class Shop implements MobaGameLauncher {
 			label.setHorizontalAlignment(JLabel.CENTER);
 			effectList.add(label);
 		}
-<<<<<<< HEAD
 		display.add(effectList, c);
-		
+
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridy = 5;
 		c.gridx = 0;
 		c.gridwidth = 1;
 		c.anchor = GridBagConstraints.WEST;
-		buy.setActionCommand("b" + item.getName());
-		buy.addActionListener(this);
+		buy.setActionCommand(item.getName());
 		display.add(buy, c);
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.EAST;
-		sell.setActionCommand("s" + item.getName());
-		sell.addActionListener(this);
+		sell.setActionCommand(item.getName());
 		display.add(sell, c);
-=======
-
-
->>>>>>> branch 'master' of https://ktaces@bitbucket.org/mmwjuniorproject2018/mobagame.git
 		display.repaint();
 
 		System.out.println("Info: Displaying " + item.getName());
