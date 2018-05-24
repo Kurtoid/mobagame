@@ -46,16 +46,27 @@ public Passive() {
 				}
 				break;
 			case BonusArmor:
+				//armor += ArmorBeforePassive(includes items) * statRatio;
 				break;
 			case BonusMagicResist:
+				//magicResist += magicResistBeforePassive(includes items) * statRatio;
 				break;
 			case BonusMaxHealth:
+				//MaxHealth += MaxHealthBeforePassive(includes items) * statRatio;
 				break;
 			case BonusPhyPow:
+				//phyPow += phyPowBeforePassive(includes items) * statRatio;
 				break;
 			case BonusAbiPow:
+				//abiPow += abiPowBeforePassive(includes items) * statRatio;
 				break;
 			default:
+				System.out.println("Something is Wrong");
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+				}
+				System.exit(0);
 				break;
 			}
 		} else {
