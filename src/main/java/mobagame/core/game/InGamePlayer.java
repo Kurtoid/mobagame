@@ -252,4 +252,9 @@ public class InGamePlayer {
 		}
 	}
 
+	public int getAbiLevel(Ability ability) {
+		//Need to finish it is to help with baseAbiDamage
+		return 0;
+	}
+
 }

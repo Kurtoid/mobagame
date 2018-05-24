@@ -35,8 +35,8 @@ public class ServerConnection extends Thread {
 	private Map rspHandlers = Collections.synchronizedMap(new HashMap());
 
 	private static ServerConnection instance;
-	public static String ip;
-	public static int port;
+	public static String ip = "localhost";
+	public static int port = 8666;
 	SocketChannel serverConn;
 
 	public static ServerConnection getInstance(String ip, int port) throws UnknownHostException, IOException {
@@ -52,14 +52,16 @@ public class ServerConnection extends Thread {
 	private ServerConnection(InetAddress hostAddress, int port) throws IOException {
 		this.hostAddress = hostAddress;
 		this.selector = this.initSelector();
-//		this.initiateConnection();
+		// this.initiateConnection();
 		this.start();
 	}
-	public RspHandler getHandler(){
+
+	public RspHandler getHandler() {
 		RspHandler h = RspHandler.getInstance();
 		this.rspHandlers.put(serverConn, h);
 		return h;
 	}
+
 	public void send(byte[] data, RspHandler handler) throws IOException {
 		// Start a new connection
 		SocketChannel socket = this.initiateConnection();
@@ -243,10 +245,9 @@ public class ServerConnection extends Thread {
 
 	private SocketChannel initiateConnection() throws IOException {
 		// Create a non-blocking socket channel
-		if (serverConn !=null && serverConn.isConnected()) {
+		if (serverConn != null && serverConn.isConnected()) {
 			synchronized (this.pendingChanges) {
-				this.pendingChanges
-						.add(new ChangeRequest(serverConn, ChangeRequest.REGISTER, SelectionKey.OP_WRITE));
+				this.pendingChanges.add(new ChangeRequest(serverConn, ChangeRequest.REGISTER, SelectionKey.OP_WRITE));
 			}
 
 			return serverConn;

@@ -105,10 +105,13 @@ public class Ability {
 	public int getDamage() {
 		int damage;
 		if (this.damageType == DamageType.PHYSICAL) {
-			damage = caster.getPhyPow() * this.phyPowRatio + this.baseDamage;
+			damage = caster.getPhyPow() * this.phyPowRatio + this.getBaseDamageBefRat();
 		} else {
-			damage = caster.getAbiPow() * this.abiPowRatio + this.baseDamage;
+			damage = caster.getAbiPow() * this.abiPowRatio + this.getBaseDamageBefRat();
 		}
 		return damage;
+	}
+	public int getBaseDamageBefRat() {
+		return (this.baseDamage + (this.damScale + caster.getAbiLevel(this)));
 	}
 }
