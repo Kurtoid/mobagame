@@ -35,8 +35,8 @@ public class ServerConnection extends Thread {
 	private Map rspHandlers = Collections.synchronizedMap(new HashMap());
 
 	private static ServerConnection instance;
-	public static String ip;
-	public static int port;
+	public static String ip = "localhost";
+	public static int port = 8666;
 	SocketChannel serverConn;
 
 	public static ServerConnection getInstance(String ip, int port) throws UnknownHostException, IOException {

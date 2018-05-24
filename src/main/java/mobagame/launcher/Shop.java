@@ -1,6 +1,5 @@
 package mobagame.launcher;
 
-import java.awt.Button;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
@@ -12,18 +11,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
 
 @SuppressWarnings("serial")
-public class Shop implements ActionListener, MobaGameLauncher {
+public class Shop implements MobaGameLauncher {
 
 	// Item Array
 	public final static ArrayList<Item> items = new ArrayList<Item>();
@@ -31,6 +26,7 @@ public class Shop implements ActionListener, MobaGameLauncher {
 	private InGamePlayer user;
 	private GridBagConstraints c = new GridBagConstraints();
 	private JPanel display = new JPanel(new GridBagLayout());
+	int finalX = 0;
 
 	public Shop(InGamePlayer user) {
 
@@ -39,7 +35,7 @@ public class Shop implements ActionListener, MobaGameLauncher {
 		this.user = user;
 
 		// add items to list
-		for (Item item: GameItems.allGameItems) {
+		for (Item item : GameItems.allGameItems) {
 			items.add(item);
 		}
 		items.remove(GameItems.empty);
@@ -49,13 +45,65 @@ public class Shop implements ActionListener, MobaGameLauncher {
 		JScrollPane list = new JScrollPane(itemList);
 		list.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		for (int x = 0; x < items.size(); x++) {
-			Button temp = new Button(items.get(x).toString());
-			temp.setActionCommand("d" + items.get(x).getName());
-			temp.addActionListener(this);
+			JButton temp = new JButton(items.get(x).toString());
+			int tmp = x;
+			temp.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					finalX = tmp;
+					System.out.println("display action");
+					displayItem(items.get(finalX));
+					display.repaint();
+				}
+			});
 			itemList.add(temp);
 		}
 
-		displayItem(GameItems.healingBerry);
+		itemName.setHorizontalAlignment(JLabel.CENTER);
+		itemPrice.setHorizontalAlignment(JLabel.CENTER);
+		labelEffect.setHorizontalAlignment(JLabel.CENTER);
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+		display.removeAll();
+		c.gridwidth = 2;
+		c.gridy = 0;
+		display.add(itemName, c);
+		c.gridy = 1;
+		display.add(itemImage, c);
+		c.gridy = 2;
+		display.add(itemPrice, c);
+		c.gridy = 3;
+		display.add(labelEffect, c);
+		c.gridy = 4;
+		display.add(effectList, c);
+
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = 5;
+		c.gridx = 0;
+		c.gridwidth = 1;
+		c.anchor = GridBagConstraints.WEST;
+//		buy.setActionCommand("b" + item.getName());
+		buy.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("buy action");
+				items.get(finalX).buy(user);
+				display.repaint();
+			}
+		});
+		display.add(buy, c);
+		c.gridx = 1;
+		c.anchor = GridBagConstraints.EAST;
+		sell.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("display action");
+				items.get(finalX).sell(user);
+				display.repaint();
+			}
+		});
+		display.add(sell, c);
 
 		list.setSize((SCREEN_SIZE.width / 9 + SCREEN_SIZE.width / 15) * 2, SCREEN_SIZE.height * 2 / 3);
 		c.gridy = 0;
@@ -75,86 +123,35 @@ public class Shop implements ActionListener, MobaGameLauncher {
 		f.add(shop);
 
 		changeFontRecursive(f, GAME_FONT);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setAlwaysOnTop(true);
 		f.setVisible(true);
-	}
-
-	@SuppressWarnings("unlikely-arg-type")
-	public void actionPerformed(ActionEvent ae) {
-		String item = ae.getActionCommand().substring(1, ae.getActionCommand().length());
-		char action = ae.getActionCommand().charAt(0);
-		for (int x = 0; x < items.size(); x++) {
-			if (item.equals(items.get(x).getName())) {
-				if (action == 'b') {
-					items.get(x).buy(user);
-					return;
-				} else if (action == 's') {
-					items.get(x).sell(user);
-					return;
-				} else if (action == 'd') {
-					displayItem(items.get(x));
-					return;
-				}
-			}
-		}
-		System.out.println("Error: Not valid item");
 	}
 
 	private JLabel itemName = new JLabel();
 	private MyCanvas itemImage = new MyCanvas("", SCREEN_SIZE.width / 10);
 	private JLabel itemPrice = new JLabel();
 	private final JLabel labelEffect = new JLabel("Effects:");
-	private JPanel effectList = new JPanel(new GridLayout(0,1));
-	private Button buy = new Button("Buy");
-	private Button sell = new Button("Sell");
+	private JPanel effectList = new JPanel(new GridLayout(0, 1));
+	private JButton buy = new JButton("Buy");
+	private JButton sell = new JButton("Sell");
 
 	private void displayItem(Item item) {
-		itemName.setHorizontalAlignment(JLabel.CENTER);
-		itemPrice.setHorizontalAlignment(JLabel.CENTER);
-		labelEffect.setHorizontalAlignment(JLabel.CENTER);
-
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.anchor = GridBagConstraints.CENTER;
-		display.removeAll();
-		c.gridwidth = 2;
-		c.gridy = 0;
 		itemName.setText(item.getName());
-		display.add(itemName, c);
-		c.gridy = 1;
 		itemImage.setImageLocation(item.getImageLocation());
-		display.add(itemImage, c);
-		c.gridy = 2;
 		itemPrice.setText("$" + item.getPrice());
-		display.add(itemPrice, c);
-		c.gridy = 3;
-		display.add(labelEffect, c);
-		c.gridy = 4;
+		effectList.removeAll();
 		for (int x = 0; x < item.getType().length; x++) {
 			JLabel label = new JLabel("+" + item.getEffectPoints()[x] + " " + item.getType()[x]);
-		    label.setHorizontalAlignment(JLabel.CENTER);
-			effectList.add(label);			
+			label.setHorizontalAlignment(JLabel.CENTER);
+			effectList.add(label);
 		}
-		display.add(effectList, c);
-		
-		c.fill = GridBagConstraints.NONE;
-		c.gridy = 5;
-		c.gridx = 0;
-		c.gridwidth = 1;
-		c.anchor = GridBagConstraints.WEST;
-		buy.setActionCommand("b" + item.getName());
-		buy.addActionListener(this);
-		display.add(buy, c);
-		c.gridx = 1;
-		c.anchor = GridBagConstraints.EAST;
-		sell.setActionCommand("s" + item.getName());
-		sell.addActionListener(this);
-		display.add(sell, c);
+
 		display.repaint();
 
 		System.out.println("Info: Displaying " + item.getName());
 	}
-	
+
 	public void changeFontRecursive(Container root, Font font) {
 		for (Component c : root.getComponents()) {
 			c.setFont(font);
