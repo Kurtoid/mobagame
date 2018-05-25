@@ -46,7 +46,7 @@ public class MasterGameRunner extends Thread {
 	public void run() {
 		super.run();
 		// This value would probably be stored elsewhere.
-		final double GAME_HERTZ = 60;
+		final double GAME_HERTZ = 20;
 		// Calculate how many ns each frame should take for our target game hertz.
 		final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
 		// We will need the last update time.
@@ -83,6 +83,7 @@ public class MasterGameRunner extends Thread {
 				if (thisSecond > lastSecondTime) {
 					// System.out.println("NEW SECOND " + thisSecond + " " + updateCount);
 					incrementGold();
+					sendStatusReports();
 					fps = updateCount;
 					updateCount = 0;
 					lastSecondTime = thisSecond;
@@ -107,6 +108,13 @@ public class MasterGameRunner extends Thread {
 					now = System.nanoTime();
 				}
 			}
+		}
+
+	}
+
+	private void sendStatusReports() {
+		for(ServerGame g : games) {
+			g.sendStatusReport();
 		}
 
 	}
@@ -146,6 +154,7 @@ public class MasterGameRunner extends Thread {
 
 	public void addToGame(ServerGame g, InGamePlayer p, int connectionID) {
 		g.players.add(p);
+		p.setGoldAmount(5000);
 		connectionToPlayer.put(connectionID, p);
 		playerToGame.put(p, g);
 

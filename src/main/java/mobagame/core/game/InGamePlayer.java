@@ -224,6 +224,7 @@ public class InGamePlayer {
 
 	public InGamePlayer(int playerID) {
 		this.playerID = playerID;
+		speed = 100;
 	}
 
 	public void setX(double x) {

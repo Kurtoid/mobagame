@@ -3,7 +3,7 @@ package mobagame.core.game;
 import mobagame.core.game.maps.MainMap;
 
 public class PlayerMover {
-	double speed = 4;
+//	double speed = 4;
 	double targetx = 500;
 	double targety = 500;
 	InGamePlayer player;
@@ -17,6 +17,7 @@ public class PlayerMover {
 	}
 
 	public void update() {
+		double speed = player.getSpeed()/50;
 		double angleRadians = Math.atan2(targety - player.getY(), targetx - player.getX());
 		double oldx = player.getX();
 		double oldy = player.getY();

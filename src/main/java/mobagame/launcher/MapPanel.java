@@ -210,7 +210,7 @@ public class MapPanel extends JPanel implements Runnable {
 		RspHandler h = conn.getHandler();
 		// Only run this in another Thread!
 		// This value would probably be stored elsewhere.
-		final double GAME_HERTZ = 60;
+		final double GAME_HERTZ = 20;
 		// Calculate how many ns each frame should take for our target game hertz.
 		final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
 		// At the very most we will update the game this many times before a new render.
@@ -265,7 +265,6 @@ public class MapPanel extends JPanel implements Runnable {
 //						System.out.println(p.x + " " + p.y);
 
 							}
-
 						} else if ( NotifyPlayerJoinedGamePacket.class.isInstance(p)) {
 							NotifyPlayerJoinedGamePacket pkt = (NotifyPlayerJoinedGamePacket) p;
 							System.out.println("new player!");
@@ -312,6 +311,12 @@ public class MapPanel extends JPanel implements Runnable {
 								System.out.println("No space in inventory to sell " + i.getName());
 
 							}
+						}else if(PlayerStatusReport.class.isInstance(p)) {
+							PlayerStatusReport rpt = (PlayerStatusReport) p;
+							InGamePlayer player = game.getPlayer(rpt.playerID);
+							player.setCurrentHealth(rpt.playerHealth);
+							player.setCurrentMana(rpt.playerMana);
+							player.setGoldAmount(rpt.playerGold);
 						}
 					}
 

@@ -154,6 +154,10 @@ public class RspHandler extends Thread {
 							System.out.println("sell item response");
 							addToPackets(new RequestPlayerSellItemResponsePacket(pkt));
 							break;
+						case Packet.PK_ID_PLAYER_STATUS_REPORT:
+							System.out.println("status report");
+							addToPackets(new PlayerStatusReport(pkt));
+							break;
 						default:
 							System.out.println("unknown packet " + Packet.getPacketID(pkt));
 							break;

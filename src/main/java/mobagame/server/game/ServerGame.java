@@ -196,4 +196,17 @@ public class ServerGame extends Game {
 			p.setGoldAmount(p.getGoldAmount() + 2);
 		}
 	}
+
+	public void sendStatusReport() {
+		for(InGamePlayer p : players) {
+			PlayerStatusReport rpt = new PlayerStatusReport();
+			rpt.playerID = p.getPlayerID();
+			rpt.playerHealth = p.getCurrentHealth();
+			rpt.playerGold = p.getGoldAmount();
+			rpt.playerMana = p.getCurrentMana();
+			for(InGamePlayer p2 : players) {
+				runner.conn.send(runner.conn.playerToConnection.get(p2), rpt.getBytes().array());
+			}
+		}
+	}
 }

@@ -268,7 +268,7 @@ public class GameScreen extends JFrame
 				Thread.sleep(1000 / goldPerSecond);
 			} catch (InterruptedException e) {
 			}
-			user.setGoldAmount(user.getGoldAmount() + 1);
+			//user.setGoldAmount(user.getGoldAmount() + 1);
 			gold.setText("$" + user.getGoldAmount());
 			JViewport v = new JViewport();
 			JLabel l = new JLabel("" + chatWrap + user);
@@ -481,11 +481,11 @@ public class GameScreen extends JFrame
 
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 	}
 
 }
