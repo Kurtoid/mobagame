@@ -21,11 +21,11 @@ public class MainServer {
 		// required, TODO: make this neater later
 		worker.runner = gRunner;
 		new Thread(worker).start();
-		try {
-			DatabaseConnectionManager.getInstance();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			DatabaseConnectionManager.getInstance();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
 		System.out.println("connected to database");
 		logger.log(Level.INFO, "started message parser");
 		ConnectionListener conn = null;

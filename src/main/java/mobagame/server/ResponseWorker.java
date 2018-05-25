@@ -7,14 +7,29 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.PlayerMover;
-import mobagame.core.networking.packets.*;
+import mobagame.core.networking.packets.DisconnectPacket;
+import mobagame.core.networking.packets.InitPacket;
+import mobagame.core.networking.packets.LoginPacket;
+import mobagame.core.networking.packets.LoginStatusPacket;
+import mobagame.core.networking.packets.Packet;
+import mobagame.core.networking.packets.PublicPlayerDataPacket;
+import mobagame.core.networking.packets.RequestEnterGamePacket;
+import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
+import mobagame.core.networking.packets.RequestPlayerBuyItemPacket;
+import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
+import mobagame.core.networking.packets.RequestPlayerMovementPacket;
+import mobagame.core.networking.packets.RequestPlayerSellItemPacket;
+import mobagame.core.networking.packets.RequestPlayerSellItemResponsePacket;
+import mobagame.core.networking.packets.SendRandomDataPacket;
+import mobagame.core.networking.packets.SignupPacket;
+import mobagame.core.networking.packets.SignupResponsePacket;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 import mobagame.server.game.ServerGame;
@@ -89,9 +104,9 @@ public class ResponseWorker implements Runnable {
 				logger.log(Level.INFO, "Player buy item");
 				handleBuyItemRequestPacket(new RequestPlayerBuyItemPacket(chunkBuf), dataEvent);
 				break;
-				case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM:
-					logger.log(Level.INFO, "player sell item");
-					handleSellItemRequestPacket(new RequestPlayerSellItemPacket(chunkBuf), dataEvent);
+			case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM:
+				logger.log(Level.INFO, "player sell item");
+				handleSellItemRequestPacket(new RequestPlayerSellItemPacket(chunkBuf), dataEvent);
 			default:
 				logger.log(Level.WARNING, "bad pkt");
 				break;
@@ -102,8 +117,10 @@ public class ResponseWorker implements Runnable {
 		}
 	}
 
-	private void handleSellItemRequestPacket(RequestPlayerSellItemPacket requestPlayerSellItemPacket, ServerDataEvent dataEvent) {
-		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID)).sellItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerSellItemPacket.itemID);
+	private void handleSellItemRequestPacket(RequestPlayerSellItemPacket requestPlayerSellItemPacket,
+			ServerDataEvent dataEvent) {
+		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID))
+				.sellItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerSellItemPacket.itemID);
 		RequestPlayerSellItemResponsePacket resp = new RequestPlayerSellItemResponsePacket();
 		resp.status = status;
 		resp.itemID = requestPlayerSellItemPacket.itemID;
@@ -111,8 +128,10 @@ public class ResponseWorker implements Runnable {
 
 	}
 
-	private void handleBuyItemRequestPacket(RequestPlayerBuyItemPacket requestPlayerBuyItemPacket, ServerDataEvent dataEvent) {
-		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID)).buyItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerBuyItemPacket.itemID);
+	private void handleBuyItemRequestPacket(RequestPlayerBuyItemPacket requestPlayerBuyItemPacket,
+			ServerDataEvent dataEvent) {
+		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID))
+				.buyItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerBuyItemPacket.itemID);
 		RequestPlayerBuyItemResponsePacket resp = new RequestPlayerBuyItemResponsePacket();
 		resp.status = status;
 		resp.itemID = requestPlayerBuyItemPacket.itemID;
@@ -139,7 +158,7 @@ public class ResponseWorker implements Runnable {
 		runner.addToGame(g, p, dataEvent.connectionID);
 
 		logger.log(Level.INFO, "resp with gameid " + g.getGameID() + " and player id " + p.getPlayerID());
-		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g,p);
+		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g, p);
 		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
 		g.notifyPlayerJoinedGame(p);
@@ -198,20 +217,22 @@ public class ResponseWorker implements Runnable {
 
 	void handleLoginPacket(LoginPacket p, ServerDataEvent dataEvent) {
 		// if (serverEnabled) {
-		PlayerAccountDBO dbo = new PlayerAccountDBO();
-		PlayerAccount player = null;
-		try {
-			player = dbo.loginAccount(p.getUsername(), p.getPassword());
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		/*
+		 * PlayerAccountDBO dbo = new PlayerAccountDBO(); PlayerAccount player = null;
+		 * try { player = dbo.loginAccount(p.getUsername(), p.getPassword()); } catch
+		 * (SQLException e) { e.printStackTrace(); }
+		 */
 		LoginStatusPacket loginPak = new LoginStatusPacket();
-		loginPak.success = player != null;
+		loginPak.success = true;
 		dataEvent.server.send(dataEvent.socket, loginPak.getBytes().array());
-		if (player != null) {
-			dataEvent.server.connectionToPlayerID.put(dataEvent.socket, player.id);
-			dataEvent.server.send(dataEvent.socket, new PublicPlayerDataPacket(player).getBytes().array());
-		}
+		Random r = new Random();
+		int playerID = r.nextInt();
+		dataEvent.server.connectionToPlayerID.put(dataEvent.socket, playerID);
+		PlayerAccount player = new PlayerAccount();
+		player.username = p.getUsername();
+		player.id = playerID;
+		player.level = 1;
+		dataEvent.server.send(dataEvent.socket, new PublicPlayerDataPacket(player).getBytes().array());
 		// }
 
 	}
