@@ -31,7 +31,7 @@ import mobagame.server.database.PlayerAccount;
 public class Shop implements MobaGameLauncher {
 
 	// Item Array
-	public final static ArrayList<Item> items = new ArrayList<Item>();
+	public final ArrayList<Item> items = new ArrayList<Item>();
 
 	private InGamePlayer user;
 	private GridBagConstraints c = new GridBagConstraints();
@@ -46,6 +46,8 @@ public class Shop implements MobaGameLauncher {
 	public Shop(InGamePlayer user) {
 
 		JFrame f = new JFrame("Shop");
+		f.setResizable(false);
+		f.setSize((SCREEN_SIZE.width / 9 + SCREEN_SIZE.width / 15) * 3, SCREEN_SIZE.height * 2 / 3);
 
 		this.user = user;
 
@@ -59,24 +61,25 @@ public class Shop implements MobaGameLauncher {
 		JPanel itemList = new JPanel(new GridLayout(0, 2));
 		JScrollPane list = new JScrollPane(itemList);
 		list.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		list.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		for (int x = 0; x < items.size(); x++) {
-			JButton temp = new JButton(items.get(x).toString());
-			final int tmp = x;
-			temp.addActionListener(new ActionListener() {
-				@Override
+			JButton displayItemX = new JButton(items.get(x).toString());
+			final int finalX = x;
+			displayItemX.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					activeItemID = tmp;
-					System.out.println("display action");
-					displayItem(items.get(activeItemID));
-					display.repaint();
+					if (activeItemID != finalX){
+						activeItemID = finalX;
+						System.out.println("Info: Now displaying item " + activeItemID);
+						displayItem(items.get(activeItemID));
+						display.repaint();
+					}
+					System.out.println("Info: Already displaying item " + activeItemID);
 				}
 			});
-			itemList.add(temp);
+			itemList.add(displayItemX);
 		}
 
-		displayItem(GameItems.healingBerry);
-
-		list.setSize((SCREEN_SIZE.width / 9 + SCREEN_SIZE.width / 15) * 2, SCREEN_SIZE.height * 2 / 3);
+		list.setSize(f.getSize().height/2, f.getSize().width/2);
 		c.gridy = 0;
 		c.gridx = 0;
 		c.anchor = GridBagConstraints.CENTER;
@@ -84,9 +87,9 @@ public class Shop implements MobaGameLauncher {
 		c.fill = 0;
 		shop.add(list, c);
 		c.gridx = 1;
-		display.setBorder(blue);
 		shop.add(display, c);
 		c.gridx = 0;
+
 		itemName.setHorizontalAlignment(JLabel.CENTER);
 		itemPrice.setHorizontalAlignment(JLabel.CENTER);
 		labelEffect.setHorizontalAlignment(JLabel.CENTER);
@@ -107,7 +110,7 @@ public class Shop implements MobaGameLauncher {
 		display.add(effectList, c);
 
 		c.fill = GridBagConstraints.NONE;
-		c.gridy = 5;
+		c.gridy = 6;
 		c.gridx = 0;
 		c.gridwidth = 1;
 		c.anchor = GridBagConstraints.WEST;
@@ -116,6 +119,7 @@ public class Shop implements MobaGameLauncher {
 				items.get(activeItemID).buy(user);
 			}
 		});
+		
 		display.add(buy, c);
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.EAST;
@@ -126,9 +130,10 @@ public class Shop implements MobaGameLauncher {
 		});
 		display.add(sell, c);
 
-		f.setResizable(false);
+		displayItem(GameItems.healingBerry);
+		activeItemID = items.indexOf(GameItems.healingBerry);
+		System.out.println("Info: Now displaying item " + activeItemID);
 
-		f.setSize((SCREEN_SIZE.width / 9 + SCREEN_SIZE.width / 15) * 3, SCREEN_SIZE.height * 2 / 3);
 		f.add(shop);
 
 		changeFontRecursive(f, GAME_FONT);
@@ -139,7 +144,6 @@ public class Shop implements MobaGameLauncher {
 		f.setVisible(true);
 	}
 
-
 	private JLabel itemName = new JLabel();
 	private MyCanvas itemImage = new MyCanvas("", SCREEN_SIZE.width / 10);
 	private JLabel itemPrice = new JLabel();
@@ -147,39 +151,32 @@ public class Shop implements MobaGameLauncher {
 	private JPanel effectList = new JPanel(new GridLayout(0, 1));
 
 	private void displayItem(Item item) {
+		
 		itemName.setHorizontalAlignment(JLabel.CENTER);
 		itemPrice.setHorizontalAlignment(JLabel.CENTER);
 		labelEffect.setHorizontalAlignment(JLabel.CENTER);
 
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.anchor = GridBagConstraints.CENTER;
-		effectList.removeAll();
-		c.gridwidth = 2;
-		c.gridy = 0;
 		itemName.setText(item.getName());
 		itemImage.setImageLocation(item.getImageLocation());
 		itemPrice.setText("$" + item.getPrice());
+		
 		effectList.removeAll();
+		c.gridwidth = 2;
+		c.gridy = 4;
+		c.gridx = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+		
 		for (int x = 0; x < item.getType().length; x++) {
 			JLabel label = new JLabel("+" + item.getEffectPoints()[x] + " " + item.getType()[x]);
 			label.setHorizontalAlignment(JLabel.CENTER);
 			effectList.add(label);
 		}
 		display.add(effectList, c);
-
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridy = 5;
-		c.gridx = 0;
-		c.gridwidth = 1;
-		c.anchor = GridBagConstraints.WEST;
+		
 		buy.setActionCommand(item.getName());
-		display.add(buy, c);
-		c.gridx = 1;
-		c.anchor = GridBagConstraints.EAST;
 		sell.setActionCommand(item.getName());
-		display.add(sell, c);
-		display.repaint();
-
+		
 		System.out.println("Info: Displaying " + item.getName());
 	}
 
@@ -193,22 +190,27 @@ public class Shop implements MobaGameLauncher {
 	}
 
 	public static void main(String[] args) {
-		Login.fakeLogin();
-		RspHandler.getInstance().waitForResponse(); // wait for one (maybe two) packets, or three seconds
-		PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) RspHandler.getInstance().getResponse(PublicPlayerDataPacket.class);
-		PlayerAccount p = playerData.player;
-		RequestEnterGamePacket req = new RequestEnterGamePacket(p.id, 1);
-		try {
-			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(req.getBytes().array());
-			RspHandler.getInstance().waitForResponse();
-			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
-			System.out.println(game.playerID);
-
-			GameScreen s = new GameScreen(game.gameID, p, game.playerID);
-			s.testing = true;
-			s.game.getPlayerPlayer().setGoldAmount(5000);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		 Login.fakeLogin();
+		 RspHandler.getInstance().waitForResponse(); // wait for one (maybe two) packets, or three seconds
+		 PublicPlayerDataPacket playerData = (PublicPlayerDataPacket)
+		 RspHandler.getInstance().getResponse(PublicPlayerDataPacket.class);
+		 PlayerAccount p = playerData.player;
+		 RequestEnterGamePacket req = new RequestEnterGamePacket(p.id, 1);
+		 try {
+		 ServerConnection.getInstance(ServerConnection.ip,
+		 ServerConnection.port).send(req.getBytes().array());
+		 RspHandler.getInstance().waitForResponse();
+		 RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket)
+		 RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
+		 System.out.println(game.playerID);
+		
+		 GameScreen s = new GameScreen(game.gameID, p, game.playerID);
+		testing = true;
+//		InGamePlayer user = new InGamePlayer(0);
+//		Shop s = new Shop(user);
+//		user.setGoldAmount(5000);
+		 } catch (IOException e) {
+		 e.printStackTrace();
+		 }
 	}
 }

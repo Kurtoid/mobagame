@@ -449,12 +449,12 @@ public class GameScreen extends JFrame
 			System.out.println(game.playerID);
 
 			GameScreen s = new GameScreen(game.gameID, p, game.playerID);
+//			GameScreen s = new GameScreen(0, new PlayerAccount() , 0); // This is for when I was testing the shop item load in
 			s.testing = true;
-			s.game.getPlayerPlayer().setGoldAmount(5000);
+			s.game.getPlayerPlayer().setGoldAmount(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 
