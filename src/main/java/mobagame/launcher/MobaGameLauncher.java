@@ -15,6 +15,8 @@ import mobagame.core.game.ItemType;
 public interface MobaGameLauncher {
 
 	public final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+//	public final Dimension SCREEN_SIZE = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width/2,Toolkit.getDefaultToolkit().getScreenSize().height/2);
+
 
 	public final int WINDOW_HEIGHT = SCREEN_SIZE.height * 4 / 7;
 	public final int WINDOW_WIDTH = (int) (WINDOW_HEIGHT * 1.875);
