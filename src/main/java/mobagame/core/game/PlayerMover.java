@@ -3,7 +3,7 @@ package mobagame.core.game;
 import mobagame.core.game.maps.MainMap;
 
 public class PlayerMover {
-//	double speed = 4;
+	// double speed = 4;
 	double targetx = 500;
 	double targety = 500;
 	InGamePlayer player;
@@ -17,14 +17,22 @@ public class PlayerMover {
 	}
 
 	public void update() {
-		double speed = player.getSpeed()/50;
+		double speed = player.getSpeed() / 50;
 		double angleRadians = Math.atan2(targety - player.getY(), targetx - player.getX());
 		double oldx = player.getX();
 		double oldy = player.getY();
 		double y = (oldy + (speed * Math.sin(angleRadians)));
 		double x = (oldx + (speed * Math.cos(angleRadians)));
-
-		if (Math.abs(targetx - x) < Math.abs(speed * Math.cos(angleRadians)) && Math.abs(targety - y) < Math.abs(speed * Math.sin(angleRadians)) && !map.getMap().intersects(targetx, targety, 5, 5)) {
+		if (Math.sqrt((targetx - oldx) * (targetx - oldx) + (targety - oldy) * (targety - oldy)) < speed) {
+			x = targetx;
+			y = targety;
+			player.setX(x);
+			player.setY(y);
+			return;
+		}
+		if (Math.abs(targetx - x) < Math.abs(speed * Math.cos(angleRadians))
+				&& Math.abs(targety - y) < Math.abs(speed * Math.sin(angleRadians))
+				&& !map.getMap().intersects(targetx, targety, 5, 5)) {
 			x = targetx;
 			y = targety;
 		} else {
@@ -32,20 +40,20 @@ public class PlayerMover {
 			/*
 			 * if (x < targetx) { x++; } if (x > targetx) { x--; } //
 			 */
-			if (map.getMap().intersects(x-20, player.getY()-20, 40, 40)) {
+			if (map.getMap().intersects(x - 20, player.getY() - 20, 40, 40)) {
 				x = oldx;
 			}
 
 			/*
 			 * if (y > targety) { y--; } if (y < targety) { y++; } //
 			 */
-			if (map.getMap().intersects(x-20, y-20, 40, 40)) {
+			if (map.getMap().intersects(x - 20, y - 20, 40, 40)) {
 				y = oldy;
 			}
 		}
 		player.setX(x);
 		player.setY(y);
-//		System.out.println(x + "\t" + y);
+		// System.out.println(x + "\t" + y);
 	}
 
 	public void setTarget(double newX, double newY) {
