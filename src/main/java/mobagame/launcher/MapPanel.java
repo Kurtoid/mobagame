@@ -1,18 +1,12 @@
 package mobagame.launcher;
 
-import mobagame.core.game.Game;
-import mobagame.core.game.GameItems;
-import mobagame.core.game.InGamePlayer;
-import mobagame.core.game.Item;
-import mobagame.core.game.maps.MainMap;
-import mobagame.core.networking.packets.*;
-import mobagame.launcher.game.gamePlayObjects.ClickMarker;
-import mobagame.launcher.networking.RspHandler;
-import mobagame.launcher.networking.ServerConnection;
-import mobagame.server.database.PlayerAccount;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -25,6 +19,25 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+
+import javax.swing.JPanel;
+
+import mobagame.core.game.Game;
+import mobagame.core.game.GameItems;
+import mobagame.core.game.InGamePlayer;
+import mobagame.core.game.Item;
+import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.NotifyPlayerDisconnectedPacket;
+import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
+import mobagame.core.networking.packets.Packet;
+import mobagame.core.networking.packets.PlayerPositionPacket;
+import mobagame.core.networking.packets.PlayerStatusReport;
+import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
+import mobagame.core.networking.packets.RequestPlayerMovementPacket;
+import mobagame.core.networking.packets.RequestPlayerSellItemResponsePacket;
+import mobagame.launcher.game.gamePlayObjects.ClickMarker;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection;
 
 public class MapPanel extends JPanel implements Runnable {
 	MainMap map;
@@ -130,12 +143,12 @@ public class MapPanel extends JPanel implements Runnable {
 
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				translateX += ((e.getX() - mouseX) / scaleX);
-				translateY += ((e.getY() - mouseY) / scaleY);
-				mouseX = e.getX();
-				mouseY = e.getY();
-				System.out.println("mouse dragged ");
-				repaint();
+			//	translateX += ((e.getX() - mouseX) / scaleX);
+			//	translateY += ((e.getY() - mouseY) / scaleY);
+			//	mouseX = e.getX();
+			//	mouseY = e.getY();
+			//	System.out.println("mouse dragged ");
+			//	repaint();
 			}
 		});
 		addMouseWheelListener(new MouseWheelListener() {
@@ -318,6 +331,19 @@ public class MapPanel extends JPanel implements Runnable {
 							player.setCurrentMana(rpt.playerMana);
 							player.setGoldAmount(rpt.playerGold);
 						}
+					}
+
+					if(getWidth()-mouseX<20) {
+						translateX-=getWidth()/50;
+					}
+					if(mouseX<20) {
+						translateX+=getWidth()/50;
+					}
+					if(getHeight()-mouseY<20) {
+						translateY-=getHeight()/50;
+					}
+					if(mouseY<20) {
+						translateY+=getHeight()/50;
 					}
 
 
