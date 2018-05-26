@@ -31,6 +31,15 @@ public class Character {
 	private Ability abir = new Ability();
 	public int width = 10;
 	public int height = 10;
+	private Passive pass;
+
+	public Passive getPass() {
+		return pass;
+	}
+
+	public void setPass(Passive pass) {
+		this.pass = pass;
+	}
 
 	public int getMaxHealthScale() {
 		return maxHealthScale;
