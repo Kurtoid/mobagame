@@ -155,8 +155,8 @@ public class MapPanel extends JPanel implements Runnable {
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
-				scaleX += e.getWheelRotation();
-				scaleY += e.getWheelRotation();
+				scaleX -= e.getWheelRotation();
+				scaleY -= e.getWheelRotation();
 
 				scaleX = Math.max(1, scaleX);
 				scaleY = Math.max(1, scaleY);
