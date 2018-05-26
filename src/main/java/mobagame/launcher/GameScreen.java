@@ -10,10 +10,12 @@ import javax.swing.border.TitledBorder;
 
 import mobagame.core.game.Ability;
 import mobagame.core.game.Character;
+import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
 import mobagame.core.game.PlayerMover;
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.PlayerUseItemRequestPacket;
 import mobagame.core.networking.packets.PublicPlayerDataPacket;
 import mobagame.core.networking.packets.RequestEnterGamePacket;
 import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
@@ -25,6 +27,7 @@ import mobagame.server.database.PlayerAccount;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 @SuppressWarnings("serial")
 public class GameScreen implements ActionListener, KeyListener, MouseListener, Runnable, MobaGameLauncher {
@@ -59,7 +62,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 	MainMap gameMap;
 	ClientGame game;
-	private MyCanvas[][] inventoryCanvase;
+	private MyCanvas[]inventoryCanvase;
 
 	// open menu window for playerName
 	public GameScreen(int gameID, PlayerAccount player, int playerID) {
@@ -78,15 +81,14 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		Character reaper = new Character("rescorce/Black.png");
 		user.setCharacter(reaper);
 
-		inventoryCanvase = new MyCanvas[][] {
-				{ MyCanvas.load(p.inventory[0][0].getImageLocation(), SCREEN_SIZE.width / 40),
-						MyCanvas.load(p.inventory[0][1].getImageLocation(), SCREEN_SIZE.width / 40),
-						MyCanvas.load(p.inventory[0][2].getImageLocation(), SCREEN_SIZE.width / 40),
-						MyCanvas.load(p.inventory[0][3].getImageLocation(), SCREEN_SIZE.width / 40) },
-				{ MyCanvas.load(p.inventory[1][0].getImageLocation(), SCREEN_SIZE.width / 40),
-						MyCanvas.load(p.inventory[1][1].getImageLocation(), SCREEN_SIZE.width / 40),
-						MyCanvas.load(p.inventory[1][2].getImageLocation(), SCREEN_SIZE.width / 40),
-						MyCanvas.load(p.inventory[1][3].getImageLocation(), SCREEN_SIZE.width / 40) } };
+		inventoryCanvase = new MyCanvas[] { MyCanvas.load(p.inventory[0].getImageLocation(), SCREEN_SIZE.width / 40),
+				MyCanvas.load(p.inventory[1].getImageLocation(), SCREEN_SIZE.width / 40),
+				MyCanvas.load(p.inventory[2].getImageLocation(), SCREEN_SIZE.width / 40),
+				MyCanvas.load(p.inventory[3].getImageLocation(), SCREEN_SIZE.width / 40),
+				MyCanvas.load(p.inventory[4].getImageLocation(), SCREEN_SIZE.width / 40),
+				MyCanvas.load(p.inventory[5].getImageLocation(), SCREEN_SIZE.width / 40),
+				MyCanvas.load(p.inventory[6].getImageLocation(), SCREEN_SIZE.width / 40),
+				MyCanvas.load(p.inventory[7].getImageLocation(), SCREEN_SIZE.width / 40) };
 
 		UIManager.put("OptionPane.messageFont", CHAT_FONT);
 		UIManager.put("OptionPane.buttonFont", MENU_FONT);
@@ -298,12 +300,10 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	public void setInventory() {
 		GridBagConstraints c = new GridBagConstraints();
 		for (int y = 0; y < user.getInventory().length; y++) {
-			for (int x = 0; x < user.getInventory()[y].length; x++) {
-				c.gridy = y;
-				c.gridx = x;
-				inventoryCanvase[y][x].addMouseListener(this);
-				inventory.add(inventoryCanvase[y][x], c);
-			}
+				c.gridy = y/4;
+				c.gridx = y/2;
+				inventoryCanvase[y].addMouseListener(this);
+				inventory.add(inventoryCanvase[y], c);
 		}
 		System.out.println("Info: Inventory set");
 	}
@@ -311,10 +311,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	public void refreshInventory() {
 
 		for (int y = 0; y < user.getInventory().length; y++) {
-			for (int x = 0; x < user.getInventory()[y].length; x++) {
-				inventoryCanvase[y][x].setImageLocation(user.getInventory()[y][x].getImageLocation());
-				;
-			}
+				inventoryCanvase[y].setImageLocation(user.getInventory()[y].getImageLocation());
 		}
 		inventory.repaint();
 		System.out.println("Info: Inventory repainted");
@@ -373,42 +370,42 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		case KeyEvent.VK_1:
 			// USE inventory slot 1
 			System.out.println("USE inventory slot 1");
-			user.inventory[0][0] = user.inventory[0][0].use(user);
+			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[0]));
 			break;
 		case KeyEvent.VK_2:
 			// USE inventory slot 2
 			System.out.println("USE inventory slot 2");
-			user.inventory[0][1] = user.inventory[0][1].use(user);
+			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[1]));
 			break;
 		case KeyEvent.VK_3:
 			// USE inventory slot 3
 			System.out.println("USE inventory slot 3");
-			user.inventory[0][2] = user.inventory[0][2].use(user);
+			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[2]));
 			break;
 		case KeyEvent.VK_4:
 			// USE inventory slot 4
 			System.out.println("USE inventory slot 4");
-			user.inventory[0][3] = user.inventory[0][3].use(user);
+			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[3]));
 			break;
 		case KeyEvent.VK_5:
 			// USE inventory slot 5
 			System.out.println("USE inventory slot 5");
-			user.inventory[1][0] = user.inventory[1][0].use(user);
+			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[4]));
 			break;
 		case KeyEvent.VK_6:
 			// USE inventory slot 6
 			System.out.println("USE inventory slot 6");
-			user.inventory[1][1] = user.inventory[1][1].use(user);
+			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[5]));
 			break;
 		case KeyEvent.VK_7:
 			// USE inventory slot 7
 			System.out.println("USE inventory slot 7");
-			user.inventory[1][2] = user.inventory[1][2].use(user);
+			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[6]));
 			break;
 		case KeyEvent.VK_8:
 			// USE inventory slot 8
 			System.out.println("USE inventory slot 8");
-			user.inventory[1][3] = user.inventory[1][3].use(user);
+			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[7]));
 			break;
 		case KeyEvent.VK_ESCAPE:
 			// Escape pressed
@@ -418,6 +415,17 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		}
 	}
 
+	private void reportUseItem(int itemID) {
+		PlayerUseItemRequestPacket pkt = new PlayerUseItemRequestPacket();
+		pkt.itemID = itemID;
+		try {
+			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void mouseClicked(MouseEvent me) { // TODO Click to move
 		System.out.println("Mouse Point (" + me.getX() + ", " + me.getY() + ")");
 	}
@@ -449,8 +457,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			System.out.println(game.playerID);
 
 			GameScreen s = new GameScreen(game.gameID, p, game.playerID);
-			// GameScreen s = new GameScreen(0, new PlayerAccount() , 0); // This is for
-			// when I was testing the shop item load in
 			s.testing = true;
 			s.game.getPlayerPlayer().setGoldAmount(0);
 		} catch (IOException e) {

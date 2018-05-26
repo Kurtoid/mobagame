@@ -37,8 +37,11 @@ public abstract class Packet {
 	public static final byte PK_ID_PLAYER_REQUEST_SELL_ITEM = 17;
 	public static final byte PK_ID_PLAYER_REQUEST_SELL_ITEM_RESPONSE = 18;
 	public static final byte PK_ID_PLAYER_STATUS_REPORT = 19;
+	public static final byte PK_ID_PLAYER_USE_ITEM_REQUEST = 20;
+	public static final byte PK_ID_PLAYER_USE_ITEM_RESPONSE = 21;
 
-	public static final byte PK_ID_RANDOM_BS_PACKET = 69;
+
+	public static final byte PK_ID_RANDOM_BS_PACKET = 69;//?
 
 	public static int BYTES_PER_CHARACTER = 1;
 	public static int PACKET_ID_SIZE = 1;
