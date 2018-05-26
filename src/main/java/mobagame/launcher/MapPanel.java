@@ -32,6 +32,7 @@ import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
 import mobagame.core.networking.packets.Packet;
 import mobagame.core.networking.packets.PlayerPositionPacket;
 import mobagame.core.networking.packets.PlayerStatusReport;
+import mobagame.core.networking.packets.PlayerUseItemResponsePacket;
 import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
 import mobagame.core.networking.packets.RequestPlayerMovementPacket;
 import mobagame.core.networking.packets.RequestPlayerSellItemResponsePacket;
@@ -293,16 +294,14 @@ public class MapPanel extends JPanel implements Runnable {
 							if(pkt.status == pkt.SUCCESSFUL) {
 								Item i = GameItems.allGameItems[pkt.itemID];
 								boolean foundSlot = false;
-								for (int y = 0; y < game.getPlayerPlayer().inventory.length && !foundSlot; y++) {
-									for (int x = 0; x < game.getPlayerPlayer().inventory[y].length && !foundSlot; x++) {
-										if (game.getPlayerPlayer().inventory[y][x] == GameItems.empty) {
+									for (int x = 0; x < game.getPlayerPlayer().inventory.length && !foundSlot; x++) {
+										if (game.getPlayerPlayer().inventory[x] == GameItems.empty) {
 												game.getPlayerPlayer().setGoldAmount(game.getPlayerPlayer().getGoldAmount() - i.getPrice());
-												game.getPlayerPlayer().inventory[y][x] = i;
+												game.getPlayerPlayer().inventory[x] = i;
 												System.out.println("You bought a " + i.getName());
 												foundSlot = true;
 										}
 									}
-								}
 								System.out.println("No space in inventory to buy " + i.getName());
 
 							}
@@ -311,16 +310,15 @@ public class MapPanel extends JPanel implements Runnable {
 							if (pkt.status == pkt.SUCCESSFUL) {
 								Item i = GameItems.allGameItems[pkt.itemID];
 								boolean foundSlot = false;
-								for (int y = 0; y < game.getPlayerPlayer().inventory.length && !foundSlot; y++) {
-									for (int x = 0; x < game.getPlayerPlayer().inventory[y].length && !foundSlot; x++) {
-										if (game.getPlayerPlayer().inventory[y][x] == i) {
-											game.getPlayerPlayer().setGoldAmount(game.getPlayerPlayer().getGoldAmount() + i.getPrice());
-											game.getPlayerPlayer().inventory[y][x] = GameItems.empty;
-											System.out.println("You sold a " + i.getName());
-											foundSlot = true;
-										}
+								for (int x = 0; x < game.getPlayerPlayer().inventory.length && !foundSlot; x++) {
+									if (game.getPlayerPlayer().inventory[x] == i) {
+										game.getPlayerPlayer().setGoldAmount(game.getPlayerPlayer().getGoldAmount() + i.getPrice());
+										game.getPlayerPlayer().inventory[x] = GameItems.empty;
+										System.out.println("You sold a " + i.getName());
+										foundSlot = true;
 									}
 								}
+							
 								System.out.println("No space in inventory to sell " + i.getName());
 
 							}
@@ -330,6 +328,19 @@ public class MapPanel extends JPanel implements Runnable {
 							player.setCurrentHealth(rpt.playerHealth);
 							player.setCurrentMana(rpt.playerMana);
 							player.setGoldAmount(rpt.playerGold);
+						}else if(PlayerUseItemResponsePacket.class.isInstance(p)) {
+							PlayerUseItemResponsePacket res = (PlayerUseItemResponsePacket) p;
+							int itemID = res.itemID;
+							InGamePlayer player = game.getPlayerPlayer();	
+							boolean used = false;
+							if (res.used != 0) {
+								for(int x = 0; x < player.inventory.length && !used; x++) {
+									if (GameItems.allGameItemsLookup.indexOf(player.inventory[x]) == itemID) {
+										player.setItem(x, GameItems.empty);
+										used = true;
+									}
+								}
+							}
 						}
 					}
 

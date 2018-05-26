@@ -82,12 +82,11 @@ public class ServerGame extends Game {
 
 	public int buyItem(InGamePlayer user, int itemID) {
 		Item i = GameItems.allGameItems[itemID];
-		for (int y = 0; y < user.inventory.length; y++) {
-			for (int x = 0; x < user.inventory[y].length; x++) {
-				if (user.inventory[y][x] == GameItems.empty) {
+			for (int x = 0; x < user.inventory.length; x++) {
+				if (user.inventory[x] == GameItems.empty) {
 					if (user.getGoldAmount() >= i.getPrice()) {
 						user.setGoldAmount(user.getGoldAmount() - i.getPrice());
-						user.inventory[y][x] = i;
+						user.inventory[x] = i;
 						if (!i.isConsumable()) {
 							for (int z = 0; z < i.getType().length; z++) {
 								switch (i.getType()[z]) {
@@ -128,7 +127,6 @@ public class ServerGame extends Game {
 								+ (i.getPrice() - user.getGoldAmount()) + " more gold");
 						return RequestPlayerBuyItemResponsePacket.NOT_ENOUGH_GOLD;
 					}
-				}
 			}
 		}
 		System.out.println("No space in inventory to buy " + i.getName());
@@ -137,12 +135,11 @@ public class ServerGame extends Game {
 
 	public int sellItem(InGamePlayer user, int itemID) {
 		Item item = GameItems.allGameItemsLookup.get(itemID);
-		for (int y = 0; y < user.inventory.length; y++) {
-			for (int x = 0; x < user.inventory[y].length; x++) {
-				if (user.inventory[y][x] == item) {
-					if (user.inventory[y][x] != GameItems.empty) {
+			for (int x = 0; x < user.inventory.length; x++) {
+				if (user.inventory[x] == item) {
+					if (user.inventory[x] != GameItems.empty) {
 						user.setGoldAmount(user.getGoldAmount() + item.getPrice());
-						user.inventory[y][x] = GameItems.empty;
+						user.inventory[x] = GameItems.empty;
 						if (!item.isConsumable()) {
 							for (int z = 0; z < item.getType().length; z++) {
 								switch (item.getType()[z]) {
@@ -185,7 +182,6 @@ public class ServerGame extends Game {
 						return RequestPlayerSellItemResponsePacket.NO_INVENTORY_SPACE;
 					}
 				}
-			}
 		}
 		return RequestPlayerSellItemResponsePacket.NO_INVENTORY_SPACE;
 

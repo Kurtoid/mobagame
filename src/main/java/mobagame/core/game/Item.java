@@ -34,10 +34,6 @@ public class Item implements MobaGameLauncher {
 		this(name, imageLocation, price, makeItemTypeArray(type), makeIntArray(effectPoints), isConsumable);
 	}
 
-	public Item(String name, String imageLocation, int price, int effectPoints, boolean isConsumable) {
-		this(name, imageLocation, price, makeItemTypeArray(ItemType.Health), makeIntArray(effectPoints), isConsumable);
-	}
-
 	private static ItemType[] makeItemTypeArray(ItemType type) {
 		ItemType[] array = { type };
 		return array;
@@ -50,14 +46,14 @@ public class Item implements MobaGameLauncher {
 
 	public void buy(InGamePlayer user) {
 		// buy logic is in server.ResponseWorker
-			RequestPlayerBuyItemPacket pkt = new RequestPlayerBuyItemPacket();
-			pkt.itemID = GameItems.allGameItemsLookup.indexOf(this);
-			try {
-				ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
-			} catch (IOException e) {
-//				 TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		RequestPlayerBuyItemPacket pkt = new RequestPlayerBuyItemPacket();
+		pkt.itemID = GameItems.allGameItemsLookup.indexOf(this);
+		try {
+			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -67,7 +63,7 @@ public class Item implements MobaGameLauncher {
 		try {
 			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
 		} catch (IOException e) {
-//				 TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -90,9 +86,8 @@ public class Item implements MobaGameLauncher {
 		this.price = price;
 	}
 
-	public Item use(InGamePlayer user) {
+	public boolean use(InGamePlayer user) {
 		if (isConsumable) {
-			// do stuff
 			for (int x = 0; x < getType().length; x++) {
 				switch (getType()[x]) {
 				case Health:
@@ -106,22 +101,13 @@ public class Item implements MobaGameLauncher {
 					break;
 				}
 			}
-			return GameItems.empty;
+			return true;
 		}
-		return this;
+		return false;
 	}
 
 	public String toString() {
 		return name + ": " + "$" + price;
-	}
-
-	public static void main(String[] args) {
-		Item knife = new Item("knife", "resources/Items/knife.png", 500, 10, false);
-		InGamePlayer user = new InGamePlayer(0);
-		user.setGoldAmount(100);
-		knife.buy(user);
-		user.setGoldAmount(500);
-		knife.buy(user);
 	}
 
 	public boolean isConsumable() {

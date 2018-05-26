@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
+import mobagame.core.game.Item;
 import mobagame.core.game.PlayerMover;
 import mobagame.core.networking.packets.*;
 import mobagame.server.database.PlayerAccount;
@@ -89,9 +90,14 @@ public class ResponseWorker implements Runnable {
 				logger.log(Level.INFO, "Player buy item");
 				handleBuyItemRequestPacket(new RequestPlayerBuyItemPacket(chunkBuf), dataEvent);
 				break;
-				case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM:
-					logger.log(Level.INFO, "player sell item");
-					handleSellItemRequestPacket(new RequestPlayerSellItemPacket(chunkBuf), dataEvent);
+			case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM:
+				logger.log(Level.INFO, "player sell item");
+				handleSellItemRequestPacket(new RequestPlayerSellItemPacket(chunkBuf), dataEvent);
+				break;
+			case Packet.PK_ID_PLAYER_USE_ITEM_REQUEST:
+				logger.log(Level.INFO, "player use item");
+				handleUseItemRequestPacket(new PlayerUseItemRequestPacket(chunkBuf), dataEvent);
+				break;
 			default:
 				logger.log(Level.WARNING, "bad pkt");
 				break;
@@ -101,6 +107,18 @@ public class ResponseWorker implements Runnable {
 			// dataEvent.server.send(dataEvent.socket, dataEvent.data);
 		}
 	}
+
+	private void handleUseItemRequestPacket(PlayerUseItemRequestPacket playerUseItemRequestPacket,
+			ServerDataEvent dataEvent) {
+		// TODO Auto-generated method stub
+		InGamePlayer player = runner.getPlayer(dataEvent.connectionID);
+		for(Item i : player.inventory) {
+			if(i.equals(GameItems.allGameItemsLookup.get(playerUseItemRequestPacket.itemID))) {
+				i.use(player);
+			}
+		}
+	}
+	
 
 	private void handleSellItemRequestPacket(RequestPlayerSellItemPacket requestPlayerSellItemPacket, ServerDataEvent dataEvent) {
 		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID)).sellItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerSellItemPacket.itemID);

@@ -37,8 +37,8 @@ public class InGamePlayer {
 	private int currentMana;
 	private int goldAmount = 0;
 
-	public Item[][] inventory = { { (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty) },
-			{ (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty) } };
+	public Item[] inventory = {  (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty) ,
+			 (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty) };
 
 	public Character getCharacter() {
 		return character;
@@ -136,12 +136,12 @@ public class InGamePlayer {
 		this.mover = mover;
 	}
 
-	public Item[][] getInventory() {
+	public Item[] getInventory() {
 		return inventory;
 	}
 
-	public void setInventory(Item[][] inventory) {
-		this.inventory = inventory;
+	public void setItem(int index, Item item) {
+		inventory[index] = item;
 	}
 
 	public void setPlayerID(int playerID) {
@@ -257,5 +257,4 @@ public class InGamePlayer {
 		//Need to finish it is to help with baseAbiDamage
 		return 0;
 	}
-
 }
