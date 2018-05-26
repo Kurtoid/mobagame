@@ -27,8 +27,7 @@ import java.awt.event.*;
 import java.io.IOException;
 
 @SuppressWarnings("serial")
-public class GameScreen extends JFrame
-		implements ActionListener, KeyListener, MouseListener, Runnable, MobaGameLauncher {
+public class GameScreen implements ActionListener, KeyListener, MouseListener, Runnable, MobaGameLauncher {
 
 	public final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
 
@@ -56,7 +55,7 @@ public class GameScreen extends JFrame
 	private JLabel health = new JLabel("Loading health");
 	private JLabel mana = new JLabel("Loading mana");
 
-	private JFrame controllingFrame; // needed for dialogs
+	private JFrame f = new JFrame(gameName);
 
 	MainMap gameMap;
 	ClientGame game;
@@ -64,7 +63,6 @@ public class GameScreen extends JFrame
 
 	// open menu window for playerName
 	public GameScreen(int gameID, PlayerAccount player, int playerID) {
-		super(gameName);
 		System.out.println(gameID);
 		ClientGame g = new ClientGame(gameID);
 		InGamePlayer p = new InGamePlayer(playerID);
@@ -102,8 +100,8 @@ public class GameScreen extends JFrame
 		user.setGoldAmount(0);
 
 		// listeners
-		this.addKeyListener(this);
-		this.addMouseListener(this);
+		f.addKeyListener(this);
+		f.addMouseListener(this);
 
 		// create
 		gold = new JButton("$" + user.getGoldAmount());
@@ -114,7 +112,7 @@ public class GameScreen extends JFrame
 		JLabel chatLabel = new JLabel(chatWrap + user.toString());
 		chatLabel.setBounds(0, SCREEN_SIZE.height / 2, SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
 
-				// health & mana borders
+		// health & mana borders
 		TitledBorder healthBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Health: ",
 				TitledBorder.CENTER, TitledBorder.TOP, GAME_FONT);
 		health.setBorder(healthBorder);
@@ -195,10 +193,10 @@ public class GameScreen extends JFrame
 		// SCREEN_SIZE.width, Color.GREEN, true);
 		// mana.add(manaBar);
 
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setUndecorated(true);
+		f.setSize(SCREEN_SIZE);
+		f.setUndecorated(true);
 		if (testing) {
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		}
 
 		c.gridy = 1;
@@ -246,19 +244,19 @@ public class GameScreen extends JFrame
 		background.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		background.resetPanAndZoom();
 		layered.add(background, new Integer(0), 0);
-		add(layered);
+		f.add(layered);
 		Thread t = new Thread(background);
 		t.start();
 
 		System.out.println("visisble");
-		setVisible(true);
-		changeFontRecursive(this, MENU_FONT);
+		f.setVisible(true);
+		changeFontRecursive(f, MENU_FONT);
 		chatLabel.setFont(CHAT_FONT);
 		gold.setFont(MENU_FONT);
 		// next line to be deleted when fixed
-		// JOptionPane.showMessageDialog(controllingFrame, "Pressing tab breaks
+		// JOptionPane.showMessageDialog(f, "Pressing tab breaks
 		// everything", "Warning", JOptionPane.WARNING_MESSAGE);
-		requestFocus();
+		f.setFocusable(true);
 		start();
 	}
 
@@ -268,7 +266,7 @@ public class GameScreen extends JFrame
 				Thread.sleep(1000 / goldPerSecond);
 			} catch (InterruptedException e) {
 			}
-			//user.setGoldAmount(user.getGoldAmount() + 1);
+			// user.setGoldAmount(user.getGoldAmount() + 1);
 			gold.setText("$" + user.getGoldAmount());
 			JViewport v = new JViewport();
 			JLabel l = new JLabel("" + chatWrap + user);
@@ -277,6 +275,7 @@ public class GameScreen extends JFrame
 			chat.setViewport(v);
 			chat.repaint();
 			health.setText(user.getCurrentHealth() + " / " + user.getMaxHealth());
+			f.requestFocus();
 			mana.setText(user.getCurrentMana() + " / " + user.getMaxMana());
 			refreshInventory();
 		}
@@ -339,7 +338,7 @@ public class GameScreen extends JFrame
 		case KeyEvent.VK_M:
 			// GOTO In-Game
 			System.out.println("GOTO In-Game");
-			JOptionPane.showMessageDialog(controllingFrame, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(f, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 			break;
 		case KeyEvent.VK_Q:
 			// USE Q ability
@@ -429,34 +428,35 @@ public class GameScreen extends JFrame
 		if (SHOP.equals(cmd)) { // GOTO Shop
 			new Shop(user);
 		} else if (MENU.equals(cmd)) { // GOTO In-Game
-			JOptionPane.showMessageDialog(controllingFrame, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(f, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			JOptionPane.showMessageDialog(controllingFrame, "Something went wrong", "Error Message",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(f, "Something went wrong", "Error Message", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
 	public static void main(String[] args) {
 		Login.fakeLogin();
 		RspHandler.getInstance().waitForResponse(); // wait for one (maybe two) packets, or three seconds
-		PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) RspHandler.getInstance().getResponse(PublicPlayerDataPacket.class);
+		PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) RspHandler.getInstance()
+				.getResponse(PublicPlayerDataPacket.class);
 		PlayerAccount p = playerData.player;
 		RequestEnterGamePacket req = new RequestEnterGamePacket(p.id, 1);
 		try {
 			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(req.getBytes().array());
 			RspHandler.getInstance().waitForResponse();
-			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
+			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance()
+					.getResponse(RequestEnterGameResponsePacket.class);
 			System.out.println(game.playerID);
 
 			GameScreen s = new GameScreen(game.gameID, p, game.playerID);
-//			GameScreen s = new GameScreen(0, new PlayerAccount() , 0); // This is for when I was testing the shop item load in
+			// GameScreen s = new GameScreen(0, new PlayerAccount() , 0); // This is for
+			// when I was testing the shop item load in
 			s.testing = true;
 			s.game.getPlayerPlayer().setGoldAmount(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
 
 	// Not used interface methods
 	public void keyTyped(KeyEvent ke) {
