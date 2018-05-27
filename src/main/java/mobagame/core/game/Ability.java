@@ -11,7 +11,7 @@ public class Ability {
 	private int abiPowRatio;
 	private int phyPowRatio;
 	private int damScale;
-
+	
 	public Ability() {
 		imageLocation = "resources/Black.png";
 	}
@@ -114,4 +114,5 @@ public class Ability {
 	public int getBaseDamageBefRat() {
 		return (this.baseDamage + (this.damScale + caster.getAbiLevel(this)));
 	}
+	
 }

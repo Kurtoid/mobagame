@@ -1,6 +1,6 @@
 package mobagame.launcher;
 
-//Carson Mango 4/25/18
+//Carson Mango 5/26/18
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +10,7 @@ import javax.swing.*;
 
 import org.omg.PortableServer.ServantRetentionPolicyValue;
 
+import mobagame.core.game.GameCharcters;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.PlayerMover;
 import mobagame.core.game.maps.MainMap;
@@ -39,9 +40,9 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	JPanel red3 = new JPanel();
 	JPanel red4 = new JPanel();
 	JPanel red5 = new JPanel();
+	JScrollPane JSP = new JScrollPane(charSelectMenu); 
 	public ImageIcon placeHolderImage = new ImageIcon("resources//Black.png");
-	public ImageIcon reaperCharPic = new ImageIcon("resources//Reaper.png");
-	
+	public ImageIcon reaperCharPic = new ImageIcon("resource//Character//Reaper.png");
 	JButton startButton;
 	PlayerAccount player;
 	ServerConnection conn;
@@ -55,9 +56,20 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			}
 			temp = Integer.toString(i);
 			timer.setText(temp);
-//			selectionScreen.setVisible(true);
+			selectionScreen.setVisible(true);
 		}
-//		selectionScreen.setVisible(false);
+		selectionScreen.setVisible(false);
+		RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
+		RspHandler h = RspHandler.getInstance();
+		try {
+			conn.send(req.getBytes().array(), h);
+			h.waitForResponse();
+			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
+		new GameScreen(game.gameID, player, game.playerID,  GameCharcters.reaper);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	//Meathod to start countdown timer thread
 	public void start() {
@@ -76,6 +88,10 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		charSelectMenu.setLayout(new GridLayout(10, 10));
+		JSP.setSize((int)(WINDOW_WIDTH/1.5), (int)(WINDOW_HEIGHT/2));
+		JSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		JSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		//Setting up character select menu
 		blueTeamSelect.setSize((int)(WINDOW_WIDTH / 2.6), (int)(WINDOW_HEIGHT / 3.125));
 		redTeamSelect.setSize((int)(WINDOW_WIDTH / 2.6), (int)(WINDOW_HEIGHT / 3.125));
@@ -174,6 +190,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		redTeamSelect.add(red4);
 		redTeamSelect.add(red5);
 		charSelectMenu.add(test);
+		JSP.add(charSelectMenu);
 		charStats.add(test2);
 		gbc.gridy = 0;
 		gbc.gridx = 0;
@@ -193,7 +210,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		//Don't question the majestic number it was needed to center the char select menu
 		gbc.weightx = 23401051;
 		gbc.anchor = GridBagConstraints.CENTER;
-		selectionScreen.add(charSelectMenu, gbc);
+		selectionScreen.add(JSP, gbc);
 		gbc.gridy = 3;
 		gbc.gridx = 0;
 		gbc.weightx = 1;
@@ -214,7 +231,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 					System.out.println(game.playerID);
 					selectionScreen.setVisible(false);
 
-					new GameScreen(game.gameID, player, game.playerID);
+					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
