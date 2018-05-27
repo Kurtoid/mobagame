@@ -3,7 +3,7 @@ package mobagame.core.networking.packets;
 import java.nio.ByteBuffer;
 
 public class PlayerUseItemResponsePacket extends Packet {
-	public byte used;
+	public byte used = 0;
 	public int itemID;
 	
 	public PlayerUseItemResponsePacket() {

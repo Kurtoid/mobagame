@@ -10,6 +10,7 @@ import javax.swing.border.TitledBorder;
 
 import mobagame.core.game.Ability;
 import mobagame.core.game.Character;
+import mobagame.core.game.GameCharcters;
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
@@ -38,7 +39,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	private boolean usePadAndBar = false;
 	private boolean lefty = false;
 
-	private InGamePlayer user = new InGamePlayer(new Character(300, 300), 300, 300);
+	private InGamePlayer user;
 
 	private int goldPerSecond = 3;
 	private JButton gold;
@@ -62,13 +63,13 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 	MainMap gameMap;
 	ClientGame game;
-	private MyCanvas[]inventoryCanvase;
+	private MyCanvas[] inventoryCanvas;
 
 	// open menu window for playerName
-	public GameScreen(int gameID, PlayerAccount player, int playerID) {
+	public GameScreen(int gameID, PlayerAccount player, int playerID, Character character) {
 		System.out.println(gameID);
 		ClientGame g = new ClientGame(gameID);
-		InGamePlayer p = new InGamePlayer(playerID);
+		InGamePlayer p = new InGamePlayer(playerID, GameCharcters.reaper);
 		g.setPlayerPlayer(p);
 		g.getPlayerPlayer().mover = new PlayerMover(g.map, g.getPlayerPlayer());
 		g.players.add(p);
@@ -78,10 +79,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		this.game = g;
 		user = p;
 
-		Character reaper = new Character("rescorce/Black.png");
-		user.setCharacter(reaper);
-
-		inventoryCanvase = new MyCanvas[] { MyCanvas.load(p.inventory[0].getImageLocation(), SCREEN_SIZE.width / 40),
+		inventoryCanvas = new MyCanvas[] { MyCanvas.load(p.inventory[0].getImageLocation(), SCREEN_SIZE.width / 40),
 				MyCanvas.load(p.inventory[1].getImageLocation(), SCREEN_SIZE.width / 40),
 				MyCanvas.load(p.inventory[2].getImageLocation(), SCREEN_SIZE.width / 40),
 				MyCanvas.load(p.inventory[3].getImageLocation(), SCREEN_SIZE.width / 40),
@@ -100,7 +98,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		// set up things
 
 		user.setGoldAmount(0);
-
+		
 		// listeners
 		f.addKeyListener(this);
 		f.addMouseListener(this);
@@ -173,7 +171,8 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 		// stats
 		c.gridy = 0;
-		Ability[] abilities = { (user.getAbiq()), (user.getAbiw()), (user.getAbie()), (user.getAbir()) };
+		Ability[] abilities = { (user.getCharacter().getAbiq()), (user.getCharacter().getAbiw()),
+				(user.getCharacter().getAbie()), (user.getCharacter().getAbir()) };
 
 		for (int x = 0; x < abilities.length; x++) {
 			c.gridx = x;
@@ -300,10 +299,10 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	public void setInventory() {
 		GridBagConstraints c = new GridBagConstraints();
 		for (int y = 0; y < user.getInventory().length; y++) {
-				c.gridy = y/4;
-				c.gridx = y/2;
-				inventoryCanvase[y].addMouseListener(this);
-				inventory.add(inventoryCanvase[y], c);
+			c.gridy = y / 4;
+			c.gridx = y % 4;
+			inventoryCanvas[y].addMouseListener(this);
+			inventory.add(inventoryCanvas[y], c);
 		}
 		System.out.println("Info: Inventory set");
 	}
@@ -311,7 +310,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	public void refreshInventory() {
 
 		for (int y = 0; y < user.getInventory().length; y++) {
-				inventoryCanvase[y].setImageLocation(user.getInventory()[y].getImageLocation());
+			inventoryCanvas[y].setImageLocation(user.getInventory()[y].getImageLocation());
 		}
 		inventory.repaint();
 		System.out.println("Info: Inventory repainted");
@@ -425,7 +424,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void mouseClicked(MouseEvent me) { // TODO Click to move
 		System.out.println("Mouse Point (" + me.getX() + ", " + me.getY() + ")");
 	}
@@ -456,7 +455,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 					.getResponse(RequestEnterGameResponsePacket.class);
 			System.out.println(game.playerID);
 
-			GameScreen s = new GameScreen(game.gameID, p, game.playerID);
+			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper);
 			s.testing = true;
 			s.game.getPlayerPlayer().setGoldAmount(0);
 		} catch (IOException e) {
@@ -485,12 +484,12 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		// + me.getClickCount());
 	}
 
-	public void mouseEntered(MouseEvent arg0) {
+	public void mouseEntered(MouseEvent me) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void mouseExited(MouseEvent arg0) {
+	public void mouseExited(MouseEvent me) {
 		// TODO Auto-generated method stub
 	}
 

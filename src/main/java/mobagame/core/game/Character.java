@@ -1,222 +1,67 @@
 package mobagame.core.game;
 
-import java.awt.geom.Rectangle2D;
-
 public class Character {
 
-	private String charName;
-	private int maxHealth;
-	private int maxMana;
-
-	// abilitys
-	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
-	private Ability[] abilitys = { new Ability(), new Ability(), new Ability(), new Ability(), new Ability() };
-
+	private String name;
+	private String imageLocation;
 	private int range; // Measured in custom units ru
+	private int speed; // Measured in
+
+	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
+	private final Ability[] abilitys = { new Passive(), new Ability(), new Ability(), new Ability(), new Ability() };
+
+	private int maxHealthScale;
+	private int baseMaxHealth;
+
+	private int maxManaScale;
+	private int baseMaxMana;
+
 	private int basePhyPow;
-	private int baseAbiPow;
 	private int phyPowScale;
+
+	private int baseAbiPow;
 	private int abiPowScale;
-	private int speed;
+
 	private int baseArmor;
 	private int armorScale;
+
 	private int baseMagicResist;
 	private int magicResistScale;
-	private int maxHealthScale;
-	private int maxManaScale;
-	// Need to fix these
-	private Ability abiq = new Ability();
-	private Ability abiw = new Ability();
-	private Ability abie = new Ability();
-	private Ability abir = new Ability();
+
 	public int width = 10;
 	public int height = 10;
-	private Passive pass;
 
-	public Passive getPass() {
-		return pass;
+	public Character(String name, String imageLocation, int range, int speed, int maxHealthScale, int baseMaxHealth,
+			int maxManaScale, int baseMaxMana, int phyPowScale, int basePhyPow, int abiPowScale, int baseAbiPow,
+			int armorScale, int baseArmor, int magicResistScale, int baseMagicResist) {
+		this.name = name;
+		this.imageLocation = imageLocation;
+		this.range = range;
+		this.speed = speed;
+		this.maxHealthScale = maxHealthScale;
+		this.baseMaxHealth = baseMaxHealth;
+		this.maxManaScale = maxManaScale;
+		this.baseMaxMana = baseMaxMana;
+		this.basePhyPow = basePhyPow;
+		this.phyPowScale = phyPowScale;
+		this.baseAbiPow = baseAbiPow;
+		this.abiPowScale = abiPowScale;
+		this.baseArmor = baseArmor;
+		this.armorScale = armorScale;
+		this.baseMagicResist = baseMagicResist;
+		this.magicResistScale = magicResistScale;
 	}
 
-	public void setPass(Passive pass) {
-		this.pass = pass;
+	public int getBaseMaxHealth() {
+		return baseMaxHealth;
 	}
 
 	public int getMaxHealthScale() {
 		return maxHealthScale;
 	}
 
-	public void setMaxHealthScale(int maxHealthScale) {
-		this.maxHealthScale = maxHealthScale;
-	}
-
 	public int getMaxManaScale() {
 		return maxManaScale;
-	}
-
-	public void setMaxManaScale(int maxManaScale) {
-		this.maxManaScale = maxManaScale;
-	}
-
-	public int getBasePhyPow() {
-		return basePhyPow;
-	}
-
-	public void setBasePhyPow(int basePhyPow) {
-		this.basePhyPow = basePhyPow;
-	}
-
-	public int getBaseAbiPow() {
-		return baseAbiPow;
-	}
-
-	public void setBaseAbiPow(int baseAbiPow) {
-		this.baseAbiPow = baseAbiPow;
-	}
-
-	public int getBaseArmor() {
-		return baseArmor;
-	}
-
-	public Ability getAbiq() {
-		return abiq;
-	}
-
-	public void setAbiq(Ability abiq) {
-		this.abiq = abiq;
-	}
-
-	public Ability getAbiw() {
-		return abiw;
-	}
-
-	public void setAbiw(Ability abiw) {
-		this.abiw = abiw;
-	}
-
-	public Ability getAbie() {
-		return abie;
-	}
-
-	public void setAbie(Ability abie) {
-		this.abie = abie;
-	}
-
-	public Ability getAbir() {
-		return abir;
-	}
-
-	public void setAbir(Ability abir) {
-		this.abir = abir;
-	}
-
-	public void setBaseArmor(int baseArmor) {
-		this.baseArmor = baseArmor;
-	}
-
-	public int getArmorScale() {
-		return armorScale;
-	}
-
-	public void setArmorScale(int armorScale) {
-		this.armorScale = armorScale;
-	}
-
-	public int getBaseMagicResist() {
-		return baseMagicResist;
-	}
-
-	public void setBaseMagicResist(int baseMagicResist) {
-		this.baseMagicResist = baseMagicResist;
-	}
-
-	public int getMagicResistScale() {
-		return magicResistScale;
-	}
-
-	public void setMagicResistScale(int magicResistScale) {
-		this.magicResistScale = magicResistScale;
-	}
-
-	public void setCharName(String charName) {
-		this.charName = charName;
-	}
-
-	public void setAbilitys(Ability[] abilitys) {
-		this.abilitys = abilitys;
-	}
-
-	public void setRange(int range) {
-		this.range = range;
-	}
-
-	public void setPhyPowScale(int phyPowScale) {
-		this.phyPowScale = phyPowScale;
-	}
-
-	public void setAbiPowScale(int abiPowScale) {
-		this.abiPowScale = abiPowScale;
-	}
-
-	public void setImageLocation(String imageLocation) {
-		this.imageLocation = imageLocation;
-	}
-
-	private String imageLocation;
-
-	// testing
-	public Character(int maxHealth, int maxMana) {
-		this.maxHealth = maxHealth;
-		this.maxMana = maxMana;
-	}
-
-	public Character(String imageLocation) {
-		for (int x = 0; x < abilitys.length; x++) {
-			abilitys[x] = new Ability();
-		}
-	}
-
-	public int getMaxHealth() {
-		return maxHealth;
-	}
-
-	public void setMaxHealth(int maxHealth) {
-		this.maxHealth = maxHealth;
-	}
-
-	public int getMaxMana() {
-		return maxMana;
-	}
-
-	public void setMaxMana(int maxMana) {
-		this.maxMana = maxMana;
-	}
-
-	public String getCharName() {
-		return charName;
-	}
-
-	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
-	public Ability[] getAbilitys() {
-		return abilitys;
-	}
-
-	public Ability getAbilityAt(int index) {
-		if (index >= 0 || index < 5) {
-			return abilitys[index];
-		}
-		return null;
-	}
-
-	public int getRange() {
-		return range;
-	}
-
-	public int getPhyPow() {
-		return basePhyPow;
-	}
-
-	public int getAbiPow() {
-		return baseAbiPow;
 	}
 
 	public int getPhyPowScale() {
@@ -227,6 +72,47 @@ public class Character {
 		return abiPowScale;
 	}
 
+	public int getBaseMaxMana() {
+		return baseMaxMana;
+	}
+
+	public int getBasePhyPow() {
+		return basePhyPow;
+	}
+
+	public int getBaseAbiPow() {
+		return baseAbiPow;
+	}
+
+	public int getBaseArmor() {
+		return baseArmor;
+	}
+
+	public int getArmorScale() {
+		return armorScale;
+	}
+
+	public int getBaseMagicResist() {
+		return baseMagicResist;
+	}
+
+	public int getMagicResistScale() {
+		return magicResistScale;
+	}
+
+	public String getCharName() {
+		return name;
+	}
+
+	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
+	public Ability[] getAbilitys() {
+		return abilitys;
+	}
+
+	public int getRange() {
+		return range;
+	}
+
 	public String getImageLocation() {
 		return imageLocation;
 	}
@@ -235,8 +121,36 @@ public class Character {
 		return speed;
 	}
 
-	public void setSpeed(int speed) {
-		this.speed = speed;
+	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
+	public Passive getPass() {
+		return (Passive) abilitys[0];
 	}
 
+	public Ability getAbiq() {
+		return abilitys[1];
+	}
+
+	public Ability getAbiw() {
+		return abilitys[2];
+	}
+
+	public Ability getAbie() {
+		return abilitys[3];
+	}
+
+	public Ability getAbir() {
+		return abilitys[4];
+	}
+
+	// testing
+	public Character(int maxHealth, int maxMana) {
+		this.baseMaxHealth = maxHealth;
+		this.baseMaxMana = maxMana;
+	}
+
+	public Character(String imageLocation) {
+		for (int x = 0; x < abilitys.length; x++) {
+			abilitys[x] = new Ability();
+		}
+	}
 }

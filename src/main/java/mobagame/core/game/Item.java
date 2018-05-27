@@ -86,7 +86,7 @@ public class Item implements MobaGameLauncher {
 		this.price = price;
 	}
 
-	public boolean use(InGamePlayer user) {
+	public byte use(InGamePlayer user) {
 		if (isConsumable) {
 			for (int x = 0; x < getType().length; x++) {
 				switch (getType()[x]) {
@@ -101,9 +101,9 @@ public class Item implements MobaGameLauncher {
 					break;
 				}
 			}
-			return true;
+			return 1;
 		}
-		return false;
+		return 0;
 	}
 
 	public String toString() {
