@@ -55,7 +55,7 @@ public class PlayerMover {
 		}
 		player.setX(x);
 		player.setY(y);
-		// System.out.println(x + "\t" + y);
+		 System.out.println(x + "\t" + y);
 	}
 
 	public void setTarget(double newX, double newY) {
@@ -72,11 +72,12 @@ public class PlayerMover {
 			} else if (map.towers.get(i).type == Tower.TowerType.RESPAWN) {
 				towerSize = 3 * (map.width / 100);
 			}
-			Ellipse2D.Double footprint = new Ellipse2D.Double(map.towers.get(i).x - towerSize / 2, map.towers.get(i).y - towerSize / 2, towerSize, towerSize);
+			Ellipse2D.Double footprint = new Ellipse2D.Double(map.towers.get(i).getX() - towerSize / 2, map.towers.get(i).getY() - towerSize / 2, towerSize, towerSize);
 			if (footprint.intersects(x - playerHeight / 2, y - playerHeight / 2, playerHeight, playerHeight)) {
 				collides = true;
 			}
 		}
+//		System.out.println("collides " + collides);
 		return collides;
 	}
 

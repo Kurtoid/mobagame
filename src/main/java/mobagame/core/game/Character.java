@@ -5,7 +5,7 @@ public class Character {
 	private String name;
 	private String imageLocation;
 	private int range; // Measured in custom units ru
-	private int speed; // Measured in
+	private double speed; // Measured in
 
 	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
 	private final Ability[] abilitys = { new Passive(), new Ability(), new Ability(), new Ability(), new Ability() };
@@ -117,7 +117,7 @@ public class Character {
 		return imageLocation;
 	}
 
-	public int getSpeed() {
+	public double getSpeed() {
 		return speed;
 	}
 

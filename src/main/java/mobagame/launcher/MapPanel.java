@@ -208,7 +208,7 @@ public class MapPanel extends JPanel implements Runnable {
 
 		for(Tower t : game.map.towers){
 			graphics.setColor(t.team.color);
-			Point.Double p = new Point2D.Double(t.x, t.y);
+			Point.Double p = new Point2D.Double(t.getX(), t.getY());
 			getCurrentTransform().transform(p, p);
 			int towerSize=2*(map.width/100);
 			if(t.type == Tower.TowerType.CORE){
