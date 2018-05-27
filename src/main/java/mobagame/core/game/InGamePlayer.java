@@ -1,9 +1,6 @@
 package mobagame.core.game;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 import javax.swing.JFrame;
@@ -16,221 +13,261 @@ import mobagame.launcher.GameScreen;
 
 public class InGamePlayer {
 
-	private int playerID;
-	private double yPos;
-	private double xPos;
-	private Character character;
-	private int phyPow;
-	private int abiPow;
-	private int maxHealth;
-	private int maxMana;
-	private int speed;
-	private int armor;
-	private int magicResist;
-	private int currentHealth;
-	private int currentMana;
-	private int goldAmount = 0;
-	private int playerLevel = 1;
-	public PlayerMover mover;
+    private int playerID;
+    private Character character;
 
-	
-	//0 = Q, 1 = W, 2 = E, 3 = R
-	public int[] abilityLevels = {25, 25, 25, 25};
+    private Point pos = new Point(0,0);
 
-	public Item[] inventory = {  (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty) ,
-			 (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty) };
+    private int phyPow;
+    private int abiPow;
+    private int maxHealth;
+    private int maxMana;
+    private int speed;
+    private int armor;
+    private int magicResist;
+    private int currentHealth;
+    private int currentMana;
 
-	public Character getCharacter() {
-		return character;
-	}
-	
-	private void setCharacter(Character character) {
-		this.character = character;
-		this.currentHealth = maxHealth = character.getBaseMaxHealth();
-		this.currentMana = maxMana = character.getBaseMaxMana();
-		this.phyPow = character.getBasePhyPow();
-		this.abiPow = character.getBaseAbiPow();
-		this.speed = character.getSpeed();
-		this.armor = character.getBaseArmor();
-		this.magicResist = character.getBaseMagicResist();
-	}
+    private int goldAmount = 0;
+    private int xp = 0;
+    private int levelXp = 0;
+    private int xpToNextLevel = 0;
+    private int playerLevel = 1;
+    public PlayerMover mover;
 
-	public int getPhyPow() {
-		return phyPow;
-	}
 
-	public void setPhyPow(int phyPow) {
-		this.phyPow = phyPow;
-	}
+    //0 = Q, 1 = W, 2 = E, 3 = R
+    public int[] abilityLevels = {0, 0, 0, 0};
+    public int[] cooldownTimer = {0, 0, 0, 0};
 
-	public int getAbiPow() {
-		return abiPow;
-	}
+    public Item[] inventory = {(GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty),
+            (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty)};
 
-	public void setAbiPow(int abiPow) {
-		this.abiPow = abiPow;
-	}
+    public Character getCharacter() {
+        return character;
+    }
 
-	public int getMaxHealth() {
-		return maxHealth;
-	}
+    public InGamePlayer(int playerID, Character character, int xp) {
+        this.playerID = playerID;
+        setCharacter(character);
 
-	public void setMaxHealth(int maxHealth) {
-		this.maxHealth = maxHealth;
-	}
+        // Not entered by user
+        this.playerLevel = 0;
+        this.levelXp = 0;
+        this.xpEarned(levelXp);
+    }
 
-	public int getMaxMana() {
-		return maxMana;
-	}
+    private void setCharacter(Character character) {
+        this.character = character;
+        this.currentHealth = maxHealth = character.getBaseMaxHealth();
+        this.currentMana = maxMana = character.getBaseMaxMana();
+        this.phyPow = character.getBasePhyPow();
+        this.abiPow = character.getBaseAbiPow();
+        this.speed = character.getSpeed();
+        this.armor = character.getBaseArmor();
+        this.magicResist = character.getBaseMagicResist();
 
-	public void setMaxMana(int maxMana) {
-		this.maxMana = maxMana;
-	}
+    }
 
-	public int getSpeed() {
-		return speed;
-	}
+    public void xpEarned(int xp) {
+        this.xp += xp;
+        this.levelXp += xp;
+        while (this.levelXp >= this.xpToNextLevel) {
+            this.levelXp -= this.xpToNextLevel;
+            this.levelUp();
+        }
+    }
 
-	public void setSpeed(int speed) {
-		this.speed = speed;
-	}
+    public int getPhyPow() {
+        return phyPow;
+    }
 
-	public int getArmor() {
-		return armor;
-	}
+    public void setPhyPow(int phyPow) {
+        this.phyPow = phyPow;
+    }
 
-	public void setArmor(int armor) {
-		this.armor = armor;
-	}
+    public int getAbiPow() {
+        return abiPow;
+    }
 
-	public int getMagicResist() {
-		return magicResist;
-	}
+    public void setAbiPow(int abiPow) {
+        this.abiPow = abiPow;
+    }
 
-	public void setMagicResist(int magicResist) {
-		this.magicResist = magicResist;
-	}
+    public int getMaxHealth() {
+        return maxHealth;
+    }
 
-	public int getLevel() {
-		return playerLevel;
-	}
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
 
-	public void setLevel(int level) {
-		this.playerLevel = level;
-	}
+    public int getMaxMana() {
+        return maxMana;
+    }
 
-	public PlayerMover getMover() {
-		return mover;
-	}
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
 
-	public void setMover(PlayerMover mover) {
-		this.mover = mover;
-	}
+    public int getSpeed() {
+        return speed;
+    }
 
-	public Item[] getInventory() {
-		return inventory;
-	}
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 
-	public void setItem(int index, Item item) {
-		inventory[index] = item;
-	}
+    public int getArmor() {
+        return armor;
+    }
 
-	public void setPlayerID(int playerID) {
-		this.playerID = playerID;
-	}
+    public void setArmor(int armor) {
+        this.armor = armor;
+    }
 
-	public InGamePlayer() {
-		speed = 100;
-	}
-	
-	public InGamePlayer(int playerID, Character chara) {
-		this.playerID = playerID;
-		this.setCharacter(chara);
-	}
+    public int getMagicResist() {
+        return magicResist;
+    }
 
-	public int getGoldAmount() {
-		return goldAmount;
-	}
+    public void setMagicResist(int magicResist) {
+        this.magicResist = magicResist;
+    }
 
-	public void setGoldAmount(int goldAmount) {
-		this.goldAmount = goldAmount;
-	}
+    public int getLevel() {
+        return playerLevel;
+    }
 
-	public int getCurrentHealth() {
-		return currentHealth;
-	}
+    public PlayerMover getMover() {
+        return mover;
+    }
 
-	public int getCurrentMana() {
-		return currentMana;
-	}
+    public void setMover(PlayerMover mover) {
+        this.mover = mover;
+    }
 
-	public double getX() {
-		return xPos;
-	}
+    public Item[] getInventory() {
+        return inventory;
+    }
 
-	public double getY() {
-		return yPos;
-	}
+    public void setItem(int index, Item item) {
+        inventory[index] = item;
+    }
 
-	public int getPlayerID() {
-		return playerID;
-	}
+    public void setPlayerID(int playerID) {
+        this.playerID = playerID;
+    }
 
-	@Override
-	public String toString() {
-		return "phyPow = " + phyPow + ", abiPow = " + abiPow + ", maxHealth = " + maxHealth + ", maxMana = " + maxMana
-				+ ", speed = " + speed + ", armor = " + armor + ", magicResist = " + magicResist + ", currentHealth = "
-				+ currentHealth + ", currentMana = " + currentMana;
-	}
+    public InGamePlayer() {
+        speed = 100;
+    }
 
-	public void setCurrentHealth(int currentHealth) {
-		this.currentHealth = currentHealth;
-	}
+    public InGamePlayer(int playerID, Character chara) {
+        this.playerID = playerID;
+        this.setCharacter(chara);
+    }
 
-	public void setCurrentMana(int currentMana) {
-		this.currentMana = currentMana;
-	}
+    public int getGoldAmount() {
+        return goldAmount;
+    }
 
-	public InGamePlayer(Character character, int currentHealth, int currentMana) {
-		this.setCharacter(character);
-		this.currentHealth = currentHealth;
-		this.currentMana = currentMana;
-	}
+    public void setGoldAmount(int goldAmount) {
+        this.goldAmount = goldAmount;
+    }
 
-	public void setX(double x) {
-		this.xPos = x;
-	}
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
 
-	public void setY(double y) {
-		this.yPos = y;
-	}
+    public int getCurrentMana() {
+        return currentMana;
+    }
 
-	public void levelUp() {
-		maxHealth += character.getMaxHealthScale() * (playerLevel);
-		maxMana += character.getMaxManaScale() * (playerLevel);
-		abiPow += character.getAbiPowScale() * (playerLevel);
-		phyPow += character.getPhyPowScale() * (playerLevel);
-		armor += character.getArmorScale() * (playerLevel);
-		magicResist += character.getMagicResistScale() * (playerLevel);
-		this.abilityUpgrade();
-		playerLevel++;
-	}
+    public double getX() {
+        return pos.getX();
+    }
 
-	private void abilityUpgrade() {
-		// TODO Auto-generated method stub
-		
-	}
+    public double getY() {
+        return pos.getY();
+    }
 
-	public void recieveDamage(Ability a) {
-		if (a.getDamageType() == Ability.DamageType.PHYSICAL) {
-			currentHealth = a.getDamage() - this.armor;
-		} else {
-			currentHealth = a.getDamage() - this.magicResist;
-		}
-	}
+    public int getPlayerID() {
+        return playerID;
+    }
 
-	public int getAbiLevel(Ability ability) {
-		//Need to finish, it is to help with baseAbiDamage
-		return 0;
-	}
+    public String toString() {
+        return  "phyPow =" + phyPow +
+                ", abiPow =" + abiPow +
+                ", maxHealth =" + maxHealth +
+                ", maxMana =" + maxMana +
+                ", speed =" + speed +
+                ", armor =" + armor +
+                ", magicResist =" + magicResist +
+                ", currentHealth =" + currentHealth +
+                ", currentMana =" + currentMana +
+                ", goldAmount =" + goldAmount +
+                ", xp =" + xp +
+                ", levelXp =" + levelXp +
+                ", xpToNextLevel =" + xpToNextLevel +
+                ", playerLevel =" + playerLevel +
+                "position = " + pos;
+    }
+
+/*    @Override
+    public String toString() {
+        return "phyPow = " + phyPow + ", abiPow = " + abiPow + ", maxHealth = " + maxHealth + ", maxMana = " + maxMana
+                + ", speed = " + speed + ", armor = " + armor + ", magicResist = " + magicResist + ", currentHealth = "
+                + currentHealth + ", currentMana = " + currentMana;
+    }*/
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
+    }
+
+    public void setCurrentMana(int currentMana) {
+        this.currentMana = currentMana;
+    }
+
+    public InGamePlayer(Character character, int currentHealth, int currentMana) {
+        this.setCharacter(character);
+        this.currentHealth = currentHealth;
+        this.currentMana = currentMana;
+    }
+
+    public void setX(double x) {
+        pos.setLocation(x, pos.getY());
+    }
+
+    public void setY(double y) {
+        pos.setLocation(pos.getX(), y);
+    }
+
+    public void levelUp() {
+        maxHealth += character.getMaxHealthScale() * (playerLevel);
+        maxMana += character.getMaxManaScale() * (playerLevel);
+        abiPow += character.getAbiPowScale() * (playerLevel);
+        phyPow += character.getPhyPowScale() * (playerLevel);
+        armor += character.getArmorScale() * (playerLevel);
+        magicResist += character.getMagicResistScale() * (playerLevel);
+        this.abilityUpgrade();
+        playerLevel++;
+        xpToNextLevel = playerLevel * 100;
+    }
+
+    private void abilityUpgrade() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void recieveDamage(Ability a) {
+        if (a.getDamageType() == Ability.DamageType.PHYSICAL) {
+            currentHealth = a.getDamage() - this.armor;
+        } else {
+            currentHealth = a.getDamage() - this.magicResist;
+        }
+    }
+
+    public int getAbiLevel(int index) {
+        return abilityLevels[index - 1];
+    }
 }
