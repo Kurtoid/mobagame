@@ -1,14 +1,19 @@
 package mobagame.core.game.maps;
 
+import mobagame.core.game.GameTeams;
+import mobagame.core.game.Tower;
+import mobagame.launcher.MapPanel;
+
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
 
 public class MainMap {
 	private Path2D map;
 	public int height;
 	public int width;
-
+	public ArrayList<Tower> towers = new ArrayList<>();
 	public MainMap() {
 	}
 	public MainMap(int w, int h) {
@@ -58,6 +63,78 @@ public class MainMap {
 
 		upperMapPath.append(innerCircle, false);
 
+		Tower coreTop = new Tower(1000);
+		coreTop.x = normalizeWidth(87.5);
+		coreTop.y = normalizeWidth(100-87.5);
+		coreTop.type = Tower.TowerType.CORE;
+		coreTop.team = GameTeams.highTeam;
+		towers.add(coreTop);
+
+		Tower respawnTop = new Tower(500);
+		respawnTop.x = normalizeWidth(77);
+		respawnTop.y = normalizeWidth(100-77);
+		respawnTop.type = Tower.TowerType.RESPAWN;
+		respawnTop.team = GameTeams.highTeam;
+		towers.add(respawnTop);
+
+		Tower normalTop = new Tower(500);
+		normalTop.x = normalizeWidth(66.667);
+		normalTop.y = normalizeWidth(100-66.667);
+		normalTop.type = Tower.TowerType.NORMAL;
+		normalTop.team = GameTeams.highTeam;
+		towers.add(normalTop);
+
+		normalTop = new Tower(500);
+		normalTop.x = normalizeWidth(51.556);
+		normalTop.y = normalizeWidth(100-58.356);
+		normalTop.type = Tower.TowerType.NORMAL;
+		normalTop.team = GameTeams.highTeam;
+		towers.add(normalTop);
+
+		normalTop = new Tower(500);
+		normalTop.x = normalizeWidth(58.356);
+		normalTop.y = normalizeWidth(100-51.556);
+		normalTop.type = Tower.TowerType.NORMAL;
+		normalTop.team = GameTeams.highTeam;
+		towers.add(normalTop);
+
+
+		Tower coreBottom = new Tower(1000);
+		coreBottom.x = normalizeWidth(100-87.5);
+		coreBottom.y = normalizeWidth(87.5);
+		coreBottom.type = Tower.TowerType.CORE;
+		coreBottom.team = GameTeams.lowTeam;
+		towers.add(coreBottom);
+
+		Tower respawnBottom = new Tower(500);
+		respawnBottom.x = normalizeWidth(100-77);
+		respawnBottom.y = normalizeWidth(77);
+		respawnBottom.type = Tower.TowerType.RESPAWN;
+		respawnBottom.team = GameTeams.lowTeam;
+		towers.add(respawnBottom);
+
+		Tower normalBottom = new Tower(500);
+		normalBottom.x = normalizeWidth(100-66.667);
+		normalBottom.y = normalizeWidth(66.667);
+		normalBottom.type = Tower.TowerType.NORMAL;
+		normalBottom.team = GameTeams.lowTeam;
+		towers.add(normalBottom);
+
+		normalBottom = new Tower(500);
+		normalBottom.x = normalizeWidth(100-51.556);
+		normalBottom.y = normalizeWidth(58.356);
+		normalBottom.type = Tower.TowerType.NORMAL;
+		normalBottom.team = GameTeams.lowTeam;
+		towers.add(normalBottom);
+
+		normalBottom = new Tower(500);
+		normalBottom.x = normalizeWidth(100-58.356);
+		normalBottom.y = normalizeWidth(51.556);
+		normalBottom.type = Tower.TowerType.NORMAL;
+		normalBottom.team = GameTeams.lowTeam;
+		towers.add(normalBottom);
+
+
 		/*
 		 * Path2D mapOuterBounds = new Path2D.Double(); mapOuterBounds.moveTo(0, 0);
 		 * mapOuterBounds.lineTo(normalizeWidth(100), normalizeHeight(0));
@@ -91,7 +168,7 @@ public class MainMap {
 		return (input / 100) * height;
 	}
 
-	// make another version of this in mappanel to convert from server to client
+	// make another version of this in MapPanel to convert from server to client
 	public static double normalizeWidth(double input, double width) {
 		return (input / 100) * width;
 	}

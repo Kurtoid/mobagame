@@ -14,11 +14,9 @@ import mobagame.launcher.Shop;
 import mobagame.launcher.MyCanvas;
 import mobagame.launcher.GameScreen;
 
-public class InGamePlayer {
+public class InGamePlayer extends GameObject{
 
 	private int playerID;
-	private double y;
-	private double x;
 	private Character character;
 	private int phyPow;
 	private int abiPow;

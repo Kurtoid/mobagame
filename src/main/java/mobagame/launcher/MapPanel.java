@@ -22,10 +22,7 @@ import java.io.IOException;
 
 import javax.swing.JPanel;
 
-import mobagame.core.game.Game;
-import mobagame.core.game.GameItems;
-import mobagame.core.game.InGamePlayer;
-import mobagame.core.game.Item;
+import mobagame.core.game.*;
 import mobagame.core.game.maps.MainMap;
 import mobagame.core.networking.packets.NotifyPlayerDisconnectedPacket;
 import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
@@ -182,19 +179,40 @@ public class MapPanel extends JPanel implements Runnable {
 		// }
 
 //		if (System.currentTimeMillis() - marker.timeCreated > 3000) {
-		Point.Double p = new Point.Double(marker.x, marker.y);
-		getCurrentTransform().transform(p, p);
-		graphics.setColor(Color.GREEN);
-		graphics.fillRect((int)p.getX(), (int)p.getY(), marker.width, marker.height);
+		{
+			Point.Double p = new Point.Double(marker.x, marker.y);
+			getCurrentTransform().transform(p, p);
+			graphics.setColor(Color.GREEN);
+			graphics.fillRect((int) p.getX(), (int) p.getY(), marker.width, marker.height);
+		}
 		graphics.setColor(Color.RED);
 			for(InGamePlayer player : game.players){
 				Point.Double point = new Point2D.Double(player.getX(), player.getY());
-				point.x = convertWidthFromServer(point.getX(), map.width)-convertWidthFromServer(20, map.width);
-				point.y = convertHeightFromServer(point.getY(), map.height)-convertHeightFromServer(20, map.height);
+				double pWidth = convertWidthFromServer(10, map.width);
+				double pHeight = convertHeightFromServer(10, map.height);
+//				double pWidth = 0;
+//				double pHeight = 0;
+
+				point.x = point.getX();
+				point.y = point.getY();
 				getCurrentTransform().transform(point, point);
-				graphics.fillRect((int) point.getX(), (int)point.getY(), (int)(convertWidthFromServer(40, map.width))*scaleX, (int)(convertHeightFromServer(40, map.height))*scaleY);
+				graphics.fillRect((int)(point.getX()-5), (int)(point.getY()-5), (int)10, (int)10);
 			}
 //		}
+
+		for(Tower t : game.map.towers){
+			graphics.setColor(t.team.color);
+			Point.Double p = new Point2D.Double(t.x, t.y);
+			getCurrentTransform().transform(p, p);
+			int towerSize=2*(map.width/100);
+			if(t.type == Tower.TowerType.CORE){
+				towerSize = 4*(map.width/100);
+			}else if(t.type == Tower.TowerType.RESPAWN){
+				towerSize = 3*(map.width/100);
+			}
+			towerSize *= scaleX;
+			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+		}
 	}
 
 	private AffineTransform getCurrentTransform() {
@@ -273,6 +291,9 @@ public class MapPanel extends JPanel implements Runnable {
 									continue;
 								}
 //								System.out.println("found a player");
+								pkt.x = convertWidthFromServer(pkt.x, map.width);
+								pkt.y = convertHeightFromServer(pkt.y, map.height);
+
 								player.setX(pkt.x);
 								player.setY(pkt.y);
 //						System.out.println(p.x + " " + p.y);
@@ -333,16 +354,16 @@ public class MapPanel extends JPanel implements Runnable {
 						}
 					}
 
-					if(getWidth()-mouseX<20) {
+					if(getWidth()-mouseX<50) {
 						translateX-=getWidth()/50;
 					}
-					if(mouseX<20) {
+					if(mouseX<50) {
 						translateX+=getWidth()/50;
 					}
-					if(getHeight()-mouseY<20) {
+					if(getHeight()-mouseY<50) {
 						translateY-=getHeight()/50;
 					}
-					if(mouseY<20) {
+					if(mouseY<50) {
 						translateY+=getHeight()/50;
 					}
 

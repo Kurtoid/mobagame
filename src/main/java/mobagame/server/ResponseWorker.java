@@ -133,8 +133,8 @@ public class ResponseWorker implements Runnable {
 		ServerGame g = runner.findGame(playerID);
 		InGamePlayer p = new InGamePlayer(playerID);
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
-		p.setX(110);
-		p.setY(890);
+		p.setX(90);
+		p.setY(870);
 		p.mover = new PlayerMover(g.map, p);
 		runner.addToGame(g, p, dataEvent.connectionID);
 
