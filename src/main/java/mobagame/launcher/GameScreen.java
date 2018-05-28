@@ -61,7 +61,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 	private JFrame f = new JFrame(gameName);
 
-	MainMap gameMap;
 	ClientGame game;
 	private MyCanvas[] inventoryCanvas;
 
@@ -90,10 +89,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 		UIManager.put("OptionPane.messageFont", CHAT_FONT);
 		UIManager.put("OptionPane.buttonFont", MENU_FONT);
-
-		gameMap = new MainMap();
-		gameMap.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
-		gameMap.makeMap();
 
 		// set up things
 
