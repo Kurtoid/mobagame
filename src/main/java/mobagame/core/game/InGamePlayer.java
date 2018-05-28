@@ -20,11 +20,13 @@ public class InGamePlayer extends GameObject{
     private int abiPow;
     private int maxHealth;
     private int maxMana;
+    private double speed;
     private int armor;
     private int magicResist;
     private int currentHealth;
     private int currentMana;
 
+    private int avalableUpgrades = 0;
     private int goldAmount = 0;
     private int xp = 0;
     private int levelXp = 0;
@@ -209,13 +211,6 @@ public class InGamePlayer extends GameObject{
                 ", playerLevel =" + playerLevel +
                 "position = " + pos;
     }
-
-/*    @Override
-    public String toString() {
-        return "phyPow = " + phyPow + ", abiPow = " + abiPow + ", maxHealth = " + maxHealth + ", maxMana = " + maxMana
-                + ", speed = " + speed + ", armor = " + armor + ", magicResist = " + magicResist + ", currentHealth = "
-                + currentHealth + ", currentMana = " + currentMana;
-    }*/
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;

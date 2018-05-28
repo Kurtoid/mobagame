@@ -23,7 +23,8 @@ import mobagame.server.database.PlayerAccount;
 
 public class CharSelect implements Runnable, MobaGameLauncher {
 
-	private JLabel timer = new JLabel("90");
+	private int timeLeft = 90;
+	private JLabel timer = new JLabel("" + 90);
 	JFrame selectionScreen = new JFrame("Character Select");
 
 	JPanel blueTeamSelect = new JPanel();
@@ -48,14 +49,13 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	ServerConnection conn;
 	//thread to run the countdown timer
 	public void run() {
-		String temp = "90";
-		for (int i = 90; i >= 0; i--) {
+		while (timeLeft <= 0) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
-			temp = Integer.toString(i);
-			timer.setText(temp);
+			timer.setText("" + timeLeft);
+			timeLeft--;
 			selectionScreen.setVisible(true);
 		}
 		selectionScreen.setVisible(false);
@@ -229,7 +229,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 					h.waitForResponse();
 					RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
 					System.out.println(game.playerID);
-					selectionScreen.setVisible(false);
+					timeLeft = 1;
 
 					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper);
 				} catch (IOException e1) {

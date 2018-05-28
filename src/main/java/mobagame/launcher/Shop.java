@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -33,6 +35,8 @@ public class Shop implements MobaGameLauncher {
 
 	// Item Array
 	public final ArrayList<Item> items = new ArrayList<Item>();
+
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private InGamePlayer user;
 	private GridBagConstraints c = new GridBagConstraints();
@@ -70,11 +74,11 @@ public class Shop implements MobaGameLauncher {
 				public void actionPerformed(ActionEvent e) {
 					if (activeItemID != finalX) {
 						activeItemID = finalX;
-						System.out.println("Info: Now displaying item " + activeItemID);
+						logger.log(Level.INFO, "Now displaying item " + activeItemID);
 						displayItem(items.get(activeItemID));
 						display.repaint();
 					}
-					System.out.println("Info: Already displaying item " + activeItemID);
+					logger.log(Level.INFO, "Already displaying item " + activeItemID);
 				}
 			});
 			itemList.add(displayItemX);
@@ -133,7 +137,7 @@ public class Shop implements MobaGameLauncher {
 
 		displayItem(GameItems.healingBerry);
 		activeItemID = items.indexOf(GameItems.healingBerry);
-		System.out.println("Info: Now displaying item " + activeItemID);
+		logger.log(Level.INFO, " Now displaying item " + activeItemID);
 
 		f.add(shop);
 
@@ -179,7 +183,7 @@ public class Shop implements MobaGameLauncher {
 		buy.setActionCommand(item.getName());
 		sell.setActionCommand(item.getName());
 
-		System.out.println("Info: Displaying " + item.getName());
+		logger.log(Level.INFO, " Displaying " + item.getName());
 	}
 
 	public void changeFontRecursive(Container root, Font font) {

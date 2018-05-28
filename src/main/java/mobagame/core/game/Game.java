@@ -50,6 +50,24 @@ public abstract class Game {
 			}
 		}
 		return player;
+		projectiles = new ArrayList<>();
+	}
+	public InGamePlayer getClosestPlayer(Point2D.Double pos, int i) {
+		if(players.size()<1){
+			return null;
+		}
+		double minDist = Double.MAX_VALUE;
+		InGamePlayer player = null;
+		for (InGamePlayer p : players) {
+			if (p.pos.distance(pos) <= i) {
+				double d = p.pos.distance(pos);
+				if (minDist > d) {
+					player = p;
+					minDist = d;
+				}
+			}
+		}
+		return player;
 	}
 
 	public boolean isFull() {

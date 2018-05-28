@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
@@ -13,6 +15,8 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class MyCanvas extends JPanel {
+
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private String imageLocation;
 	private int height;
@@ -24,7 +28,7 @@ public class MyCanvas extends JPanel {
 		this.width = scale;
 		this.height = scale;
 		this.setPreferredSize(new Dimension(width, height));
-		// System.out.println("Info: Square Image Created");
+		logger.log(Level.INFO, "Square Image Created");
 	}
 
 	public static MyCanvas load(String imageLocation, int i) {
@@ -41,7 +45,7 @@ public class MyCanvas extends JPanel {
 		this.width = width;
 		this.height = height;
 		this.setPreferredSize(new Dimension(width, height));
-		// System.out.println("Info: Rectangle Image Created");
+		logger.log(Level.INFO, "Rectangle Image Created");
 	}
 
 	public void paint(Graphics g) {

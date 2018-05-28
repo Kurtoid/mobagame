@@ -56,7 +56,7 @@ public class PlayerMover {
 		}
 		player.setX(x);
 		player.setY(y);
-//		System.out.println(x + "\t" + y);
+//		 System.out.println(x + "\t" + y);
 	}
 
 	public void setTarget(double newX, double newY) {
