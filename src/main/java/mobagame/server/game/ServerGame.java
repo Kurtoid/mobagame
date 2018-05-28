@@ -34,7 +34,7 @@ public class ServerGame extends Game {
 		}
 		for(Tower t : map.towers) {
 			if (t.canFire()) {
-				InGamePlayer player = getClosestPlayer(t.pos, map.width/20);
+				InGamePlayer player = getClosestPlayer(t.pos, map.width/20, GameTeams.getOppositeTeam(t.team));
 				if (player != null) {
 					Projectile p = (t.fire(player.pos, this));
 					projectiles.add(p);

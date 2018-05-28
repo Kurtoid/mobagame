@@ -11,18 +11,16 @@ import mobagame.launcher.Shop;
 import mobagame.launcher.MyCanvas;
 import mobagame.launcher.GameScreen;
 
-public class InGamePlayer {
+public class InGamePlayer extends GameObject{
 
     private int playerID;
     private Character character;
-
-    private Point.Double pos = new Point.Double(0,0);
 
     private int phyPow;
     private int abiPow;
     private int maxHealth;
     private int maxMana;
-    private int speed;
+    private double speed;
     private int armor;
     private int magicResist;
     private int currentHealth;
@@ -64,7 +62,7 @@ public class InGamePlayer {
         this.currentMana = maxMana = character.getBaseMaxMana();
         this.phyPow = character.getBasePhyPow();
         this.abiPow = character.getBaseAbiPow();
-        this.speed = (int)character.getSpeed();
+        this.speed = character.getSpeed();
         this.armor = character.getBaseArmor();
         this.magicResist = character.getBaseMagicResist();
 
@@ -111,11 +109,11 @@ public class InGamePlayer {
         this.maxMana = maxMana;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 

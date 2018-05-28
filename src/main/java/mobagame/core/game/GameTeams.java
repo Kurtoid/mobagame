@@ -10,6 +10,14 @@ public class GameTeams {
 	public static Team highTeam = new Team("Red", Color.RED);
 	public static Team lowTeam = new Team("Blue", Color.BLUE);
 
+	public static Team getOppositeTeam(Team team) {
+		if(gameTeamsLookup.indexOf(team)==1){
+			return gameTeams[0];
+		}else{
+			return gameTeams[1];
+		}
+	}
+
 	static public Team[] gameTeams = {highTeam, lowTeam};
 	static public ArrayList<Team> gameTeamsLookup = new ArrayList<Team>(Arrays.asList(gameTeams));
 }

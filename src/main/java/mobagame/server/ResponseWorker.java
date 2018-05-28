@@ -11,11 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mobagame.core.game.GameCharcters;
-import mobagame.core.game.GameItems;
-import mobagame.core.game.InGamePlayer;
-import mobagame.core.game.Item;
-import mobagame.core.game.PlayerMover;
+import mobagame.core.game.*;
 import mobagame.core.networking.packets.*;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
@@ -158,6 +154,7 @@ public class ResponseWorker implements Runnable {
 		int playerID = dataEvent.server.connectionToPlayerID(dataEvent.socket);
 		ServerGame g = runner.findGame(playerID);
 		InGamePlayer p = new InGamePlayer(playerID, GameCharcters.reaper);
+		p.team = GameTeams.lowTeam;
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
 		p.setX(90);
 		p.setY(870);

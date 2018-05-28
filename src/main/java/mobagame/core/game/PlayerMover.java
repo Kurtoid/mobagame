@@ -56,7 +56,7 @@ public class PlayerMover {
 		}
 		player.setX(x);
 		player.setY(y);
-//		System.out.println(x + "\t" + y);
+//		 System.out.println(x + "\t" + y);
 	}
 
 	public void setTarget(double newX, double newY) {
@@ -84,7 +84,7 @@ public class PlayerMover {
 		if (player instanceof InGamePlayer) {
 			System.out.println("collides " + collides);
 		}
-		return false;
+		return collides;
 	}
 
 	public boolean atTarget() {
