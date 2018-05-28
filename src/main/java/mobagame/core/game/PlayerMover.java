@@ -8,10 +8,11 @@ public class PlayerMover {
 	// double speed = 4;
 	double targetx = 500;
 	double targety = 500;
-	InGamePlayer player;
+	GameObject player;
 	MainMap map;
+	boolean hitTowers = true;
 
-	public PlayerMover(MainMap map, InGamePlayer player) {
+	public PlayerMover(MainMap map, GameObject player) {
 		this.map = map;
 		this.player = player;
 		targetx = player.getX();
@@ -55,7 +56,7 @@ public class PlayerMover {
 		}
 		player.setX(x);
 		player.setY(y);
-		 System.out.println(x + "\t" + y);
+//		System.out.println(x + "\t" + y);
 	}
 
 	public void setTarget(double newX, double newY) {
@@ -65,23 +66,32 @@ public class PlayerMover {
 
 	boolean doesCollide(double x, double y, double playerWidth, double playerHeight) {
 		boolean collides = map.getMap().intersects(x - playerHeight / 2, y - playerHeight / 2, playerHeight, playerHeight);
-		for (int i = 0; i < map.towers.size() && !collides; i++) {
-			double towerSize = 2 * (map.width / 100);
-			if (map.towers.get(i).type == Tower.TowerType.CORE) {
-				towerSize = 4 * (map.width / 100);
-			} else if (map.towers.get(i).type == Tower.TowerType.RESPAWN) {
-				towerSize = 3 * (map.width / 100);
-			}
-			Ellipse2D.Double footprint = new Ellipse2D.Double(map.towers.get(i).getX() - towerSize / 2, map.towers.get(i).getY() - towerSize / 2, towerSize, towerSize);
-			if (footprint.intersects(x - playerHeight / 2, y - playerHeight / 2, playerHeight, playerHeight)) {
-				collides = true;
+		//if (hitTowers) {
+		if(false){
+			for (int i = 0; i < map.towers.size() && !collides; i++) {
+				double towerSize = 2 * (map.width / 100);
+				if (map.towers.get(i).type == Tower.TowerType.CORE) {
+					towerSize = 4 * (map.width / 100);
+				} else if (map.towers.get(i).type == Tower.TowerType.RESPAWN) {
+					towerSize = 3 * (map.width / 100);
+				}
+				Ellipse2D.Double footprint = new Ellipse2D.Double(map.towers.get(i).getX() - towerSize / 2, map.towers.get(i).getY() - towerSize / 2, towerSize, towerSize);
+				if (footprint.intersects(x - playerHeight / 2, y - playerHeight / 2, playerHeight, playerHeight)) {
+					collides = true;
+				}
 			}
 		}
-//		System.out.println("collides " + collides);
-		return collides;
+		if (player instanceof InGamePlayer) {
+			System.out.println("collides " + collides);
+		}
+		return false;
 	}
 
 	public boolean atTarget() {
 		return targetx == player.getX() && targety == player.getY();
+	}
+
+	public void setMap(MainMap map) {
+		this.map = map;
 	}
 }

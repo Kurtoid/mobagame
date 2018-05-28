@@ -20,7 +20,6 @@ public class InGamePlayer extends GameObject{
     private int abiPow;
     private int maxHealth;
     private int maxMana;
-    private double speed;
     private int armor;
     private int magicResist;
     private int currentHealth;
