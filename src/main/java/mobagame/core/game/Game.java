@@ -50,7 +50,6 @@ public abstract class Game {
 			}
 		}
 		return player;
-		projectiles = new ArrayList<>();
 	}
 	public InGamePlayer getClosestPlayer(Point2D.Double pos, int i) {
 		if(players.size()<1){
