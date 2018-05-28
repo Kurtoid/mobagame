@@ -29,15 +29,7 @@ import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
 import mobagame.core.game.*;
 import mobagame.core.game.maps.MainMap;
-import mobagame.core.networking.packets.NotifyPlayerDisconnectedPacket;
-import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
-import mobagame.core.networking.packets.Packet;
-import mobagame.core.networking.packets.PlayerPositionPacket;
-import mobagame.core.networking.packets.PlayerStatusReport;
-import mobagame.core.networking.packets.PlayerUseItemResponsePacket;
-import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
-import mobagame.core.networking.packets.RequestPlayerMovementPacket;
-import mobagame.core.networking.packets.RequestPlayerSellItemResponsePacket;
+import mobagame.core.networking.packets.*;
 import mobagame.launcher.game.gamePlayObjects.ClickMarker;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
@@ -194,15 +186,15 @@ public class MapPanel extends JPanel implements Runnable {
 		graphics.setColor(Color.RED);
 			for(InGamePlayer player : game.players){
 				Point.Double point = new Point2D.Double(player.getX(), player.getY());
-				double pWidth = convertWidthFromServer(10, map.width);
-				double pHeight = convertHeightFromServer(10, map.height);
+				double pWidth = convertWidthFromServer(10, map.width) * scaleX;
+				double pHeight = convertHeightFromServer(10, map.height) * scaleY;
 //				double pWidth = 0;
 //				double pHeight = 0;
 
 				point.x = point.getX();
 				point.y = point.getY();
 				getCurrentTransform().transform(point, point);
-				graphics.fillRect((int)(point.getX()-5), (int)(point.getY()-5), (int)10, (int)10);
+				graphics.fillRect((int)(point.getX()-pWidth/2), (int)(point.getY()-pHeight/2), (int)pWidth, (int)pHeight);
 			}
 //		}
 
@@ -218,6 +210,16 @@ public class MapPanel extends JPanel implements Runnable {
 			}
 			towerSize *= scaleX;
 			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+		}
+
+		for(Projectile proj : game.projectiles){
+			graphics.setColor(proj.team.color);
+			Point.Double p = new Point2D.Double(proj.getX(), proj.getY());
+			getCurrentTransform().transform(p, p);
+			int towerSize=1*(map.width/100);
+			towerSize *= scaleX;
+			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+
 		}
 	}
 
@@ -277,8 +279,14 @@ public class MapPanel extends JPanel implements Runnable {
 					// do server pings here
 					int processed = 0;
 //					System.out.println("updating from server");
-
-					while (processed < 5) {
+					for(Projectile proj : game.projectiles){
+						proj.update();
+					}
+					/*if(game.projectiles.size()>0){
+						System.out.println(game.projectiles.get(0).pos.toString());
+					}*/
+					System.out.println("projectiles: " + game.projectiles.size());
+					while (processed < 20) {
 						Packet p = h.getResponse(Packet.class);
 						processed++;
 						if (p == null) {
@@ -367,6 +375,16 @@ public class MapPanel extends JPanel implements Runnable {
 									}
 								}
 							}
+						}else if(NotifyProjectileFiredPacket.class.isInstance(p)){
+							NotifyProjectileFiredPacket pkt = (NotifyProjectileFiredPacket) p;
+							Projectile proj = new Projectile(map);
+							proj.target = convertPointFromServer(pkt.target, map.width, map.height);
+							proj.firedFrom = convertPointFromServer(pkt.firedFrom, map.width, map.height);
+							proj.speed = convertHeightFromServer(pkt.speed, map.height);
+							proj.team = GameTeams.gameTeams[pkt.teamIDFiredFrom];
+							proj.pos = proj.firedFrom;
+							proj.mover.setTarget(proj.target.getX(), proj.target.getY());
+							game.projectiles.add(proj);
 						}
 					}
 
@@ -435,6 +453,13 @@ public class MapPanel extends JPanel implements Runnable {
 			}
 		}
 	}
+
+	private Point2D.Double convertPointFromServer(Point2D.Double point, int width, int height) {
+		point.x = convertWidthFromServer(point.x, width);
+		point.y = convertHeightFromServer(point.y, height);
+		return point;
+	}
+
 	public static double convertHeightFromServer(double input, double width) {
 		return (input / 1000) * width;
 	}

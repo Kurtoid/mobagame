@@ -6,8 +6,10 @@ import mobagame.core.networking.packets.*;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
 
+import java.awt.geom.Point2D;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +32,41 @@ public class ServerGame extends Game {
 				logger.log(Level.INFO, "player reached target");
 			}
 		}
+		for(Tower t : map.towers) {
+			if (t.canFire()) {
+				InGamePlayer player = getClosestPlayer(t.pos, map.width/20);
+				if (player != null) {
+					Projectile p = (t.fire(player.pos, this));
+					projectiles.add(p);
+					notifyPlayersAboutProjectileFired(p);
+				}
+			}
+		}
+		{
+			Iterator<Projectile> iter = projectiles.iterator();
+			while (iter.hasNext()) {
+				Projectile p = iter.next();
+				p.update();
+				if (!p.active) {
+					iter.remove();
+				}
+
+			}
+		}
 	}
+
+	private void notifyPlayersAboutProjectileFired(Projectile p) {
+		NotifyProjectileFiredPacket pkt = new NotifyProjectileFiredPacket();
+		pkt.firedFrom = p.firedFrom;
+		pkt.target = p.target;
+		pkt.teamIDFiredFrom = GameTeams.gameTeamsLookup.indexOf(p.team);
+		pkt.speed = p.speed;
+		for(InGamePlayer player : players){
+			runner.conn.send(runner.conn.playerToConnection.get(player), pkt.getBytes().array());
+
+		}
+	}
+
 
 	public void sendToClients(ConnectionListener conn) {
 		for (InGamePlayer p : players) {

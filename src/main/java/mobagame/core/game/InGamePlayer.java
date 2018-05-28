@@ -261,15 +261,6 @@ public class InGamePlayer {
         }
     }
 
-    // index is as of abilityLevels and cooldown arrays
-    private void upgradeAbility(int index) {
-        // TODO Auto-generated method stub
-        if (avalableUpgrades > 0 && abilityLevels[index] >= 0 && abilityLevels[index] < 5) {
-            abilityLevels[index]++;
-            cooldownTimer[index] = 30 - (abilityLevels[index] *5);
-        }
-    }
-
     public int getAbiLevel(int index) {
         return abilityLevels[index - 1];
     }

@@ -1,11 +1,14 @@
 package mobagame.core.game;
 
+import java.awt.geom.Point2D;
 import java.util.*;
 
 import mobagame.core.game.maps.MainMap;
 
 public abstract class Game {
 	public ArrayList<InGamePlayer> players;
+	public ArrayList<Projectile> projectiles;
+
 	private InGamePlayer playerPlayer;
 	public MainMap map;
 	final static int MAX_PLAYERS = 10;
@@ -15,8 +18,12 @@ public abstract class Game {
 		map = new MainMap();
 		map.setServerMode();
 		map.makeMap();
+		for(Tower t : map.towers){
+			t.map = map;
+		}
 		players = new ArrayList<>();
 		gameID = new Random().nextInt();
+		projectiles = new ArrayList<>();
 	}
 
 	public Game(MainMap m) {
@@ -25,6 +32,24 @@ public abstract class Game {
 		map.makeMap();
 		players = new ArrayList<>();
 		gameID = new Random().nextInt();
+		projectiles = new ArrayList<>();
+	}
+	public InGamePlayer getClosestPlayer(Point2D.Double pos, int i) {
+		if(players.size()<1){
+			return null;
+		}
+		double minDist = Double.MAX_VALUE;
+		InGamePlayer player = null;
+		for (InGamePlayer p : players) {
+			if (p.pos.distance(pos) <= i) {
+				double d = p.pos.distance(pos);
+				if (minDist > d) {
+					player = p;
+					minDist = d;
+				}
+			}
+		}
+		return player;
 	}
 
 	public boolean isFull() {

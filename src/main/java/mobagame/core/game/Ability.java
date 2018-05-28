@@ -113,11 +113,11 @@ public class Ability {
 	}
 
 	public int getBaseDamageBefRat() {
-		for (int x = 1; x < caster.getCharacter().getAbilities().length; x++ ) {
-			if (caster.getCharacter().getAbilities()[x] == this){
-				return (this.baseDamage + (this.damScale + caster.getAbiLevel(x-1)));
-			}
-		}
-		return  -1;
-	}
+        for (int x = 1; x < caster.getCharacter().getAbilities().length; x++) {
+            if (caster.getCharacter().getAbilities()[x] == this) {
+                return (this.baseDamage + (this.damScale + caster.getAbiLevel(x - 1)));
+            }
+        }
+        return -1;
+    }
 }
