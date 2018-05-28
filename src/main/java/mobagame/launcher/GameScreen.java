@@ -29,9 +29,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.logging.*;
 
 @SuppressWarnings("serial")
 public class GameScreen implements ActionListener, KeyListener, MouseListener, Runnable, MobaGameLauncher {
+
+    Logger logger = Logger.getLogger(this.getClass().getName());
 
 	public final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
 
@@ -45,11 +48,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	private JButton gold;
 
 	// icons
-	public static String map = ("resources/Black.png");
-
-	// abilities
-
-	private static String gameName = Menu.GAME_NAME;
 
 	private static String SHOP = "shop";
 	private static String MENU = "menu";
@@ -59,9 +57,8 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	private JLabel health = new JLabel("Loading health");
 	private JLabel mana = new JLabel("Loading mana");
 
-	private JFrame f = new JFrame(gameName);
+	private JFrame f = new JFrame(MobaGameLauncher.GAME_NAME);
 
-	MainMap gameMap;
 	ClientGame game;
 	private MyCanvas[] inventoryCanvas;
 
@@ -91,10 +88,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		UIManager.put("OptionPane.messageFont", CHAT_FONT);
 		UIManager.put("OptionPane.buttonFont", MENU_FONT);
 
-		gameMap = new MainMap();
-		gameMap.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
-		gameMap.makeMap();
-
 		// set up things
 
 		user.setGoldAmount(0);
@@ -108,7 +101,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		gold.setActionCommand(SHOP);
 		gold.addActionListener(this);
 
-		String mapImage = (map);
 		JLabel chatLabel = new JLabel(chatWrap + user.toString());
 		chatLabel.setBounds(0, SCREEN_SIZE.height / 2, SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
 
@@ -132,14 +124,14 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		JPanel front = new JPanel(gbl);
 		front.setSize(SCREEN_SIZE);
 		chat = new JScrollPane(chatLabel);
-		chat.setSize((int) SCREEN_SIZE.width / 4, (int) SCREEN_SIZE.height / 2);
+		chat.setSize(SCREEN_SIZE.width / 4,  SCREEN_SIZE.height / 2);
 		JPanel stats = new JPanel(gbl);
-		d.setSize((int) (SCREEN_SIZE.width / 4), (int) (SCREEN_SIZE.height));
+		d.setSize( (SCREEN_SIZE.width / 4),  (SCREEN_SIZE.height));
 		stats.setMaximumSize(d);
 		inventory = new JPanel(gbl);
-		inventory.setSize((int) SCREEN_SIZE.width / 5, (int) SCREEN_SIZE.height / 10);
-		JPanel map = new JPanel(gbl);
-		map.setSize((int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
+		inventory.setSize( SCREEN_SIZE.width / 5,  SCREEN_SIZE.height / 10);
+		JPanel mapPanel = new JPanel(gbl);
+		mapPanel.setSize( (int) SCREEN_SIZE.getWidth() / 10,  (int) SCREEN_SIZE.getWidth() / 10);
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -163,8 +155,19 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		c.gridy = 0;
 		c.gridx = 0;
 
-		// map
-		map.add(new MyCanvas(mapImage, SCREEN_SIZE.width / 10), c);
+		// mapPanel
+        g = new ClientGame(gameID);
+        g.map = new MainMap();
+        g.map.setSize(mapPanel.getWidth(),  mapPanel.getHeight());
+        g.map.makeMap();
+		MapPanel miniMap = new MapPanel(g);
+		miniMap.setPreferredSize(mapPanel.getSize());
+		miniMap.removeMouseListener(miniMap.getMouseListeners()[0]);
+		miniMap.removeMouseMotionListener(miniMap.getMouseMotionListeners()[0]);
+		miniMap.removeMouseWheelListener(miniMap.getMouseWheelListeners()[0]);
+		miniMap.removeKeyListener(miniMap.getKeyListeners()[0]);
+		miniMap.marker.height = 0;
+        mapPanel.add(miniMap, c);
 
 		// chat
 		chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -210,7 +213,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		front.add(stats, c);
 		stats.setBorder(frame);
 		/// *
-		// map & inventory
+		// mapPanel & inventory
 		if (lefty) {
 			c.anchor = GridBagConstraints.NORTHWEST;
 			c.gridy = 0;
@@ -219,9 +222,9 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			inventory.setBorder(frame);
 			c.anchor = GridBagConstraints.NORTHEAST;
 			c.gridx = 2;
-			front.add(map, c);
-			map.setBorder(green);
-			map.setBounds(0, 0, (int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
+			front.add(mapPanel, c);
+			mapPanel.setBorder(blue);
+			mapPanel.setBounds(0, 0, mapPanel.getWidth(),  mapPanel.getHeight());
 		} else {
 			c.anchor = GridBagConstraints.NORTHEAST;
 			c.gridy = 0;
@@ -230,9 +233,9 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			inventory.setBorder(frame);
 			c.anchor = GridBagConstraints.NORTHWEST;
 			c.gridx = 0;
-			front.add(map, c);
-			map.setBorder(green);
-			map.setBounds(0, 0, (int) (SCREEN_SIZE.width / 5), (int) (SCREEN_SIZE.width / 5));
+			front.add(mapPanel, c);
+			mapPanel.setBorder(blue);
+            mapPanel.setBounds(0, 0, mapPanel.getWidth(),  mapPanel.getHeight());
 		}
 		// */
 		front.setBorder(frame);
@@ -242,21 +245,17 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		layered.add(front, new Integer(1), 0);
 
 		MapPanel background = new MapPanel(game);
-		background.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
+        background.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		background.resetPanAndZoom();
 		layered.add(background, new Integer(0), 0);
 		f.add(layered);
 		Thread t = new Thread(background);
 		t.start();
 
-		System.out.println("visisble");
 		f.setVisible(true);
 		changeFontRecursive(f, MENU_FONT);
 		chatLabel.setFont(CHAT_FONT);
 		gold.setFont(MENU_FONT);
-		// next line to be deleted when fixed
-		// JOptionPane.showMessageDialog(f, "Pressing tab breaks
-		// everything", "Warning", JOptionPane.WARNING_MESSAGE);
 		f.setFocusable(true);
 		start();
 	}
@@ -304,7 +303,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			inventoryCanvas[y].addMouseListener(this);
 			inventory.add(inventoryCanvas[y], c);
 		}
-		System.out.println("Info: Inventory set");
+        logger.log(Level.INFO, "Inventory set");
 	}
 
 	public void refreshInventory() {
@@ -313,19 +312,19 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			inventoryCanvas[y].setImageLocation(user.getInventory()[y].getImageLocation());
 		}
 		inventory.repaint();
-		System.out.println("Info: Inventory repainted");
+        logger.log(Level.INFO, " Inventory repainted");
 	}
 
 	public void keyPressed(KeyEvent ke) {
 		int pressed = ke.getKeyCode();
-		System.out.println("KEY PRESSED: " + pressed);
+        logger.log(Level.INFO, "KEY PRESSED: " + pressed);
 		if (pressed >= 97 && pressed <= 105 && usePadAndBar) {
 			pressed -= 48;
 		}
 		switch (pressed) { // TODO Make keys do proper things
 		case KeyEvent.VK_TAB:
 			// TAB???
-			System.out.println("TAB???");
+            logger.log(Level.INFO, "TAB pressed???");
 			break;
 		case KeyEvent.VK_P:
 			// GOTO Shop
@@ -333,82 +332,82 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			break;
 		case KeyEvent.VK_M:
 			// GOTO In-Game
-			System.out.println("GOTO In-Game");
+            logger.log(Level.INFO, "GOTO In-Game");
 			JOptionPane.showMessageDialog(f, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 			break;
 		case KeyEvent.VK_Q:
 			// USE Q ability
-			System.out.println("USE Q ability");
+            logger.log(Level.INFO, "USE Q ability");
 			// charater.UseAbility(Q);
 			break;
 		case KeyEvent.VK_W:
 			// USE W ability
-			System.out.println("USE W ability");
+            logger.log(Level.INFO, "USE W ability");
 			// charater.UseAbility(W);
 			break;
 		case KeyEvent.VK_E:
 			// USE E ability
-			System.out.println("USE E ability");
+            logger.log(Level.INFO, "USE E ability");
 			// charater.UseAbility(E);
 			break;
 		case KeyEvent.VK_R:
 			// USE R ability
-			System.out.println("USE R ability");
+            logger.log(Level.INFO, "USE R ability");
 			// charater.UseAbility(R);
 			break;
 		case KeyEvent.VK_D:
 			// USE D ability
-			System.out.println("USE D ability");
+            logger.log(Level.INFO, "USE D ability");
 			// charater.UseAbility(D);
 			break;
 		case KeyEvent.VK_F:
 			// USE F ability
-			System.out.println("USE F ability");
+            logger.log(Level.INFO, "USE F ability");
 			// charater.UseAbility(F);
 			break;
 		case KeyEvent.VK_1:
 			// USE inventory slot 1
-			System.out.println("USE inventory slot 1");
+            logger.log(Level.INFO, "USE inventory slot 1");
 			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[0]));
 			break;
 		case KeyEvent.VK_2:
 			// USE inventory slot 2
-			System.out.println("USE inventory slot 2");
+            logger.log(Level.INFO, "USE inventory slot 2");
 			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[1]));
 			break;
 		case KeyEvent.VK_3:
 			// USE inventory slot 3
-			System.out.println("USE inventory slot 3");
+            logger.log(Level.INFO, "USE inventory slot 3");
 			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[2]));
 			break;
 		case KeyEvent.VK_4:
 			// USE inventory slot 4
-			System.out.println("USE inventory slot 4");
+			logger.log(Level.INFO, "USE inventory slot 4");
 			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[3]));
 			break;
 		case KeyEvent.VK_5:
 			// USE inventory slot 5
-			System.out.println("USE inventory slot 5");
+			logger.log(Level.INFO, "USE inventory slot 5");
 			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[4]));
 			break;
 		case KeyEvent.VK_6:
 			// USE inventory slot 6
-			System.out.println("USE inventory slot 6");
+			logger.log(Level.INFO, "USE inventory slot 6");
 			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[5]));
 			break;
 		case KeyEvent.VK_7:
 			// USE inventory slot 7
-			System.out.println("USE inventory slot 7");
+			logger.log(Level.INFO, "USE inventory slot 7");
 			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[6]));
 			break;
 		case KeyEvent.VK_8:
 			// USE inventory slot 8
-			System.out.println("USE inventory slot 8");
+			logger.log(Level.INFO, "USE inventory slot 8");
 			reportUseItem(GameItems.allGameItemsLookup.indexOf(user.inventory[7]));
 			break;
 		case KeyEvent.VK_ESCAPE:
 			// Escape pressed
-			System.out.println("Escape pressed");
+			logger.log(Level.INFO, "Escape pressed");
 			System.exit(0);
 			break;
 		}
@@ -426,7 +425,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	}
 
 	public void mouseClicked(MouseEvent me) { // TODO Click to move
-		System.out.println("Mouse Point (" + me.getX() + ", " + me.getY() + ")");
+        logger.log(Level.INFO, "Mouse Point: (" + me.getX() + ", " + me.getY() + ")");
 	}
 
 	public void actionPerformed(ActionEvent ae) { // TODO Send to appropriate windows
@@ -466,21 +465,21 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	// Not used interface methods
 	public void keyTyped(KeyEvent ke) {
 		// char pressed = ke.getKeyChar();
-		// System.out.println("KEY TYPED: " + pressed);
+		// logger.log(Level.INFO, "KEY TYPED: " + pressed);
 	}
 
 	public void keyReleased(KeyEvent ke) {
 		// char released = ke.getKeyChar();
-		// System.out.println("KEY RELEASED: " + released);
+		// logger.log(Level.INFO, "KEY RELEASED: " + released);
 	}
 
 	public void mousePressed(MouseEvent me) {
-		// System.out.println("Mouse pressed; # of clicks: "
+		// logger.log(Level.INFO, "Mouse pressed; # of clicks: "
 		// + me.getClickCount());
 	}
 
 	public void mouseReleased(MouseEvent me) {
-		// System.out.println("Mouse released; # of clicks: "
+		// logger.log(Level.INFO, "Mouse released; # of clicks: "
 		// + me.getClickCount());
 	}
 

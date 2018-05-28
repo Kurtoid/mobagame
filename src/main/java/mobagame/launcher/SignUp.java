@@ -45,7 +45,7 @@ public class SignUp extends JFrame implements ActionListener, MobaGameLauncher  
 	public SignUp() {
 		super("Sign Up");
 		try {
-			conn = ServerConnection.getInstance("localhost", 8666);
+				conn = ServerConnection.getInstance("localhost", 8666);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

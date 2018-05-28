@@ -2,6 +2,8 @@ package mobagame.core.game;
 
 import java.awt.Component;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mobagame.core.networking.packets.RequestPlayerBuyItemPacket;
 import mobagame.core.networking.packets.RequestPlayerSellItemPacket;
@@ -13,6 +15,9 @@ import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
 
 public class Item implements MobaGameLauncher {
+
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	private String name;
 	private String imageLocation;
 	private int price;
@@ -67,7 +72,7 @@ public class Item implements MobaGameLauncher {
 			e.printStackTrace();
 		}
 
-		System.out.println("Error: Item not in inventory");
+		logger.log(Level.WARNING, "Item not in inventory");
 	}
 
 	public String getImageLocation() {
@@ -97,7 +102,7 @@ public class Item implements MobaGameLauncher {
 					user.setCurrentMana(user.getCurrentMana() + effectPoints[x]);
 					break;
 				default:
-					System.out.println("ERROR: Not a valid consumable item");
+					logger.log(Level.WARNING, "Not a valid consumable item");
 					break;
 				}
 			}
