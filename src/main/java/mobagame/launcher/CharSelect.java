@@ -42,14 +42,14 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	JPanel red4 = new JPanel();
 	JPanel red5 = new JPanel();
 	JScrollPane JSP = new JScrollPane(charSelectMenu); 
-	public ImageIcon placeHolderImage = new ImageIcon("resources//Black.png");
-	public ImageIcon reaperCharPic = new ImageIcon("resource//Character//Reaper.png");
+	public ImageIcon placeHolderImage = new ImageIcon("resources/Black.png");
+	public ImageIcon reaperCharPic = new ImageIcon("resource/Character/Reaper.png");
 	JButton startButton;
 	PlayerAccount player;
 	ServerConnection conn;
 	//thread to run the countdown timer
 	public void run() {
-		while (timeLeft <= 0) {
+		while (timeLeft >= 0) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

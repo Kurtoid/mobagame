@@ -49,7 +49,7 @@ public class MyCanvas extends JPanel {
 	}
 
 	public void paint(Graphics g) {
-		BufferedImage img1 = null;
+		BufferedImage img1;
 		try {
 			img1 = ImageIO.read(new File(imageLocation));
 

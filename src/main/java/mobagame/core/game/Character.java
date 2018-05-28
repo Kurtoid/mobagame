@@ -8,7 +8,7 @@ public class Character {
 	private double speed; // Measured in
 
 	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
-	private final Ability[] abilities = { new Passive(), new Ability(), new Ability(), new Ability(), new Ability() };
+	private final Ability[] abilities = { new Passive(this), new Ability(), new Ability(), new Ability(), new Ability() };
 
 	private int maxHealthScale;
 	private int baseMaxHealth;
