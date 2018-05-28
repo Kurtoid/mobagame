@@ -2,14 +2,17 @@ package mobagame.core.game;
 
 import mobagame.core.game.maps.MainMap;
 
+import java.awt.geom.Ellipse2D;
+
 public class PlayerMover {
 	// double speed = 4;
 	double targetx = 500;
 	double targety = 500;
-	InGamePlayer player;
+	GameObject player;
 	MainMap map;
+	boolean hitTowers = true;
 
-	public PlayerMover(MainMap map, InGamePlayer player) {
+	public PlayerMover(MainMap map, GameObject player) {
 		this.map = map;
 		this.player = player;
 		targetx = player.getX();
@@ -32,7 +35,7 @@ public class PlayerMover {
 		}
 		if (Math.abs(targetx - x) < Math.abs(speed * Math.cos(angleRadians))
 				&& Math.abs(targety - y) < Math.abs(speed * Math.sin(angleRadians))
-				&& !map.getMap().intersects(targetx, targety, 5, 5)) {
+				&& !doesCollide(targetx, targety, 10, 10)) {
 			x = targetx;
 			y = targety;
 		} else {
@@ -40,20 +43,20 @@ public class PlayerMover {
 			/*
 			 * if (x < targetx) { x++; } if (x > targetx) { x--; } //
 			 */
-			if (map.getMap().intersects(x - 20, player.getY() - 20, 40, 40)) {
+			if (doesCollide(x, player.getY(), 10, 10)) {
 				x = oldx;
 			}
 
 			/*
 			 * if (y > targety) { y--; } if (y < targety) { y++; } //
 			 */
-			if (map.getMap().intersects(x - 20, y - 20, 40, 40)) {
+			if (doesCollide(x, y, 10, 10)) {
 				y = oldy;
 			}
 		}
 		player.setX(x);
 		player.setY(y);
-		// System.out.println(x + "\t" + y);
+//		 System.out.println(x + "\t" + y);
 	}
 
 	public void setTarget(double newX, double newY) {
@@ -61,7 +64,34 @@ public class PlayerMover {
 		targety = newY;
 	}
 
+	boolean doesCollide(double x, double y, double playerWidth, double playerHeight) {
+		boolean collides = map.getMap().intersects(x - playerHeight / 2, y - playerHeight / 2, playerHeight, playerHeight);
+		//if (hitTowers) {
+		if(false){
+			for (int i = 0; i < map.towers.size() && !collides; i++) {
+				double towerSize = 2 * (map.width / 100);
+				if (map.towers.get(i).type == Tower.TowerType.CORE) {
+					towerSize = 4 * (map.width / 100);
+				} else if (map.towers.get(i).type == Tower.TowerType.RESPAWN) {
+					towerSize = 3 * (map.width / 100);
+				}
+				Ellipse2D.Double footprint = new Ellipse2D.Double(map.towers.get(i).getX() - towerSize / 2, map.towers.get(i).getY() - towerSize / 2, towerSize, towerSize);
+				if (footprint.intersects(x - playerHeight / 2, y - playerHeight / 2, playerHeight, playerHeight)) {
+					collides = true;
+				}
+			}
+		}
+		if (player instanceof InGamePlayer) {
+			System.out.println("collides " + collides);
+		}
+		return collides;
+	}
+
 	public boolean atTarget() {
 		return targetx == player.getX() && targety == player.getY();
+	}
+
+	public void setMap(MainMap map) {
+		this.map = map;
 	}
 }

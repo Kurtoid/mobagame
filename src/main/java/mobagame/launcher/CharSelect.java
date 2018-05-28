@@ -1,6 +1,6 @@
 package mobagame.launcher;
 
-//Carson Mango 4/25/18
+//Carson Mango 5/26/18
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,8 +8,10 @@ import java.io.IOException;
 
 import javax.swing.*;
 
+import mobagame.core.networking.packets.DEBUG_ClientForceStartGame;
 import org.omg.PortableServer.ServantRetentionPolicyValue;
 
+import mobagame.core.game.GameCharcters;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.PlayerMover;
 import mobagame.core.game.maps.MainMap;
@@ -22,7 +24,8 @@ import mobagame.server.database.PlayerAccount;
 
 public class CharSelect implements Runnable, MobaGameLauncher {
 
-	private JLabel timer = new JLabel("90");
+	private int timeLeft = 90;
+	private JLabel timer = new JLabel("" + 90);
 	JFrame selectionScreen = new JFrame("Character Select");
 
 	JPanel blueTeamSelect = new JPanel();
@@ -39,35 +42,47 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	JPanel red3 = new JPanel();
 	JPanel red4 = new JPanel();
 	JPanel red5 = new JPanel();
-	public ImageIcon placeHolderImage = new ImageIcon("resources//Black.png");
-	public ImageIcon reaperCharPic = new ImageIcon("resources//Reaper.png");
-	
+	JScrollPane JSP = new JScrollPane(charSelectMenu); 
+	public ImageIcon placeHolderImage = new ImageIcon("resources/Black.png");
+	public ImageIcon reaperCharPic = new ImageIcon("resource/Character/Reaper.png");
 	JButton startButton;
 	PlayerAccount player;
 	ServerConnection conn;
+	Thread thisThread;
+	boolean stopCounter = false;
 	//thread to run the countdown timer
 	public void run() {
-		String temp = "90";
-		for (int i = 90; i >= 0; i--) {
+		System.out.println("countdown timer started");
+		while (timeLeft >= 0) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
-			temp = Integer.toString(i);
-			timer.setText(temp);
-//			selectionScreen.setVisible(true);
+			timer.setText("" + timeLeft);
+			System.out.println(timeLeft);
+			timeLeft--;
+			selectionScreen.setVisible(true);
 		}
-//		selectionScreen.setVisible(false);
+		if(!stopCounter) {
+			selectionScreen.setVisible(false);
+//		RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
+//		RspHandler h = RspHandler.getInstance();
+//			conn.send(req.getBytes().array(), h);
+//			h.waitForResponse();
+			RspHandler.getInstance().waitForResponse();
+			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
+			new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper);
+		}
 	}
 	//Meathod to start countdown timer thread
 	public void start() {
-		Thread t = new Thread(this);
-		t.start();
+		thisThread = new Thread(this);
+		thisThread.start();
 	}
 
 	private GridBagConstraints gbc = new GridBagConstraints();
 
-	public CharSelect(PlayerAccount player) {
+	public CharSelect(PlayerAccount player, int lobbyID) {
 
 		this.player = player;
 		try {
@@ -76,6 +91,10 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		charSelectMenu.setLayout(new GridLayout(10, 10));
+		JSP.setSize((int)(WINDOW_WIDTH/1.5), (int)(WINDOW_HEIGHT/2));
+		JSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		JSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		//Setting up character select menu
 		blueTeamSelect.setSize((int)(WINDOW_WIDTH / 2.6), (int)(WINDOW_HEIGHT / 3.125));
 		redTeamSelect.setSize((int)(WINDOW_WIDTH / 2.6), (int)(WINDOW_HEIGHT / 3.125));
@@ -112,16 +131,16 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		red3CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
 		red4CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
 		red5CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		JLabel blue1User = new JLabel("Temp");
-		JLabel blue2User = new JLabel("Temp");
-		JLabel blue3User = new JLabel("Temp");
-		JLabel blue4User = new JLabel("Temp");
-		JLabel blue5User = new JLabel("Temp");
-		JLabel red1User = new JLabel("Temp");
-		JLabel red2User = new JLabel("Temp");
-		JLabel red3User = new JLabel("Temp");
-		JLabel red4User = new JLabel("Temp");
-		JLabel red5User = new JLabel("Temp");
+		JLabel blue1User = new JLabel("  " + player.getUsername());
+		JLabel blue2User = new JLabel("  Temp");
+		JLabel blue3User = new JLabel("  Temp");
+		JLabel blue4User = new JLabel("  Temp");
+		JLabel blue5User = new JLabel("  Temp");
+		JLabel red1User = new JLabel("  Temp");
+		JLabel red2User = new JLabel("  Temp");
+		JLabel red3User = new JLabel("  Temp");
+		JLabel red4User = new JLabel("  Temp");
+		JLabel red5User = new JLabel("  Temp");
 		red1User.setHorizontalAlignment(JLabel.RIGHT);
 		red2User.setHorizontalAlignment(JLabel.RIGHT);
 		red3User.setHorizontalAlignment(JLabel.RIGHT);
@@ -174,6 +193,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		redTeamSelect.add(red4);
 		redTeamSelect.add(red5);
 		charSelectMenu.add(test);
+		JSP.add(charSelectMenu);
 		charStats.add(test2);
 		gbc.gridy = 0;
 		gbc.gridx = 0;
@@ -193,7 +213,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		//Don't question the majestic number it was needed to center the char select menu
 		gbc.weightx = 23401051;
 		gbc.anchor = GridBagConstraints.CENTER;
-		selectionScreen.add(charSelectMenu, gbc);
+		selectionScreen.add(JSP, gbc);
 		gbc.gridy = 3;
 		gbc.gridx = 0;
 		gbc.weightx = 1;
@@ -205,16 +225,18 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			public void actionPerformed(ActionEvent e) {
 				// TODO: second arguement is character id
 				System.out.println("sending with player id " + player.id);
-				RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
+				DEBUG_ClientForceStartGame req = new DEBUG_ClientForceStartGame();
+				req.lobbyID = lobbyID;
 				RspHandler h = RspHandler.getInstance();
 				try {
 					conn.send(req.getBytes().array(), h);
 					h.waitForResponse();
 					RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
 					System.out.println(game.playerID);
-					selectionScreen.setVisible(false);
+					timeLeft = 1;
 
-					new GameScreen(game.gameID, player, game.playerID);
+					stopCounter = true;
+					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

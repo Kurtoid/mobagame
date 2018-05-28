@@ -130,6 +130,10 @@ public class RspHandler extends Thread {
 							System.out.println("request game resposne");
 							addToPackets(new RequestEnterGameResponsePacket(pkt));
 							break;
+						case Packet.PK_ID_PLAYER_REQUEST_ENTER_LOBBY_REPONSE:
+							System.out.println("request enter lobby response");
+							addToPackets(new RequestEnterLobbyResponsePacket(pkt));
+							break;
 						case Packet.PK_ID_PLAYER_MOVE_REPORT:
 							System.out.println("Player movement report");
 							addToPackets(new PlayerPositionPacket(pkt));
@@ -157,6 +161,18 @@ public class RspHandler extends Thread {
 						case Packet.PK_ID_PLAYER_STATUS_REPORT:
 							System.out.println("status report");
 							addToPackets(new PlayerStatusReport(pkt));
+							break;
+						case Packet.PK_ID_PLAYER_USE_ITEM_RESPONSE:
+							System.out.println("used item");
+							addToPackets(new PlayerUseItemResponsePacket(pkt));
+							break;
+						case Packet.PK_ID_NOTIFY_PROJECTILE_FIRED:
+							System.out.println("projectile fired");
+							addToPackets(new NotifyProjectileFiredPacket(pkt));
+							break;
+						case Packet.PK_ID_NOTIFY_PLAYER_ENTER_CHARACTER_SELECT:
+							System.out.println("Character select enter");
+							addToPackets(new NotifyPlayerEnterCharacterSelect(pkt));
 							break;
 						default:
 							System.out.println("unknown packet " + Packet.getPacketID(pkt));

@@ -7,29 +7,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.PlayerMover;
-import mobagame.core.networking.packets.DisconnectPacket;
-import mobagame.core.networking.packets.InitPacket;
-import mobagame.core.networking.packets.LoginPacket;
-import mobagame.core.networking.packets.LoginStatusPacket;
-import mobagame.core.networking.packets.Packet;
-import mobagame.core.networking.packets.PublicPlayerDataPacket;
-import mobagame.core.networking.packets.RequestEnterGamePacket;
-import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
-import mobagame.core.networking.packets.RequestPlayerBuyItemPacket;
-import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
-import mobagame.core.networking.packets.RequestPlayerMovementPacket;
-import mobagame.core.networking.packets.RequestPlayerSellItemPacket;
-import mobagame.core.networking.packets.RequestPlayerSellItemResponsePacket;
-import mobagame.core.networking.packets.SendRandomDataPacket;
-import mobagame.core.networking.packets.SignupPacket;
-import mobagame.core.networking.packets.SignupResponsePacket;
+import mobagame.core.networking.packets.*;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 import mobagame.server.game.ServerGame;
@@ -92,6 +77,10 @@ public class ResponseWorker implements Runnable {
 				logger.log(Level.INFO, "BULLSHIT MODE");
 				handleBullshitPacket(new SendRandomDataPacket(chunkBuf), dataEvent);
 				break;
+			case Packet.PK_ID_PLAYER_REQUEST_ENTER_LOBBY:
+				logger.log(Level.INFO, "request enter lobby");
+				handleRequestEnterLobbyPacket(new RequestEnterLobbyPacket(chunkBuf), dataEvent);
+				break;
 			case Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME:
 				logger.log(Level.INFO, "request enter game");
 				handleRequestEnterGamePacket(new RequestEnterGamePacket(chunkBuf), dataEvent);
@@ -104,9 +93,9 @@ public class ResponseWorker implements Runnable {
 				logger.log(Level.INFO, "Player buy item");
 				handleBuyItemRequestPacket(new RequestPlayerBuyItemPacket(chunkBuf), dataEvent);
 				break;
-			case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM:
-				logger.log(Level.INFO, "player sell item");
-				handleSellItemRequestPacket(new RequestPlayerSellItemPacket(chunkBuf), dataEvent);
+				case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM:
+					logger.log(Level.INFO, "player sell item");
+					handleSellItemRequestPacket(new RequestPlayerSellItemPacket(chunkBuf), dataEvent);
 			default:
 				logger.log(Level.WARNING, "bad pkt");
 				break;
@@ -117,10 +106,8 @@ public class ResponseWorker implements Runnable {
 		}
 	}
 
-	private void handleSellItemRequestPacket(RequestPlayerSellItemPacket requestPlayerSellItemPacket,
-			ServerDataEvent dataEvent) {
-		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID))
-				.sellItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerSellItemPacket.itemID);
+	private void handleSellItemRequestPacket(RequestPlayerSellItemPacket requestPlayerSellItemPacket, ServerDataEvent dataEvent) {
+		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID)).sellItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerSellItemPacket.itemID);
 		RequestPlayerSellItemResponsePacket resp = new RequestPlayerSellItemResponsePacket();
 		resp.status = status;
 		resp.itemID = requestPlayerSellItemPacket.itemID;
@@ -128,10 +115,8 @@ public class ResponseWorker implements Runnable {
 
 	}
 
-	private void handleBuyItemRequestPacket(RequestPlayerBuyItemPacket requestPlayerBuyItemPacket,
-			ServerDataEvent dataEvent) {
-		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID))
-				.buyItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerBuyItemPacket.itemID);
+	private void handleBuyItemRequestPacket(RequestPlayerBuyItemPacket requestPlayerBuyItemPacket, ServerDataEvent dataEvent) {
+		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID)).buyItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerBuyItemPacket.itemID);
 		RequestPlayerBuyItemResponsePacket resp = new RequestPlayerBuyItemResponsePacket();
 		resp.status = status;
 		resp.itemID = requestPlayerBuyItemPacket.itemID;
@@ -146,23 +131,26 @@ public class ResponseWorker implements Runnable {
 				requestPlayerMovementPacket.y);
 	}
 
-	private void handleRequestEnterGamePacket(RequestEnterGamePacket requestEnterGamePacket,
+	private void handleRequestEnterLobbyPacket(RequestEnterLobbyPacket requestEnterLobbyPacket,
 			ServerDataEvent dataEvent) {
 		int playerID = dataEvent.server.connectionToPlayerID(dataEvent.socket);
-		ServerGame g = runner.findGame(playerID);
-		InGamePlayer p = new InGamePlayer(playerID);
+		Lobby lobby = runner.findLobby(playerID);
+		InGamePlayer p = new InGamePlayer(playerID, GameCharcters.reaper);
+		dataEvent.server.playerToConnection.put(p, dataEvent.socket);
+/*
+		p.team = GameTeams.lowTeam;
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
-		p.setX(110);
-		p.setY(890);
-		p.mover = new PlayerMover(g.map, p);
-		runner.addToGame(g, p, dataEvent.connectionID);
+		p.setX(90);
+		p.setY(870);
+		p.mover = new PlayerMover(lobby.map, p);
+*/
 
 		logger.log(Level.INFO, "resp with gameid " + g.getGameID() + " and player id " + p.getPlayerID());
-		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g, p);
+		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g,p);
 		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
-		g.notifyPlayerJoinedGame(p);
-		g.tellClientAboutExistingPlayers(p, dataEvent.socket);
+//		lobby.notifyPlayerJoinedLobby(p);
+//		lobby.tellClientAboutExistingPlayers(p, dataEvent.socket);
 
 	}
 

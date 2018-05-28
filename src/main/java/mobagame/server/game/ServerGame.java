@@ -6,8 +6,10 @@ import mobagame.core.networking.packets.*;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
 
+import java.awt.geom.Point2D;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +32,41 @@ public class ServerGame extends Game {
 				logger.log(Level.INFO, "player reached target");
 			}
 		}
+		for(Tower t : map.towers) {
+			if (t.canFire()) {
+				InGamePlayer player = getClosestPlayer(t.pos, map.width/20, GameTeams.getOppositeTeam(t.team));
+				if (player != null) {
+					Projectile p = (t.fire(player.pos, this));
+					projectiles.add(p);
+					notifyPlayersAboutProjectileFired(p);
+				}
+			}
+		}
+		{
+			Iterator<Projectile> iter = projectiles.iterator();
+			while (iter.hasNext()) {
+				Projectile p = iter.next();
+				p.update();
+				if (!p.active) {
+					iter.remove();
+				}
+
+			}
+		}
 	}
+
+	private void notifyPlayersAboutProjectileFired(Projectile p) {
+		NotifyProjectileFiredPacket pkt = new NotifyProjectileFiredPacket();
+		pkt.firedFrom = p.firedFrom;
+		pkt.target = p.target;
+		pkt.teamIDFiredFrom = GameTeams.gameTeamsLookup.indexOf(p.team);
+		pkt.speed = p.speed;
+		for(InGamePlayer player : players){
+			runner.conn.send(runner.conn.playerToConnection.get(player), pkt.getBytes().array());
+
+		}
+	}
+
 
 	public void sendToClients(ConnectionListener conn) {
 		for (InGamePlayer p : players) {
@@ -53,7 +89,6 @@ public class ServerGame extends Game {
 				runner.conn.send(runner.conn.playerToConnection.get(player), p.getBytes().array());
 			}
 		}
-
 	}
 
 	public void tellClientAboutExistingPlayers(InGamePlayer newPlayer, SocketChannel socket) {
@@ -64,7 +99,6 @@ public class ServerGame extends Game {
 				runner.conn.send(socket, p.getBytes().array());
 			}
 		}
-
 	}
 
 	private void removePlayer(InGamePlayer p) {
@@ -82,52 +116,50 @@ public class ServerGame extends Game {
 
 	public int buyItem(InGamePlayer user, int itemID) {
 		Item i = GameItems.allGameItems[itemID];
-		for (int y = 0; y < user.inventory.length; y++) {
-			for (int x = 0; x < user.inventory[y].length; x++) {
-				if (user.inventory[y][x] == GameItems.empty) {
-					if (user.getGoldAmount() >= i.getPrice()) {
-						user.setGoldAmount(user.getGoldAmount() - i.getPrice());
-						user.inventory[y][x] = i;
-						if (!i.isConsumable()) {
-							for (int z = 0; z < i.getType().length; z++) {
-								switch (i.getType()[z]) {
-									case Health:
-										user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
-										break;
-									case Mana:
-										user.setMaxMana(user.getMaxMana() + i.getEffectPoints()[z]);
-										break;
-									case PhysicalPower:
-										user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
-										break;
-									case AbilityPower:
-										user.setPhyPow(user.getPhyPow() + i.getEffectPoints()[z]);
-										break;
-									case Speed:
-										user.setSpeed(user.getSpeed() + i.getEffectPoints()[z]);
-										break;
-									case AttackSpecial:
-										user.setAbiPow(user.getAbiPow() + i.getEffectPoints()[z]);
-										break;
-									case Armor:
-										user.setArmor(user.getArmor() + i.getEffectPoints()[z]);
-										break;
-									case MagicResistance:
-										user.setMagicResist(user.getMagicResist() + i.getEffectPoints()[z]);
-										break;
-									default:
-										System.out.println("ERROR: Unknown item type");
-										break;
-								}
+		for (int x = 0; x < user.inventory.length; x++) {
+			if (user.inventory[x] == GameItems.empty) {
+				if (user.getGoldAmount() >= i.getPrice()) {
+					user.setGoldAmount(user.getGoldAmount() - i.getPrice());
+					user.inventory[x] = i;
+					if (!i.isConsumable()) {
+						for (int z = 0; z < i.getType().length; z++) {
+							switch (i.getType()[z]) {
+							case Health:
+								user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
+								break;
+							case Mana:
+								user.setMaxMana(user.getMaxMana() + i.getEffectPoints()[z]);
+								break;
+							case PhysicalPower:
+								user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
+								break;
+							case AbilityPower:
+								user.setPhyPow(user.getPhyPow() + i.getEffectPoints()[z]);
+								break;
+							case Speed:
+								user.setSpeed(user.getSpeed() + i.getEffectPoints()[z]);
+								break;
+							case AttackSpecial:
+								user.setAbiPow(user.getAbiPow() + i.getEffectPoints()[z]);
+								break;
+							case Armor:
+								user.setArmor(user.getArmor() + i.getEffectPoints()[z]);
+								break;
+							case MagicResistance:
+								user.setMagicResist(user.getMagicResist() + i.getEffectPoints()[z]);
+								break;
+							default:
+								System.out.println("ERROR: Unknown item type");
+								break;
 							}
 						}
-						System.out.println("You bought a " + i.getName());
-						return RequestPlayerBuyItemResponsePacket.SUCCESSFUL;
-					} else {
-						System.out.println("Not enought gold to buy " + i.getName() + "\n\t" + "You need "
-								+ (i.getPrice() - user.getGoldAmount()) + " more gold");
-						return RequestPlayerBuyItemResponsePacket.NOT_ENOUGH_GOLD;
 					}
+					System.out.println("You bought a " + i.getName());
+					return RequestPlayerBuyItemResponsePacket.SUCCESSFUL;
+				} else {
+					System.out.println("Not enought gold to buy " + i.getName() + "\n\t" + "You need "
+							+ (i.getPrice() - user.getGoldAmount()) + " more gold");
+					return RequestPlayerBuyItemResponsePacket.NOT_ENOUGH_GOLD;
 				}
 			}
 		}
@@ -137,53 +169,51 @@ public class ServerGame extends Game {
 
 	public int sellItem(InGamePlayer user, int itemID) {
 		Item item = GameItems.allGameItemsLookup.get(itemID);
-		for (int y = 0; y < user.inventory.length; y++) {
-			for (int x = 0; x < user.inventory[y].length; x++) {
-				if (user.inventory[y][x] == item) {
-					if (user.inventory[y][x] != GameItems.empty) {
-						user.setGoldAmount(user.getGoldAmount() + item.getPrice());
-						user.inventory[y][x] = GameItems.empty;
-						if (!item.isConsumable()) {
-							for (int z = 0; z < item.getType().length; z++) {
-								switch (item.getType()[z]) {
-									case Health:
-										user.setMaxHealth(user.getMaxHealth() - item.getEffectPoints()[z]);
-										break;
-									case Mana:
-										user.setMaxMana(user.getMaxMana() - item.getEffectPoints()[z]);
-										break;
-									case PhysicalPower:
-										user.setMaxHealth(user.getMaxHealth() - item.getEffectPoints()[z]);
-										break;
-									case AbilityPower:
-										user.setPhyPow(user.getPhyPow() - item.getEffectPoints()[z]);
-										break;
-									case Speed:
-										user.setSpeed(user.getSpeed() - item.getEffectPoints()[z]);
-										break;
-									case AttackSpecial:
-										user.setAbiPow(user.getAbiPow() - item.getEffectPoints()[z]);
-										break;
-									case Armor:
-										user.setArmor(user.getArmor() - item.getEffectPoints()[z]);
-										break;
-									case MagicResistance:
-										user.setMagicResist(user.getMagicResist() - item.getEffectPoints()[z]);
-										break;
-									default:
-										System.out.println("ERROR: Unknown item type");
-										break;
-								}
+		for (int x = 0; x < user.inventory.length; x++) {
+			if (user.inventory[x] == item) {
+				if (user.inventory[x] != GameItems.empty) {
+					user.setGoldAmount(user.getGoldAmount() + (int) (item.getPrice() * .70));
+					user.inventory[x] = GameItems.empty;
+					if (!item.isConsumable()) {
+						for (int z = 0; z < item.getType().length; z++) {
+							switch (item.getType()[z]) {
+							case Health:
+								user.setMaxHealth(user.getMaxHealth() - item.getEffectPoints()[z]);
+								break;
+							case Mana:
+								user.setMaxMana(user.getMaxMana() - item.getEffectPoints()[z]);
+								break;
+							case PhysicalPower:
+								user.setMaxHealth(user.getMaxHealth() - item.getEffectPoints()[z]);
+								break;
+							case AbilityPower:
+								user.setPhyPow(user.getPhyPow() - item.getEffectPoints()[z]);
+								break;
+							case Speed:
+								user.setSpeed(user.getSpeed() - item.getEffectPoints()[z]);
+								break;
+							case AttackSpecial:
+								user.setAbiPow(user.getAbiPow() - item.getEffectPoints()[z]);
+								break;
+							case Armor:
+								user.setArmor(user.getArmor() - item.getEffectPoints()[z]);
+								break;
+							case MagicResistance:
+								user.setMagicResist(user.getMagicResist() - item.getEffectPoints()[z]);
+								break;
+							default:
+								System.out.println("ERROR: Unknown item type");
+								break;
 							}
 						}
-						System.out.println("You sold a " + item.getName());
-						// sold
-						return RequestPlayerSellItemResponsePacket.SUCCESSFUL;
-					} else {
-						System.out.println("You cannot sell nothing");
-						// failed
-						return RequestPlayerSellItemResponsePacket.NO_INVENTORY_SPACE;
 					}
+					System.out.println("You sold a " + item.getName());
+					// sold
+					return RequestPlayerSellItemResponsePacket.SUCCESSFUL;
+				} else {
+					System.out.println("You cannot sell nothing");
+					// failed
+					return RequestPlayerSellItemResponsePacket.NO_INVENTORY_SPACE;
 				}
 			}
 		}
@@ -198,13 +228,13 @@ public class ServerGame extends Game {
 	}
 
 	public void sendStatusReport() {
-		for(InGamePlayer p : players) {
+		for (InGamePlayer p : players) {
 			PlayerStatusReport rpt = new PlayerStatusReport();
 			rpt.playerID = p.getPlayerID();
 			rpt.playerHealth = p.getCurrentHealth();
 			rpt.playerGold = p.getGoldAmount();
 			rpt.playerMana = p.getCurrentMana();
-			for(InGamePlayer p2 : players) {
+			for (InGamePlayer p2 : players) {
 				runner.conn.send(runner.conn.playerToConnection.get(p2), rpt.getBytes().array());
 			}
 		}

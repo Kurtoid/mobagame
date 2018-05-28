@@ -2,6 +2,8 @@ package mobagame.core.game;
 
 import java.awt.Component;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mobagame.core.networking.packets.RequestPlayerBuyItemPacket;
 import mobagame.core.networking.packets.RequestPlayerSellItemPacket;
@@ -13,6 +15,9 @@ import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
 
 public class Item implements MobaGameLauncher {
+
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 	private String name;
 	private String imageLocation;
 	private int price;
@@ -34,10 +39,6 @@ public class Item implements MobaGameLauncher {
 		this(name, imageLocation, price, makeItemTypeArray(type), makeIntArray(effectPoints), isConsumable);
 	}
 
-	public Item(String name, String imageLocation, int price, int effectPoints, boolean isConsumable) {
-		this(name, imageLocation, price, makeItemTypeArray(ItemType.Health), makeIntArray(effectPoints), isConsumable);
-	}
-
 	private static ItemType[] makeItemTypeArray(ItemType type) {
 		ItemType[] array = { type };
 		return array;
@@ -50,15 +51,15 @@ public class Item implements MobaGameLauncher {
 
 	public void buy(InGamePlayer user) {
 		// buy logic is in server.ResponseWorker
-			RequestPlayerBuyItemPacket pkt = new RequestPlayerBuyItemPacket();
-			pkt.itemID = GameItems.allGameItemsLookup.indexOf(this);
-			try {
-				ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
-			} catch (IOException e) {
-//				 TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+		RequestPlayerBuyItemPacket pkt = new RequestPlayerBuyItemPacket();
+		pkt.itemID = GameItems.allGameItemsLookup.indexOf(this);
+		try {
+			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		user.getCharacter().getPass().update(user);
 	}
 
 	public void sell(InGamePlayer user) {
@@ -67,11 +68,10 @@ public class Item implements MobaGameLauncher {
 		try {
 			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array());
 		} catch (IOException e) {
-//				 TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		System.out.println("Error: Item not in inventory");
+		user.getCharacter().getPass().update(user);
 	}
 
 	public String getImageLocation() {
@@ -90,9 +90,8 @@ public class Item implements MobaGameLauncher {
 		this.price = price;
 	}
 
-	public Item use(InGamePlayer user) {
+	public byte use(InGamePlayer user) {
 		if (isConsumable) {
-			// do stuff
 			for (int x = 0; x < getType().length; x++) {
 				switch (getType()[x]) {
 				case Health:
@@ -102,26 +101,23 @@ public class Item implements MobaGameLauncher {
 					user.setCurrentMana(user.getCurrentMana() + effectPoints[x]);
 					break;
 				default:
-					System.out.println("ERROR: Not a valid consumable item");
+					logger.log(Level.WARNING, "Not a valid consumable item");
 					break;
 				}
 			}
-			return GameItems.empty;
+			if (user.getCurrentMana() > user.getMaxMana()){
+				user.setCurrentMana(user.getMaxMana());
+			}
+			if (user.getCurrentHealth() > user.getMaxHealth()){
+				user.setCurrentHealth(user.getMaxHealth());
+			}
+			return 1;
 		}
-		return this;
+		return 0;
 	}
 
 	public String toString() {
 		return name + ": " + "$" + price;
-	}
-
-	public static void main(String[] args) {
-		Item knife = new Item("knife", "resources/Items/knife.png", 500, 10, false);
-		InGamePlayer user = new InGamePlayer(0);
-		user.setGoldAmount(100);
-		knife.buy(user);
-		user.setGoldAmount(500);
-		knife.buy(user);
 	}
 
 	public boolean isConsumable() {

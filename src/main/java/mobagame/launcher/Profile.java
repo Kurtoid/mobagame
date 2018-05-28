@@ -6,6 +6,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,6 +21,9 @@ import mobagame.server.database.PlayerAccount;
 public class Profile extends JFrame implements ActionListener, MobaGameLauncher {
 
 	PlayerAccount player;
+
+	Logger logger = Logger.getLogger(this.getClass().getName());
+
 
 	private static String EMAIL = "email";
 
@@ -41,7 +46,7 @@ public class Profile extends JFrame implements ActionListener, MobaGameLauncher 
 		// left
 		c.gridx = 0;
 		JPanel icon = new JPanel();
-		icon.add(new MyCanvas("resources/Reaper.png", 250));
+		icon.add(new MyCanvas("resources/Character/Reaper.png", 250));
 		panel.add(icon, c);
 
 		c.gridy = 1;
@@ -90,7 +95,7 @@ public class Profile extends JFrame implements ActionListener, MobaGameLauncher 
 			// edit email
 			JOptionPane.showMessageDialog(null, "Current Email: ", "EDIT", JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			System.out.println("ERROR: Invalid Action");
+			logger.log(Level.WARNING, "  Invalid Action");
 		}
 	}
 

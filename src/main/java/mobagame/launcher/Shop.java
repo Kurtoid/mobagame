@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,9 +19,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import mobagame.core.game.GameCharcters;
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
+import mobagame.core.networking.packets.DEBUG_JustJoinToAGame;
 import mobagame.core.networking.packets.PublicPlayerDataPacket;
 import mobagame.core.networking.packets.RequestEnterGamePacket;
 import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
@@ -32,6 +36,8 @@ public class Shop implements MobaGameLauncher {
 
 	// Item Array
 	public final ArrayList<Item> items = new ArrayList<Item>();
+
+	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private InGamePlayer user;
 	private GridBagConstraints c = new GridBagConstraints();
@@ -67,19 +73,19 @@ public class Shop implements MobaGameLauncher {
 			final int finalX = x;
 			displayItemX.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (activeItemID != finalX){
+					if (activeItemID != finalX) {
 						activeItemID = finalX;
-						System.out.println("Info: Now displaying item " + activeItemID);
+						logger.log(Level.INFO, "Now displaying item " + activeItemID);
 						displayItem(items.get(activeItemID));
 						display.repaint();
 					}
-					System.out.println("Info: Already displaying item " + activeItemID);
+					logger.log(Level.INFO, "Already displaying item " + activeItemID);
 				}
 			});
 			itemList.add(displayItemX);
 		}
 
-		list.setSize(f.getSize().height/2, f.getSize().width/2);
+		list.setSize(f.getSize().height, f.getSize().width / 3);
 		c.gridy = 0;
 		c.gridx = 0;
 		c.anchor = GridBagConstraints.CENTER;
@@ -119,7 +125,7 @@ public class Shop implements MobaGameLauncher {
 				items.get(activeItemID).buy(user);
 			}
 		});
-		
+
 		display.add(buy, c);
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.EAST;
@@ -132,7 +138,7 @@ public class Shop implements MobaGameLauncher {
 
 		displayItem(GameItems.healingBerry);
 		activeItemID = items.indexOf(GameItems.healingBerry);
-		System.out.println("Info: Now displaying item " + activeItemID);
+		logger.log(Level.INFO, " Now displaying item " + activeItemID);
 
 		f.add(shop);
 
@@ -151,7 +157,7 @@ public class Shop implements MobaGameLauncher {
 	private JPanel effectList = new JPanel(new GridLayout(0, 1));
 
 	private void displayItem(Item item) {
-		
+
 		itemName.setHorizontalAlignment(JLabel.CENTER);
 		itemPrice.setHorizontalAlignment(JLabel.CENTER);
 		labelEffect.setHorizontalAlignment(JLabel.CENTER);
@@ -159,25 +165,26 @@ public class Shop implements MobaGameLauncher {
 		itemName.setText(item.getName());
 		itemImage.setImageLocation(item.getImageLocation());
 		itemPrice.setText("$" + item.getPrice());
-		
+
 		effectList.removeAll();
 		c.gridwidth = 2;
 		c.gridy = 4;
 		c.gridx = 0;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
-		
+
 		for (int x = 0; x < item.getType().length; x++) {
 			JLabel label = new JLabel("+" + item.getEffectPoints()[x] + " " + item.getType()[x]);
+			label.setFont(GAME_FONT);
 			label.setHorizontalAlignment(JLabel.CENTER);
 			effectList.add(label);
 		}
 		display.add(effectList, c);
-		
+
 		buy.setActionCommand(item.getName());
 		sell.setActionCommand(item.getName());
-		
-		System.out.println("Info: Displaying " + item.getName());
+
+		logger.log(Level.INFO, " Displaying " + item.getName());
 	}
 
 	public void changeFontRecursive(Container root, Font font) {
@@ -190,27 +197,26 @@ public class Shop implements MobaGameLauncher {
 	}
 
 	public static void main(String[] args) {
-		 Login.fakeLogin();
-		 RspHandler.getInstance().waitForResponse(); // wait for one (maybe two) packets, or three seconds
-		 PublicPlayerDataPacket playerData = (PublicPlayerDataPacket)
-		 RspHandler.getInstance().getResponse(PublicPlayerDataPacket.class);
-		 PlayerAccount p = playerData.player;
-		 RequestEnterGamePacket req = new RequestEnterGamePacket(p.id, 1);
-		 try {
-		 ServerConnection.getInstance(ServerConnection.ip,
-		 ServerConnection.port).send(req.getBytes().array());
-		 RspHandler.getInstance().waitForResponse();
-		 RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket)
-		 RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
-		 System.out.println(game.playerID);
-		
-		 GameScreen s = new GameScreen(game.gameID, p, game.playerID);
-		testing = true;
+		Login.fakeLogin();
+		RspHandler.getInstance().waitForResponse(); // wait for one (maybe two) packets, or three seconds
+		PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) RspHandler.getInstance()
+				.getResponse(PublicPlayerDataPacket.class);
+		PlayerAccount p = playerData.player;
+		DEBUG_JustJoinToAGame req = new DEBUG_JustJoinToAGame(p.id);
+		try {
+			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(req.getBytes().array());
+			RspHandler.getInstance().waitForResponse();
+			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance()
+					.getResponse(RequestEnterGameResponsePacket.class);
+			System.out.println(game.playerID);
+
+			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper);
+			testing = true;
 //		InGamePlayer user = new InGamePlayer(0);
 //		Shop s = new Shop(user);
 //		user.setGoldAmount(5000);
-		 } catch (IOException e) {
-		 e.printStackTrace();
-		 }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

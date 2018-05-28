@@ -45,7 +45,7 @@ public class SignUp extends JFrame implements ActionListener, MobaGameLauncher  
 	public SignUp() {
 		super("Sign Up");
 		try {
-			conn = ServerConnection.getInstance("localhost", 8666);
+				conn = ServerConnection.getInstance("localhost", 8666);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -54,7 +54,8 @@ public class SignUp extends JFrame implements ActionListener, MobaGameLauncher  
 
 		// Create everything.
 		String[] questions = { "What is the name of the hospital you were born at?",
-				"What was the name of your first pet?", "What is your mother's maiden name?",
+				"What was the name of your first pet?",
+				"What is your mother's maiden name?",
 				"What is your fathers middle name?" };
 
 		questionField = new JComboBox<String>(questions);

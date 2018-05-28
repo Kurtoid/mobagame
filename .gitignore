@@ -177,3 +177,4 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 /target/
+/default_client_settings.conf

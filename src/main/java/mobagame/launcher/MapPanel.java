@@ -23,18 +23,13 @@ import java.io.IOException;
 import javax.swing.JPanel;
 
 import mobagame.core.game.Game;
+import mobagame.core.game.GameCharcters;
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
+import mobagame.core.game.*;
 import mobagame.core.game.maps.MainMap;
-import mobagame.core.networking.packets.NotifyPlayerDisconnectedPacket;
-import mobagame.core.networking.packets.NotifyPlayerJoinedGamePacket;
-import mobagame.core.networking.packets.Packet;
-import mobagame.core.networking.packets.PlayerPositionPacket;
-import mobagame.core.networking.packets.PlayerStatusReport;
-import mobagame.core.networking.packets.RequestPlayerBuyItemResponsePacket;
-import mobagame.core.networking.packets.RequestPlayerMovementPacket;
-import mobagame.core.networking.packets.RequestPlayerSellItemResponsePacket;
+import mobagame.core.networking.packets.*;
 import mobagame.launcher.game.gamePlayObjects.ClickMarker;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
@@ -155,8 +150,8 @@ public class MapPanel extends JPanel implements Runnable {
 
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
-				scaleX += e.getWheelRotation();
-				scaleY += e.getWheelRotation();
+				scaleX -= e.getWheelRotation();
+				scaleY -= e.getWheelRotation();
 
 				scaleX = Math.max(1, scaleX);
 				scaleY = Math.max(1, scaleY);
@@ -182,19 +177,50 @@ public class MapPanel extends JPanel implements Runnable {
 		// }
 
 //		if (System.currentTimeMillis() - marker.timeCreated > 3000) {
-		Point.Double p = new Point.Double(marker.x, marker.y);
-		getCurrentTransform().transform(p, p);
-		graphics.setColor(Color.GREEN);
-		graphics.fillRect((int)p.getX(), (int)p.getY(), marker.width, marker.height);
+		{
+			Point.Double p = new Point.Double(marker.x, marker.y);
+			getCurrentTransform().transform(p, p);
+			graphics.setColor(Color.GREEN);
+			graphics.fillRect((int) p.getX(), (int) p.getY(), marker.width, marker.height);
+		}
 		graphics.setColor(Color.RED);
 			for(InGamePlayer player : game.players){
 				Point.Double point = new Point2D.Double(player.getX(), player.getY());
-				point.x = convertWidthFromServer(point.getX(), map.width)-convertWidthFromServer(20, map.width);
-				point.y = convertHeightFromServer(point.getY(), map.height)-convertHeightFromServer(20, map.height);
+				double pWidth = convertWidthFromServer(10, map.width) * scaleX;
+				double pHeight = convertHeightFromServer(10, map.height) * scaleY;
+//				double pWidth = 0;
+//				double pHeight = 0;
+
+				point.x = point.getX();
+				point.y = point.getY();
 				getCurrentTransform().transform(point, point);
-				graphics.fillRect((int) point.getX(), (int)point.getY(), (int)(convertWidthFromServer(40, map.width))*scaleX, (int)(convertHeightFromServer(40, map.height))*scaleY);
+				graphics.fillRect((int)(point.getX()-pWidth/2), (int)(point.getY()-pHeight/2), (int)pWidth, (int)pHeight);
 			}
 //		}
+
+		for(Tower t : game.map.towers){
+			graphics.setColor(t.team.color);
+			Point.Double p = new Point2D.Double(t.getX(), t.getY());
+			getCurrentTransform().transform(p, p);
+			int towerSize=2*(map.width/100);
+			if(t.type == Tower.TowerType.CORE){
+				towerSize = 4*(map.width/100);
+			}else if(t.type == Tower.TowerType.RESPAWN){
+				towerSize = 3*(map.width/100);
+			}
+			towerSize *= scaleX;
+			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+		}
+
+		for(Projectile proj : game.projectiles){
+			graphics.setColor(proj.team.color);
+			Point.Double p = new Point2D.Double(proj.getX(), proj.getY());
+			getCurrentTransform().transform(p, p);
+			int towerSize=1*(map.width/100);
+			towerSize *= scaleX;
+			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+
+		}
 	}
 
 	private AffineTransform getCurrentTransform() {
@@ -253,8 +279,14 @@ public class MapPanel extends JPanel implements Runnable {
 					// do server pings here
 					int processed = 0;
 //					System.out.println("updating from server");
-
-					while (processed < 5) {
+					for(Projectile proj : game.projectiles){
+						proj.update();
+					}
+					/*if(game.projectiles.size()>0){
+						System.out.println(game.projectiles.get(0).pos.toString());
+					}*/
+					System.out.println("projectiles: " + game.projectiles.size());
+					while (processed < 20) {
 						Packet p = h.getResponse(Packet.class);
 						processed++;
 						if (p == null) {
@@ -273,6 +305,9 @@ public class MapPanel extends JPanel implements Runnable {
 									continue;
 								}
 //								System.out.println("found a player");
+								pkt.x = convertWidthFromServer(pkt.x, map.width);
+								pkt.y = convertHeightFromServer(pkt.y, map.height);
+
 								player.setX(pkt.x);
 								player.setY(pkt.y);
 //						System.out.println(p.x + " " + p.y);
@@ -282,7 +317,9 @@ public class MapPanel extends JPanel implements Runnable {
 							NotifyPlayerJoinedGamePacket pkt = (NotifyPlayerJoinedGamePacket) p;
 							System.out.println("new player!");
 							if(game.getPlayer(pkt.playerID) == null) {
-								game.players.add(new InGamePlayer(pkt.playerID));
+								InGamePlayer plr = new InGamePlayer(pkt.playerID,  GameCharcters.reaper);
+								plr.team = GameTeams.lowTeam;
+								game.players.add(plr);
 								System.out.println("new player added");
 							}
 						}else if(NotifyPlayerDisconnectedPacket.class.isInstance(p)) {
@@ -293,16 +330,14 @@ public class MapPanel extends JPanel implements Runnable {
 							if(pkt.status == pkt.SUCCESSFUL) {
 								Item i = GameItems.allGameItems[pkt.itemID];
 								boolean foundSlot = false;
-								for (int y = 0; y < game.getPlayerPlayer().inventory.length && !foundSlot; y++) {
-									for (int x = 0; x < game.getPlayerPlayer().inventory[y].length && !foundSlot; x++) {
-										if (game.getPlayerPlayer().inventory[y][x] == GameItems.empty) {
+									for (int x = 0; x < game.getPlayerPlayer().inventory.length && !foundSlot; x++) {
+										if (game.getPlayerPlayer().inventory[x] == GameItems.empty) {
 												game.getPlayerPlayer().setGoldAmount(game.getPlayerPlayer().getGoldAmount() - i.getPrice());
-												game.getPlayerPlayer().inventory[y][x] = i;
+												game.getPlayerPlayer().inventory[x] = i;
 												System.out.println("You bought a " + i.getName());
 												foundSlot = true;
 										}
 									}
-								}
 								System.out.println("No space in inventory to buy " + i.getName());
 
 							}
@@ -311,16 +346,15 @@ public class MapPanel extends JPanel implements Runnable {
 							if (pkt.status == pkt.SUCCESSFUL) {
 								Item i = GameItems.allGameItems[pkt.itemID];
 								boolean foundSlot = false;
-								for (int y = 0; y < game.getPlayerPlayer().inventory.length && !foundSlot; y++) {
-									for (int x = 0; x < game.getPlayerPlayer().inventory[y].length && !foundSlot; x++) {
-										if (game.getPlayerPlayer().inventory[y][x] == i) {
-											game.getPlayerPlayer().setGoldAmount(game.getPlayerPlayer().getGoldAmount() + i.getPrice());
-											game.getPlayerPlayer().inventory[y][x] = GameItems.empty;
-											System.out.println("You sold a " + i.getName());
-											foundSlot = true;
-										}
+								for (int x = 0; x < game.getPlayerPlayer().inventory.length && !foundSlot; x++) {
+									if (game.getPlayerPlayer().inventory[x] == i) {
+										game.getPlayerPlayer().setGoldAmount(game.getPlayerPlayer().getGoldAmount() + i.getPrice());
+										game.getPlayerPlayer().inventory[x] = GameItems.empty;
+										System.out.println("You sold a " + i.getName());
+										foundSlot = true;
 									}
 								}
+
 								System.out.println("No space in inventory to sell " + i.getName());
 
 							}
@@ -330,19 +364,42 @@ public class MapPanel extends JPanel implements Runnable {
 							player.setCurrentHealth(rpt.playerHealth);
 							player.setCurrentMana(rpt.playerMana);
 							player.setGoldAmount(rpt.playerGold);
+						}else if(PlayerUseItemResponsePacket.class.isInstance(p)) {
+							PlayerUseItemResponsePacket res = (PlayerUseItemResponsePacket) p;
+							int itemID = res.itemID;
+							InGamePlayer player = game.getPlayerPlayer();
+							boolean used = false;
+							if (res.used != 0) {
+								for(int x = 0; x < player.inventory.length && !used; x++) {
+									if (GameItems.allGameItemsLookup.indexOf(player.inventory[x]) == itemID) {
+										player.setItem(x, GameItems.empty);
+										used = true;
+									}
+								}
+							}
+						}else if(NotifyProjectileFiredPacket.class.isInstance(p)){
+							NotifyProjectileFiredPacket pkt = (NotifyProjectileFiredPacket) p;
+							Projectile proj = new Projectile(map);
+							proj.target = convertPointFromServer(pkt.target, map.width, map.height);
+							proj.firedFrom = convertPointFromServer(pkt.firedFrom, map.width, map.height);
+							proj.speed = convertHeightFromServer(pkt.speed, map.height);
+							proj.team = GameTeams.gameTeams[pkt.teamIDFiredFrom];
+							proj.pos = proj.firedFrom;
+							proj.mover.setTarget(proj.target.getX(), proj.target.getY());
+							game.projectiles.add(proj);
 						}
 					}
 
-					if(getWidth()-mouseX<20) {
+					if(getWidth()-mouseX<50) {
 						translateX-=getWidth()/50;
 					}
-					if(mouseX<20) {
+					if(mouseX<50) {
 						translateX+=getWidth()/50;
 					}
-					if(getHeight()-mouseY<20) {
+					if(getHeight()-mouseY<50) {
 						translateY-=getHeight()/50;
 					}
-					if(mouseY<20) {
+					if(mouseY<50) {
 						translateY+=getHeight()/50;
 					}
 
@@ -398,6 +455,13 @@ public class MapPanel extends JPanel implements Runnable {
 			}
 		}
 	}
+
+	private Point2D.Double convertPointFromServer(Point2D.Double point, int width, int height) {
+		point.x = convertWidthFromServer(point.x, width);
+		point.y = convertHeightFromServer(point.y, height);
+		return point;
+	}
+
 	public static double convertHeightFromServer(double input, double width) {
 		return (input / 1000) * width;
 	}
