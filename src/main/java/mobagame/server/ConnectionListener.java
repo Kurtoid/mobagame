@@ -90,10 +90,15 @@ public class ConnectionListener implements Runnable {
 						ChangeRequest change = (ChangeRequest) changes.next();
 						switch (change.type) {
 							case ChangeRequest.CHANGEOPS:
-								SelectionKey key = change.socket.keyFor(this.selector);
-								if (key != null) {
-									key.interestOps(change.ops);
-								} else {
+								try {
+									SelectionKey key = change.socket.keyFor(this.selector);
+									if (key != null) {
+										key.interestOps(change.ops);
+									} else {
+									}
+								}catch (NullPointerException e){
+									System.out.println("uh oh, unexpected player disconnect");
+									changes.remove();
 								}
 						}
 					}

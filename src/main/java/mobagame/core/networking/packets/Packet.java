@@ -40,6 +40,11 @@ public abstract class Packet {
 	public static final byte PK_ID_PLAYER_USE_ITEM_REQUEST = 20;
 	public static final byte PK_ID_PLAYER_USE_ITEM_RESPONSE = 21;
 	public static final byte PK_ID_NOTIFY_PROJECTILE_FIRED = 22;
+	public static final byte PK_ID_PLAYER_REQUEST_ENTER_LOBBY_REPONSE = 23;
+	public static final byte PK_ID_PLAYER_REQUEST_ENTER_LOBBY = 24;
+	public static final byte PK_ID_NOTIFY_PLAYER_ENTER_CHARACTER_SELECT = 25;
+	public static final byte PK_ID_DEBUG_CLIENT_FORCE_START_GAME = 26;
+	public static final byte PK_ID_DEBUG_THROW_ME_IN_A_GAME = 27;
 
 	public static final byte PK_ID_RANDOM_BS_PACKET = 69;//?
 

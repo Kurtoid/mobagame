@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import mobagame.core.game.*;
 import mobagame.core.networking.packets.*;
+import mobagame.launcher.networking.ServerConnection;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 import mobagame.server.game.ServerGame;
@@ -75,6 +76,10 @@ public class ResponseWorker implements Runnable {
 				logger.log(Level.INFO, "BULLSHIT MODE");
 				handleBullshitPacket(new SendRandomDataPacket(chunkBuf), dataEvent);
 				break;
+			case Packet.PK_ID_PLAYER_REQUEST_ENTER_LOBBY:
+				logger.log(Level.INFO, "request enter lobby");
+				handleRequestEnterLobbyPacket(new RequestEnterLobbyPacket(chunkBuf), dataEvent);
+				break;
 			case Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME:
 				logger.log(Level.INFO, "request enter game");
 				handleRequestEnterGamePacket(new RequestEnterGamePacket(chunkBuf), dataEvent);
@@ -95,6 +100,14 @@ public class ResponseWorker implements Runnable {
 				logger.log(Level.INFO, "player use item");
 				handleUseItemRequestPacket(new PlayerUseItemRequestPacket(chunkBuf), dataEvent);
 				break;
+			case Packet.PK_ID_DEBUG_CLIENT_FORCE_START_GAME:
+				logger.log(Level.WARNING, "forcing start of game");
+				handleDEBUGClientForceStartGame(new DEBUG_ClientForceStartGame(chunkBuf), dataEvent);
+				break;
+				case Packet.PK_ID_DEBUG_THROW_ME_IN_A_GAME:
+					logger.log(Level.INFO, "throwing in a game");
+					handleThrowMeInAGamePacket(new DEBUG_JustJoinToAGame(chunkBuf), dataEvent);
+					break;
 			default:
 				logger.log(Level.WARNING, "bad pkt");
 				break;
@@ -103,6 +116,48 @@ public class ResponseWorker implements Runnable {
 			// Return to sender
 			// dataEvent.server.send(dataEvent.socket, dataEvent.data);
 		}
+	}
+
+	private void handleThrowMeInAGamePacket(DEBUG_JustJoinToAGame debug_justJoinToAGame, ServerDataEvent dataEvent) {
+		ServerGame g = runner.findGame(debug_justJoinToAGame.playerID);
+		InGamePlayer p = new InGamePlayer(debug_justJoinToAGame.playerID, GameCharcters.reaper);
+		p.team = GameTeams.lowTeam;
+		runner.conn.playerToConnection.put(p, dataEvent.socket);
+		p.setX(90);
+		p.setY(870);
+		p.mover = new PlayerMover(g.map, p);
+		runner.addToGame(g, p, dataEvent.connectionID);
+
+		logger.log(Level.INFO, "resp with gameid " + g.getGameID() + " and player id " + p.getPlayerID());
+		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g,p);
+		System.out.println(Arrays.toString(resp.getBytes().array()));
+		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
+		g.notifyPlayerJoinedGame(p);
+		g.tellClientAboutExistingPlayers(p, dataEvent.socket);
+
+	}
+
+	private void handleDEBUGClientForceStartGame(DEBUG_ClientForceStartGame debug_clientForceStartGame, ServerDataEvent dataEvent) {
+		System.out.println("force starting lobby " + debug_clientForceStartGame.lobbyID);
+		Lobby l = runner.getLobby(debug_clientForceStartGame.lobbyID);
+		ServerGame g = l.startGame();
+
+		for(InGamePlayer p : l.players){
+			runner.playerToLobby.remove(p);
+			runner.playerToGame.put(p,g);
+		}
+		runner.games.add(g);
+		RequestEnterGameResponsePacket pkt = new RequestEnterGameResponsePacket();
+		pkt.gameID = g.gameID;
+		for(InGamePlayer p : g.players){
+			pkt.playerID = p.getPlayerID();
+			dataEvent.server.send(dataEvent.server.playerToConnection.get(p), pkt.getBytes().array());
+		}
+
+
+	}
+
+	private void handleRequestEnterGamePacket(RequestEnterGamePacket requestEnterGamePacket, ServerDataEvent dataEvent) {
 	}
 
 	private void handleUseItemRequestPacket(PlayerUseItemRequestPacket playerUseItemRequestPacket,
@@ -149,24 +204,29 @@ public class ResponseWorker implements Runnable {
 				requestPlayerMovementPacket.y);
 	}
 
-	private void handleRequestEnterGamePacket(RequestEnterGamePacket requestEnterGamePacket,
+	private void handleRequestEnterLobbyPacket(RequestEnterLobbyPacket requestEnterLobbyPacket,
 			ServerDataEvent dataEvent) {
 		int playerID = dataEvent.server.connectionToPlayerID(dataEvent.socket);
-		ServerGame g = runner.findGame(playerID);
+		Lobby lobby = runner.findLobby(playerID);
 		InGamePlayer p = new InGamePlayer(playerID, GameCharcters.reaper);
+		dataEvent.server.playerToConnection.put(p, dataEvent.socket);
+/*
 		p.team = GameTeams.lowTeam;
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
 		p.setX(90);
 		p.setY(870);
-		p.mover = new PlayerMover(g.map, p);
-		runner.addToGame(g, p, dataEvent.connectionID);
+		p.mover = new PlayerMover(lobby.map, p);
+*/
 
-		logger.log(Level.INFO, "resp with gameid " + g.getGameID() + " and player id " + p.getPlayerID());
-		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g,p);
+		runner.addToLobby(lobby, p, dataEvent.connectionID);
+
+		logger.log(Level.INFO, "resp with gameid " + lobby.getLobbyID() + " and player id " + p.getPlayerID());
+		RequestEnterLobbyResponsePacket resp = new RequestEnterLobbyResponsePacket(lobby,p);
+		resp.lobbyID = lobby.getLobbyID();
 		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
-		g.notifyPlayerJoinedGame(p);
-		g.tellClientAboutExistingPlayers(p, dataEvent.socket);
+//		lobby.notifyPlayerJoinedLobby(p);
+//		lobby.tellClientAboutExistingPlayers(p, dataEvent.socket);
 
 	}
 
