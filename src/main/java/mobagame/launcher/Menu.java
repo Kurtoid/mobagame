@@ -4,11 +4,19 @@
 
 package mobagame.launcher;
 
+import mobagame.core.networking.packets.NotifyPlayerEnterCharacterSelect;
+import mobagame.core.networking.packets.NotifyProjectileFiredPacket;
+import mobagame.core.networking.packets.RequestEnterLobbyPacket;
+import mobagame.core.networking.packets.RequestEnterLobbyResponsePacket;
+import mobagame.launcher.networking.RspHandler;
+import mobagame.launcher.networking.ServerConnection;
 import mobagame.server.database.PlayerAccount;
+import mobagame.server.game.ServerGame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 @SuppressWarnings("serial")
 public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
@@ -30,6 +38,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 	public Menu() {
 		this(new PlayerAccount("testing"), false);
 	}
+	JButton playButton;
 
 	// open menu window for playerName
 	public Menu(PlayerAccount name, boolean admin) {
@@ -51,7 +60,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 		settingsButton.setActionCommand(SETTINGS);
 		settingsButton.addActionListener(this);
 
-		JButton playButton = new JButton("Play");
+		playButton = new JButton("Play");
 		playButton.setActionCommand(PLAY);
 		playButton.addActionListener(this);
 
@@ -131,8 +140,42 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 
 		if (PLAY.equals(cmd)) { // GO TO Selection
 			// TODO Find available game
-			new CharSelect(player);
-			setVisible(false);
+			playButton.setEnabled(false);
+			playButton.setText("Searching for lobby");
+			repaint();
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+				@Override
+				protected Void doInBackground() throws Exception {
+					RequestEnterLobbyPacket pkt = new RequestEnterLobbyPacket();
+					RequestEnterLobbyResponsePacket resp;
+
+					try {
+						ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(pkt.getBytes().array(), RspHandler.getInstance());
+						RspHandler.getInstance().waitForResponse();
+						resp = (RequestEnterLobbyResponsePacket) RspHandler.getInstance().getResponse(RequestEnterLobbyResponsePacket.class);
+						playButton.setText("Joined lobby");
+						System.out.println("joined lobby");
+						repaint();
+
+//						RspHandler.getInstance().waitForResponse();
+						NotifyPlayerEnterCharacterSelect ecs = null;
+						do {
+							RspHandler.getInstance().waitForResponse(500);
+							System.out.println("checking for ecs");
+							ecs = (NotifyPlayerEnterCharacterSelect) RspHandler.getInstance().getResponse(NotifyPlayerEnterCharacterSelect.class);
+						}while(ecs==null);
+						System.out.println("ecs found");
+						new CharSelect(player, resp.lobbyID);
+						Menu.this.setVisible(false);
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+					return null;
+				}
+			};
+			worker.execute();
 
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
 			 new Profile(player);

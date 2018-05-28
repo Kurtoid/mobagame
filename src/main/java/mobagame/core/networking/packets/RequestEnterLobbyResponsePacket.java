@@ -1,29 +1,29 @@
 package mobagame.core.networking.packets;
 
+import mobagame.core.game.InGamePlayer;
+import mobagame.core.game.Lobby;
+
 import java.nio.ByteBuffer;
 
-import mobagame.core.game.Game;
-import mobagame.core.game.InGamePlayer;
-
-public class RequestEnterGameResponsePacket extends Packet {
+public class RequestEnterLobbyResponsePacket extends Packet {
 	static final int STATUS_FAILED = 1;
 	static final int STATUS_ACCEPT = 1;
 
 	int status;
-	public int gameID = -1;
+	public int lobbyID = -1;
 	public int playerID;
 
-	public RequestEnterGameResponsePacket(Game g, InGamePlayer p) {
+	public RequestEnterLobbyResponsePacket(Lobby g, InGamePlayer p) {
 		status = STATUS_ACCEPT;
-		gameID = g.getGameID();
+		lobbyID = g.getLobbyID();
 		playerID = p.getPlayerID();
 	}
 
-	public RequestEnterGameResponsePacket() {
+	public RequestEnterLobbyResponsePacket() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public RequestEnterGameResponsePacket(ByteBuffer pkt) {
+	public RequestEnterLobbyResponsePacket(ByteBuffer pkt) {
 		readData(pkt);
 	}
 
@@ -33,9 +33,9 @@ public class RequestEnterGameResponsePacket extends Packet {
 		// status, and lobbyID
 		ByteBuffer buff = ByteBuffer.allocate(dataSize);
 		buff.putInt(dataSize);
-		setPacketType(buff, PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE);
+		setPacketType(buff, PK_ID_PLAYER_REQUEST_ENTER_LOBBY_REPONSE);
 		buff.putInt(status);
-		buff.putInt(gameID);
+		buff.putInt(lobbyID);
 		buff.putInt(playerID);
 		return buff;
 	}
@@ -44,10 +44,9 @@ public class RequestEnterGameResponsePacket extends Packet {
 	void readData(ByteBuffer buff) {
 		buff.rewind();
 		status = buff.getInt(5);
-		gameID = buff.getInt(5 + 4);
+		lobbyID = buff.getInt(5 + 4);
 		playerID = buff.getInt(5+4*2);
-		System.out.println("gameResp " + status + " " + gameID + " " + playerID);
+		System.out.println("gameResp " + status + " " + lobbyID + " " + playerID);
 
 	}
-
 }

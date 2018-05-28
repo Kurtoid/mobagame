@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import javax.swing.*;
 
+import mobagame.core.networking.packets.DEBUG_ClientForceStartGame;
 import org.omg.PortableServer.ServantRetentionPolicyValue;
 
 import mobagame.core.game.GameCharcters;
@@ -47,39 +48,41 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	JButton startButton;
 	PlayerAccount player;
 	ServerConnection conn;
+	Thread thisThread;
+	boolean stopCounter = false;
 	//thread to run the countdown timer
 	public void run() {
-		while (timeLeft <= 0) {
+		System.out.println("countdown timer started");
+		while (timeLeft >= 0) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 			}
 			timer.setText("" + timeLeft);
+			System.out.println(timeLeft);
 			timeLeft--;
 			selectionScreen.setVisible(true);
 		}
-		selectionScreen.setVisible(false);
-		RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
-		RspHandler h = RspHandler.getInstance();
-		try {
-			conn.send(req.getBytes().array(), h);
-			h.waitForResponse();
-			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
-		new GameScreen(game.gameID, player, game.playerID,  GameCharcters.reaper);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		if(!stopCounter) {
+			selectionScreen.setVisible(false);
+//		RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
+//		RspHandler h = RspHandler.getInstance();
+//			conn.send(req.getBytes().array(), h);
+//			h.waitForResponse();
+			RspHandler.getInstance().waitForResponse();
+			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
+			new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper);
 		}
 	}
 	//Meathod to start countdown timer thread
 	public void start() {
-		Thread t = new Thread(this);
-		t.start();
+		thisThread = new Thread(this);
+		thisThread.start();
 	}
 
 	private GridBagConstraints gbc = new GridBagConstraints();
 
-	public CharSelect(PlayerAccount player) {
+	public CharSelect(PlayerAccount player, int lobbyID) {
 
 		this.player = player;
 		try {
@@ -222,7 +225,8 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			public void actionPerformed(ActionEvent e) {
 				// TODO: second arguement is character id
 				System.out.println("sending with player id " + player.id);
-				RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
+				DEBUG_ClientForceStartGame req = new DEBUG_ClientForceStartGame();
+				req.lobbyID = lobbyID;
 				RspHandler h = RspHandler.getInstance();
 				try {
 					conn.send(req.getBytes().array(), h);
@@ -231,6 +235,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 					System.out.println(game.playerID);
 					timeLeft = 1;
 
+					stopCounter = true;
 					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block

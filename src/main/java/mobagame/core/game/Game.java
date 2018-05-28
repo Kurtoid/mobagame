@@ -12,7 +12,7 @@ public abstract class Game {
 	private InGamePlayer playerPlayer;
 	public MainMap map;
 	final static int MAX_PLAYERS = 10;
-	protected int gameID;
+	public int gameID;
 
 	public Game() {
 		map = new MainMap();

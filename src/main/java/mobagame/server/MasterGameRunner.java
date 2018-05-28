@@ -1,23 +1,22 @@
 package mobagame.server;
 
 import java.nio.channels.SocketChannel;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mobagame.core.game.Game;
-import mobagame.core.game.InGamePlayer;
-import mobagame.core.game.PlayerMover;
+import mobagame.core.game.*;
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.NotifyPlayerEnterCharacterSelect;
+import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
 import mobagame.server.game.ServerGame;
 
 public class MasterGameRunner extends Thread {
+	public Map<InGamePlayer, Lobby> playerToLobby = new HashMap<>();
 	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	Set<ServerGame> games;
+	Set<Lobby> lobbies;
 	Map<Integer, InGamePlayer> connectionToPlayer = new HashMap<>();
 
 	Map<InGamePlayer, ServerGame> playerToGame = new HashMap<>();
@@ -32,6 +31,7 @@ public class MasterGameRunner extends Thread {
 
 	public MasterGameRunner() {
 		games = new HashSet<>();
+		lobbies = new HashSet<>();
 		running = true;
 		this.setDaemon(true);
 		this.start();
@@ -64,6 +64,7 @@ public class MasterGameRunner extends Thread {
 				// Do as many game updates as we need to, potentially playing catchup.
 				while (now - lastUpdateTime > TIME_BETWEEN_UPDATES) {
 					updateGame();
+					updateLobbies();
 					lastUpdateTime += TIME_BETWEEN_UPDATES;
 					updateCount++;
 					lastUpdateTime = now;
@@ -124,14 +125,6 @@ public class MasterGameRunner extends Thread {
 			g.incrementGold();
 		}
 	}
-
-	private void updateGame() {
-		for (ServerGame g : games) {
-			g.update();
-			g.sendToClients(conn);
-		}
-	}
-
 	public ServerGame findGame(int playerID) {
 		for (ServerGame g : games) {
 			if (!g.isFull()) {
@@ -148,6 +141,51 @@ public class MasterGameRunner extends Thread {
 		return g;
 	}
 
+
+	private void updateGame() {
+		for (ServerGame g : games) {
+			g.update();
+			g.sendToClients(conn);
+		}
+	}
+
+	private void updateLobbies(){
+		for(Lobby l : lobbies){
+			if(l.isFull()&&l.waitingForPlayers){
+				logger.log(Level.INFO,"lobby full, starting character select");
+				l.waitingForPlayers = false;
+				/*for(InGamePlayer p : l.players){
+					playerToLobby.remove(p);
+				}*/
+//				ServerGame g = l.startGame();
+//				games.add(g);
+				NotifyPlayerEnterCharacterSelect pkt = new NotifyPlayerEnterCharacterSelect();
+				for(InGamePlayer p : l.players){
+					conn.send(conn.playerToConnection.get(p), pkt.getBytes().array());
+				}
+//				lobbies.remove(l);
+			}
+		}
+	}
+	public Lobby findLobby(int playerID) {
+		for (Lobby l : lobbies) {
+			if (!l.isFull()) {
+				logger.log(Level.INFO, "using existing lobby");
+				return l;
+			}
+		}
+/*
+		MainMap m = new MainMap();
+		m.setServerMode();
+		m.makeMap();
+		ServerGame g = new ServerGame(m);
+*/
+		Lobby l = new Lobby();
+		lobbies.add(l);
+		logger.log(Level.INFO, "new lobby created " + l.getLobbyID());
+		return l;
+	}
+
 	public InGamePlayer getPlayer(int connectionID) {
 		return connectionToPlayer.get(connectionID);
 	}
@@ -158,5 +196,33 @@ public class MasterGameRunner extends Thread {
 		connectionToPlayer.put(connectionID, p);
 		playerToGame.put(p, g);
 
+	}
+
+	public void addToLobby(Lobby lobby, InGamePlayer p, int connectionID) {
+		lobby.players.add(p);
+		playerToLobby.put(p, lobby);
+		int playersInTop = 0;
+		int playersInBottom = 0;
+		for(InGamePlayer player : lobby.players){
+			if(GameTeams.gameTeamsLookup.indexOf(player.team)==0){
+				playersInTop++;
+			}else{
+				playersInBottom++;
+			}
+		}
+		p.team = playersInBottom > playersInTop ? GameTeams.highTeam : GameTeams.lowTeam;
+//		p.setGoldAmount(5000);
+		connectionToPlayer.put(connectionID, p);
+//		playerToGame.put(p, g);
+
+
+	}
+
+	public Lobby getLobby(int lobbyID) {
+		for(Lobby l : lobbies) {
+			if (l.getLobbyID() == lobbyID)
+				return l;
+		}
+	return null;
 	}
 }

@@ -16,10 +16,7 @@ import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
 import mobagame.core.game.PlayerMover;
 import mobagame.core.game.maps.MainMap;
-import mobagame.core.networking.packets.PlayerUseItemRequestPacket;
-import mobagame.core.networking.packets.PublicPlayerDataPacket;
-import mobagame.core.networking.packets.RequestEnterGamePacket;
-import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
+import mobagame.core.networking.packets.*;
 import mobagame.launcher.game.ClientGame;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
@@ -446,7 +443,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) RspHandler.getInstance()
 				.getResponse(PublicPlayerDataPacket.class);
 		PlayerAccount p = playerData.player;
-		RequestEnterGamePacket req = new RequestEnterGamePacket(p.id, 1);
+		DEBUG_JustJoinToAGame req = new DEBUG_JustJoinToAGame(p.id);
 		try {
 			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(req.getBytes().array());
 			RspHandler.getInstance().waitForResponse();
