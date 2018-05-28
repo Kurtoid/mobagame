@@ -42,6 +42,12 @@ public Passive() {
 					//MaxHealth = MaxHealthBeforePassive(includes items) + (AbiPow * statRatio);
 					break;
 				default:
+					System.out.println("Something is Wrong");
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+					}
+					System.exit(0);
 					break;
 				}
 				break;
