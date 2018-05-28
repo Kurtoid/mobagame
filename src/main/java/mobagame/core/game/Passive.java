@@ -58,7 +58,7 @@ public Passive() {
 				//phyPow += phyPowBeforePassive(includes items) * statRatio;
 				break;
 			case BonusAbiPow:
-				//abiPow += abiPowBeforePassive(includes items) * statRatio;
+					//abiPow += abiPowBeforePassive(includes items) * statRatio;
 				break;
 			default:
 				System.out.println("Something is Wrong");
