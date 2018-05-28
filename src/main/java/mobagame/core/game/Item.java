@@ -105,6 +105,12 @@ public class Item implements MobaGameLauncher {
 					break;
 				}
 			}
+			if (user.getCurrentMana() > user.getMaxMana()){
+				user.setCurrentMana(user.getMaxMana());
+			}
+			if (user.getCurrentHealth() > user.getMaxHealth()){
+				user.setCurrentHealth(user.getMaxHealth());
+			}
 			return 1;
 		}
 		return 0;
