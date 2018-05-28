@@ -37,7 +37,7 @@ public class InGamePlayer extends GameObject{
 
     //0 = Q, 1 = W, 2 = E, 3 = R
     public int[] abilityLevels = {0, 0, 0, 0};
-    public int[] cooldownTimer = {0, 0, 0, 0};
+    public int[] cooldowns = {0, 0, 0, 0};
 
     public Item[] inventory = {(GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty),
             (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty)};
@@ -195,21 +195,21 @@ public class InGamePlayer extends GameObject{
     }
 
     public String toString() {
-        return  "phyPow =" + phyPow +
-                ", abiPow =" + abiPow +
-                ", maxHealth =" + maxHealth +
-                ", maxMana =" + maxMana +
-                ", speed =" + speed +
-                ", armor =" + armor +
+        return  "phyPow = " + phyPow +
+                ", abiPow = " + abiPow +
+                ", maxHealth = " + maxHealth +
+                ", maxMana = " + maxMana +
+                ", speed = " + speed +
+                ", armor = " + armor +
                 ", magicResist =" + magicResist +
-                ", currentHealth =" + currentHealth +
-                ", currentMana =" + currentMana +
-                ", goldAmount =" + goldAmount +
-                ", xp =" + xp +
-                ", levelXp =" + levelXp +
-                ", xpToNextLevel =" + xpToNextLevel +
-                ", playerLevel =" + playerLevel +
-                "position = " + pos;
+                ", currentHealth = " + currentHealth +
+                ", currentMana = " + currentMana +
+                ", goldAmount = " + goldAmount +
+                ", xp = " + xp +
+                ", levelXp = " + levelXp +
+                ", xpToNextLevel = " + xpToNextLevel +
+                ", playerLevel = " + playerLevel +
+                ", position = " + pos;
     }
 
     public void setCurrentHealth(int currentHealth) {
@@ -241,14 +241,10 @@ public class InGamePlayer extends GameObject{
         phyPow += character.getPhyPowScale() * (playerLevel);
         armor += character.getArmorScale() * (playerLevel);
         magicResist += character.getMagicResistScale() * (playerLevel);
-        this.abilityUpgrade();
+        avalableUpgrades++;
         playerLevel++;
         xpToNextLevel = playerLevel * 100;
-    }
-
-    private void abilityUpgrade() {
-        // TODO Auto-generated method stub
-
+        character.getPass().update(this);
     }
 
     public void recieveDamage(Ability a) {
@@ -259,7 +255,25 @@ public class InGamePlayer extends GameObject{
         }
     }
 
+    // index of cooldowns array
     public int getAbiLevel(int index) {
         return abilityLevels[index - 1];
+    }
+
+    public void useAbility(int index){
+        if ( cooldowns[index] > 0){
+            System.out.println("Cannot use that ability");
+        } else {
+            // abi.use();
+        }
+    }
+
+    // index of abilitys array
+    private void abilityUpgrade(int index) {
+        if (avalableUpgrades < 0 && abilityLevels[index-1] < 5){
+            abilityLevels[index-1]++;
+            cooldowns[index-1] =  30 - (abilityLevels[index-1]*5);
+            // abi.upgrade();
+        }
     }
 }

@@ -7,5 +7,6 @@ BonusMaxHealth,
 BonusPhyPow,
 BonusAbiPow,
 StatRatio,
-NULL
+NULL, 
+BonusMaxMana
 }

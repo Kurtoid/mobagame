@@ -51,6 +51,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 	private JPanel inventory;
 	private JScrollPane chat;
+	JPanel chatText = new JPanel(new GridLayout(0,1));
 	private JLabel health = new JLabel("Loading health");
 	private JLabel mana = new JLabel("Loading mana");
 
@@ -98,8 +99,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		gold.setActionCommand(SHOP);
 		gold.addActionListener(this);
 
-		JLabel chatLabel = new JLabel(chatWrap + user.toString());
-		chatLabel.setBounds(0, SCREEN_SIZE.height / 2, SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
+		chatText.setBounds(0, SCREEN_SIZE.height / 2, SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
 
 		// health & mana borders
 		TitledBorder healthBorder = BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), "Health: ",
@@ -120,7 +120,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		layered.setSize(SCREEN_SIZE);
 		JPanel front = new JPanel(gbl);
 		front.setSize(SCREEN_SIZE);
-		chat = new JScrollPane(chatLabel);
+		chat = new JScrollPane(chatText);
 		chat.setSize(SCREEN_SIZE.width / 4,  SCREEN_SIZE.height / 2);
 		JPanel stats = new JPanel(gbl);
 		d.setSize( (SCREEN_SIZE.width / 4),  (SCREEN_SIZE.height));
@@ -167,6 +167,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
         mapPanel.add(miniMap, c);
 
 		// chat
+		addToChat(user.toString());
 		chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 		// stats
@@ -209,7 +210,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		c.anchor = GridBagConstraints.SOUTH;
 		front.add(stats, c);
 		stats.setBorder(frame);
-		/// *
+
 		// mapPanel & inventory
 		if (lefty) {
 			c.anchor = GridBagConstraints.NORTHWEST;
@@ -234,7 +235,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			mapPanel.setBorder(blue);
             mapPanel.setBounds(0, 0, mapPanel.getWidth(),  mapPanel.getHeight());
 		}
-		// */
+
 		front.setBorder(frame);
 		front.setSize(SCREEN_SIZE);
 		front.setOpaque(false);
@@ -250,11 +251,17 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		t.start();
 
 		f.setVisible(true);
-		changeFontRecursive(f, MENU_FONT);
-		chatLabel.setFont(CHAT_FONT);
+		changeFontRecursive(f, GAME_FONT);
 		gold.setFont(MENU_FONT);
+		changeFontRecursive(chat, CHAT_FONT);
 		f.setFocusable(true);
 		start();
+	}
+
+	public void addToChat(String text){
+		JLabel temp = new JLabel(chatWrap + "" + text);
+		temp.setFont(CHAT_FONT);
+		chatText.add(temp);
 	}
 
 	public void run() {
@@ -265,11 +272,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			}
 			// user.setGoldAmount(user.getGoldAmount() + 1);
 			gold.setText("$" + user.getGoldAmount());
-			JViewport v = new JViewport();
-			JLabel l = new JLabel("" + chatWrap + user);
-			l.setFont(CHAT_FONT);
-			v.add(l);
-			chat.setViewport(v);
 			chat.repaint();
 			health.setText(user.getCurrentHealth() + " / " + user.getMaxHealth());
 			f.requestFocus();

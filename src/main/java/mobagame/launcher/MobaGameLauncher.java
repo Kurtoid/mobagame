@@ -20,7 +20,7 @@ public interface MobaGameLauncher {
 	public final int WINDOW_HEIGHT = SCREEN_SIZE.height * 4 / 7;
 	public final int WINDOW_WIDTH = (int) (WINDOW_HEIGHT * 1.875);
 
-	public final static String GAME_NAME = "The Reaper's Quest";
+	public final static String GAME_NAME = "The Reaper's Arena";
 
 	// make borders
 	public final static Border red = BorderFactory.createLineBorder(Color.RED, 1);

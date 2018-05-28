@@ -59,7 +59,7 @@ public class Item implements MobaGameLauncher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		user.getCharacter().getPass().update(user);
 	}
 
 	public void sell(InGamePlayer user) {
@@ -71,8 +71,7 @@ public class Item implements MobaGameLauncher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		logger.log(Level.WARNING, "Item not in inventory");
+		user.getCharacter().getPass().update(user);
 	}
 
 	public String getImageLocation() {
@@ -105,6 +104,12 @@ public class Item implements MobaGameLauncher {
 					logger.log(Level.WARNING, "Not a valid consumable item");
 					break;
 				}
+			}
+			if (user.getCurrentMana() > user.getMaxMana()){
+				user.setCurrentMana(user.getMaxMana());
+			}
+			if (user.getCurrentHealth() > user.getMaxHealth()){
+				user.setCurrentHealth(user.getMaxHealth());
 			}
 			return 1;
 		}
