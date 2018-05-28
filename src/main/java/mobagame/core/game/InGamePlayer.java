@@ -261,18 +261,17 @@ public class InGamePlayer extends GameObject{
     }
 
     public void useAbility(int index){
-        if ( cooldowns[index] > 0){
+        if ( cooldowns[index] > 0 || abilityLevels[index] == 0){
             System.out.println("Cannot use that ability");
         } else {
             // abi.use();
         }
     }
 
-    // index of abilitys array
     private void abilityUpgrade(int index) {
-        if (avalableUpgrades < 0 && abilityLevels[index-1] < 5){
-            abilityLevels[index-1]++;
-            cooldowns[index-1] =  30 - (abilityLevels[index-1]*5);
+        if (avalableUpgrades < 0 && abilityLevels[index] < 5){
+            abilityLevels[index]++;
+            cooldowns[index] =  30 - (abilityLevels[index]*5);
             // abi.upgrade();
         }
     }

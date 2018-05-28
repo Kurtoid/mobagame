@@ -44,8 +44,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	private int goldPerSecond = 3;
 	private JButton gold;
 
-	// icons
-
 	private static String SHOP = "shop";
 	private static String MENU = "menu";
 
