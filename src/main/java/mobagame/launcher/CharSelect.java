@@ -10,6 +10,7 @@ import javax.swing.*;
 
 import org.omg.PortableServer.ServantRetentionPolicyValue;
 
+import mobagame.core.game.GameCharcters;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.PlayerMover;
 import mobagame.core.game.maps.MainMap;
@@ -41,7 +42,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	JPanel red5 = new JPanel();
 	JScrollPane JSP = new JScrollPane(charSelectMenu); 
 	public ImageIcon placeHolderImage = new ImageIcon("resources//Black.png");
-	public ImageIcon reaperCharPic = new ImageIcon("resources//Reaper.png");
+	public ImageIcon reaperCharPic = new ImageIcon("resource//Character//Reaper.png");
 	JButton startButton;
 	PlayerAccount player;
 	ServerConnection conn;
@@ -64,7 +65,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			conn.send(req.getBytes().array(), h);
 			h.waitForResponse();
 			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
-		new GameScreen(game.gameID, player, game.playerID);
+		new GameScreen(game.gameID, player, game.playerID,  GameCharcters.reaper);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -230,7 +231,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 					System.out.println(game.playerID);
 					selectionScreen.setVisible(false);
 
-					new GameScreen(game.gameID, player, game.playerID);
+					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

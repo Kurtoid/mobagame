@@ -31,5 +31,4 @@ public class PlayerUseItemRequestPacket extends Packet {
 		buff.position(5);
 		itemID = buff.getInt();
 	}
-
 }

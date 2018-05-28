@@ -9,9 +9,10 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class MyCanvas extends JComponent {
+public class MyCanvas extends JPanel {
 
 	private String imageLocation;
 	private int height;
@@ -22,8 +23,8 @@ public class MyCanvas extends JComponent {
 		this.imageLocation = imageLocation;
 		this.width = scale;
 		this.height = scale;
-		this.setPreferredSize(new Dimension(width,  height));
-//		System.out.println("Info: Square Image Created");
+		this.setPreferredSize(new Dimension(width, height));
+		// System.out.println("Info: Square Image Created");
 	}
 
 	public static MyCanvas load(String imageLocation, int i) {
@@ -39,8 +40,8 @@ public class MyCanvas extends JComponent {
 		this.imageLocation = imageLocation;
 		this.width = width;
 		this.height = height;
-		this.setPreferredSize(new Dimension(width,  height));
-//		System.out.println("Info: Rectangle Image Created");
+		this.setPreferredSize(new Dimension(width, height));
+		// System.out.println("Info: Rectangle Image Created");
 	}
 
 	public void paint(Graphics g) {

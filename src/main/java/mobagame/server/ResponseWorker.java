@@ -11,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mobagame.core.game.GameCharcters;
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
@@ -111,12 +112,19 @@ public class ResponseWorker implements Runnable {
 	private void handleUseItemRequestPacket(PlayerUseItemRequestPacket playerUseItemRequestPacket,
 			ServerDataEvent dataEvent) {
 		// TODO Auto-generated method stub
-		InGamePlayer player = runner.getPlayer(dataEvent.connectionID);
-		for(Item i : player.inventory) {
-			if(i.equals(GameItems.allGameItemsLookup.get(playerUseItemRequestPacket.itemID))) {
-				i.use(player);
+		InGamePlayer player = runner.connectionToPlayer.get(dataEvent.connectionID);
+		//
+		PlayerUseItemResponsePacket pkt = new PlayerUseItemResponsePacket();
+		for (int i = 0; i < player.inventory.length && pkt.used == 0; i++) {
+			if(player.inventory[i].equals(GameItems.allGameItemsLookup.get(playerUseItemRequestPacket.itemID))) {
+				pkt.used = player.inventory[i].use(player);
+				if (pkt.used == 1) {
+					player.inventory[i] = GameItems.empty;
+				}
 			}
 		}
+		pkt.itemID = playerUseItemRequestPacket.itemID;
+		dataEvent.server.send(dataEvent.socket, pkt.getBytes().array());
 	}
 	
 
@@ -149,10 +157,10 @@ public class ResponseWorker implements Runnable {
 			ServerDataEvent dataEvent) {
 		int playerID = dataEvent.server.connectionToPlayerID(dataEvent.socket);
 		ServerGame g = runner.findGame(playerID);
-		InGamePlayer p = new InGamePlayer(playerID);
+		InGamePlayer p = new InGamePlayer(playerID, GameCharcters.reaper);
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
-		p.setX(110);
-		p.setY(890);
+		p.setX(90);
+		p.setY(870);
 		p.mover = new PlayerMover(g.map, p);
 		runner.addToGame(g, p, dataEvent.connectionID);
 
