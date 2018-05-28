@@ -39,7 +39,7 @@ public abstract class Packet {
 	public static final byte PK_ID_PLAYER_STATUS_REPORT = 19;
 	public static final byte PK_ID_PLAYER_USE_ITEM_REQUEST = 20;
 	public static final byte PK_ID_PLAYER_USE_ITEM_RESPONSE = 21;
-
+	public static final byte PK_ID_NOTIFY_PROJECTILE_FIRED = 22;
 
 	public static final byte PK_ID_RANDOM_BS_PACKET = 69;//?
 

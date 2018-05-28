@@ -112,7 +112,8 @@ public class Ability {
 		return damage;
 	}
 	public int getBaseDamageBefRat() {
-		return (this.baseDamage + (this.damScale + caster.getAbiLevel(this)));
+//		return (this.baseDamage + (this.damScale + caster.getAbiLevel(this)));
+		return 0;
 	}
 	
 }

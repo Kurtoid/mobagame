@@ -13,12 +13,14 @@ public class MainMap {
 	private Path2D map;
 	public int height;
 	public int width;
-	public ArrayList<Tower> towers = new ArrayList<>();
+	public ArrayList<Tower> towers;
 	public MainMap() {
+		towers = new ArrayList<>();
 	}
 	public MainMap(int w, int h) {
 		width = w;
 		height = h;
+		towers = new ArrayList<>();
 	}
 
 	public Path2D getMap() {
@@ -30,10 +32,6 @@ public class MainMap {
 			System.err.println("set the size dumbass");
 			return null;
 		}
-		/***********
-		 * * H* * * ( ) * H *
-		 ***********
-		 */
 		Path2D upperMapPath = new Path2D.Double();
 		upperMapPath.moveTo(0, 0);
 		upperMapPath.lineTo(normalizeWidth(90), 0);

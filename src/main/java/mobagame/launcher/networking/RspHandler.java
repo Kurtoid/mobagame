@@ -162,6 +162,10 @@ public class RspHandler extends Thread {
 							System.out.println("used item");
 							addToPackets(new PlayerUseItemResponsePacket(pkt));
 							break;
+						case Packet.PK_ID_NOTIFY_PROJECTILE_FIRED:
+							System.out.println("projectile fired");
+							addToPackets(new NotifyProjectileFiredPacket(pkt));
+							break;
 						default:
 							System.out.println("unknown packet " + Packet.getPacketID(pkt));
 							break;
