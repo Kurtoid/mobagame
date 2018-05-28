@@ -84,7 +84,7 @@ public class PlayerMover {
 		if (player instanceof InGamePlayer) {
 			System.out.println("collides " + collides);
 		}
-		return false;
+		return collides;
 	}
 
 	public boolean atTarget() {

@@ -34,14 +34,14 @@ public abstract class Game {
 		gameID = new Random().nextInt();
 		projectiles = new ArrayList<>();
 	}
-	public InGamePlayer getClosestPlayer(Point2D.Double pos, int i) {
+	public InGamePlayer getClosestPlayer(Point2D.Double pos, int i, Team oppositeTeam) {
 		if(players.size()<1){
 			return null;
 		}
 		double minDist = Double.MAX_VALUE;
 		InGamePlayer player = null;
 		for (InGamePlayer p : players) {
-			if (p.pos.distance(pos) <= i) {
+			if (p.pos.distance(pos) <= i && p.team == oppositeTeam) {
 				double d = p.pos.distance(pos);
 				if (minDist > d) {
 					player = p;

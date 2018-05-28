@@ -12,4 +12,12 @@ public class GameTeams {
 
 	static public Team[] gameTeams = {highTeam, lowTeam};
 	static public ArrayList<Team> gameTeamsLookup = new ArrayList<Team>(Arrays.asList(gameTeams));
+
+	public static Team getOppositeTeam(Team team) {
+		if(gameTeamsLookup.indexOf(team)==1){
+			return gameTeams[0];
+		}else{
+			return gameTeams[1];
+		}
+	}
 }
