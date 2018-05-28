@@ -194,15 +194,15 @@ public class MapPanel extends JPanel implements Runnable {
 		graphics.setColor(Color.RED);
 			for(InGamePlayer player : game.players){
 				Point.Double point = new Point2D.Double(player.getX(), player.getY());
-				double pWidth = convertWidthFromServer(10, map.width);
-				double pHeight = convertHeightFromServer(10, map.height);
+				double pWidth = convertWidthFromServer(10, map.width) * scaleX;
+				double pHeight = convertHeightFromServer(10, map.height) * scaleY;
 //				double pWidth = 0;
 //				double pHeight = 0;
 
 				point.x = point.getX();
 				point.y = point.getY();
 				getCurrentTransform().transform(point, point);
-				graphics.fillRect((int)(point.getX()-5), (int)(point.getY()-5), (int)10, (int)10);
+				graphics.fillRect((int)(point.getX()-pWidth/2), (int)(point.getY()-pHeight/2), (int)pWidth, (int)pHeight);
 			}
 //		}
 
