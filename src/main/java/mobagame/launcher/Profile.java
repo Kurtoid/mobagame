@@ -46,7 +46,7 @@ public class Profile extends JFrame implements ActionListener, MobaGameLauncher 
 		// left
 		c.gridx = 0;
 		JPanel icon = new JPanel();
-		icon.add(new MyCanvas("resources/Reaper.png", 250));
+		icon.add(new MyCanvas("resources/Character/Reaper.png", 250));
 		panel.add(icon, c);
 
 		c.gridy = 1;

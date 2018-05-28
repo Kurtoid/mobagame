@@ -241,14 +241,11 @@ public class InGamePlayer extends GameObject{
         phyPow += character.getPhyPowScale() * (playerLevel);
         armor += character.getArmorScale() * (playerLevel);
         magicResist += character.getMagicResistScale() * (playerLevel);
+        avalableUpgrades++;
         this.abilityUpgrade();
         playerLevel++;
         xpToNextLevel = playerLevel * 100;
-    }
-
-    private void abilityUpgrade() {
-        // TODO Auto-generated method stub
-
+        character.getPass().update(this);
     }
 
     public void recieveDamage(Ability a) {
@@ -261,5 +258,12 @@ public class InGamePlayer extends GameObject{
 
     public int getAbiLevel(int index) {
         return abilityLevels[index - 1];
+    }
+
+    private void abilityUpgrade() {
+        // TODO Auto-generated method stub
+        if (avalableUpgrades < 0){
+            //upgrade an ability
+        }
     }
 }

@@ -59,7 +59,7 @@ public class Item implements MobaGameLauncher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		user.getCharacter().getPass().update(user);
 	}
 
 	public void sell(InGamePlayer user) {
@@ -71,8 +71,7 @@ public class Item implements MobaGameLauncher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		logger.log(Level.WARNING, "Item not in inventory");
+		user.getCharacter().getPass().update(user);
 	}
 
 	public String getImageLocation() {
