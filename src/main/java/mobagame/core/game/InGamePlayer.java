@@ -11,20 +11,24 @@ import mobagame.launcher.Shop;
 import mobagame.launcher.MyCanvas;
 import mobagame.launcher.GameScreen;
 
-public class InGamePlayer extends GameObject{
+public class InGamePlayer {
 
     private int playerID;
     private Character character;
+
+    private Point.Double pos = new Point.Double(0,0);
 
     private int phyPow;
     private int abiPow;
     private int maxHealth;
     private int maxMana;
+    private int speed;
     private int armor;
     private int magicResist;
     private int currentHealth;
     private int currentMana;
 
+    private int avalableUpgrades = 0;
     private int goldAmount = 0;
     private int xp = 0;
     private int levelXp = 0;
@@ -60,7 +64,7 @@ public class InGamePlayer extends GameObject{
         this.currentMana = maxMana = character.getBaseMaxMana();
         this.phyPow = character.getBasePhyPow();
         this.abiPow = character.getBaseAbiPow();
-        this.speed = character.getSpeed();
+        this.speed = (int)character.getSpeed();
         this.armor = character.getBaseArmor();
         this.magicResist = character.getBaseMagicResist();
 
@@ -107,11 +111,11 @@ public class InGamePlayer extends GameObject{
         this.maxMana = maxMana;
     }
 
-    public double getSpeed() {
+    public int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(double speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 
@@ -209,13 +213,6 @@ public class InGamePlayer extends GameObject{
                 ", playerLevel =" + playerLevel +
                 "position = " + pos;
     }
-
-/*    @Override
-    public String toString() {
-        return "phyPow = " + phyPow + ", abiPow = " + abiPow + ", maxHealth = " + maxHealth + ", maxMana = " + maxMana
-                + ", speed = " + speed + ", armor = " + armor + ", magicResist = " + magicResist + ", currentHealth = "
-                + currentHealth + ", currentMana = " + currentMana;
-    }*/
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;

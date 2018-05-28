@@ -111,9 +111,13 @@ public class Ability {
 		}
 		return damage;
 	}
+
 	public int getBaseDamageBefRat() {
-//		return (this.baseDamage + (this.damScale + caster.getAbiLevel(this)));
-		return 0;
-	}
-	
+        for (int x = 1; x < caster.getCharacter().getAbilities().length; x++) {
+            if (caster.getCharacter().getAbilities()[x] == this) {
+                return (this.baseDamage + (this.damScale + caster.getAbiLevel(x - 1)));
+            }
+        }
+        return -1;
+    }
 }

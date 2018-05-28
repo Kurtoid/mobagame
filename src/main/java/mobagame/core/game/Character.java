@@ -8,7 +8,7 @@ public class Character {
 	private double speed; // Measured in
 
 	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
-	private final Ability[] abilitys = { new Passive(), new Ability(), new Ability(), new Ability(), new Ability() };
+	private final Ability[] abilities = { new Passive(), new Ability(), new Ability(), new Ability(), new Ability() };
 
 	private int maxHealthScale;
 	private int baseMaxHealth;
@@ -105,8 +105,8 @@ public class Character {
 	}
 
 	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
-	public Ability[] getAbilitys() {
-		return abilitys;
+	public Ability[] getAbilities() {
+		return abilities;
 	}
 
 	public int getRange() {
@@ -123,23 +123,23 @@ public class Character {
 
 	// 0 = Passive, 1 = Q, 2 = W, 3 = E, 4 = R
 	public Passive getPass() {
-		return (Passive) abilitys[0];
+		return (Passive) abilities[0];
 	}
 
 	public Ability getAbiq() {
-		return abilitys[1];
+		return abilities[1];
 	}
 
 	public Ability getAbiw() {
-		return abilitys[2];
+		return abilities[2];
 	}
 
 	public Ability getAbie() {
-		return abilitys[3];
+		return abilities[3];
 	}
 
 	public Ability getAbir() {
-		return abilitys[4];
+		return abilities[4];
 	}
 
 	// testing
@@ -149,8 +149,8 @@ public class Character {
 	}
 
 	public Character(String imageLocation) {
-		for (int x = 0; x < abilitys.length; x++) {
-			abilitys[x] = new Ability();
+		for (int x = 0; x < abilities.length; x++) {
+			abilities[x] = new Ability();
 		}
 	}
 }
