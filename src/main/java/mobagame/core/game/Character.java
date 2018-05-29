@@ -52,7 +52,7 @@ public class Character {
 
 	public Character(String name, String imageLocation, int range, int speed, int maxHealthScale, int baseMaxHealth,
 			int maxManaScale, int baseMaxMana, int phyPowScale, int basePhyPow, int abiPowScale, int baseAbiPow,
-			int armorScale, int baseArmor, int magicResistScale, int baseMagicResist) {
+			int armorScale, int baseArmor, int magicResistScale, int baseMagicResist, int baseManaRegen, int baseHealthRegen) {
 		this.name = name;
 		this.imageLocation = imageLocation;
 		this.range = range;
@@ -69,6 +69,8 @@ public class Character {
 		this.armorScale = armorScale;
 		this.baseMagicResist = baseMagicResist;
 		this.magicResistScale = magicResistScale;
+		this.manaRegen = baseManaRegen;
+		this.healthRegen = baseHealthRegen;
 	}
 
 	public int getBaseMaxHealth() {
