@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 import mobagame.core.game.*;
 import mobagame.core.networking.packets.*;
-import mobagame.launcher.networking.ServerConnection;
 import mobagame.server.database.PlayerAccount;
 import mobagame.server.database.PlayerAccountDBO;
 import mobagame.server.game.ServerGame;
@@ -120,17 +119,20 @@ public class ResponseWorker implements Runnable {
 
 	private void handleThrowMeInAGamePacket(DEBUG_JustJoinToAGame debug_justJoinToAGame, ServerDataEvent dataEvent) {
 		ServerGame g = runner.findGame(debug_justJoinToAGame.playerID);
+		logger.log(Level.INFO, "finding a game for " + debug_justJoinToAGame.playerID);
 		InGamePlayer p = new InGamePlayer(debug_justJoinToAGame.playerID, GameCharcters.reaper);
 		p.team = GameTeams.lowTeam;
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
+		runner.conn.connectionToPlayerID.put(dataEvent.socket, p.getPlayerID());
 		p.setX(90);
 		p.setY(870);
-		p.mover = new PlayerMover(g.map, p);
+		p.mover = new ObjectMover(g.map, p);
 		runner.addToGame(g, p, dataEvent.connectionID);
 
 		logger.log(Level.INFO, "resp with gameid " + g.getGameID() + " and player id " + p.getPlayerID());
 		RequestEnterGameResponsePacket resp = new RequestEnterGameResponsePacket(g,p);
-		System.out.println(Arrays.toString(resp.getBytes().array()));
+		resp.playerID = p.getPlayerID();
+//		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
 		g.notifyPlayerJoinedGame(p);
 		g.tellClientAboutExistingPlayers(p, dataEvent.socket);
@@ -149,6 +151,7 @@ public class ResponseWorker implements Runnable {
 		runner.games.add(g);
 		RequestEnterGameResponsePacket pkt = new RequestEnterGameResponsePacket();
 		pkt.gameID = g.gameID;
+		pkt.playerID = dataEvent.server.connectionToPlayerID(dataEvent.socket);
 		for(InGamePlayer p : g.players){
 			pkt.playerID = p.getPlayerID();
 			dataEvent.server.send(dataEvent.server.playerToConnection.get(p), pkt.getBytes().array());
@@ -177,7 +180,7 @@ public class ResponseWorker implements Runnable {
 		pkt.itemID = playerUseItemRequestPacket.itemID;
 		dataEvent.server.send(dataEvent.socket, pkt.getBytes().array());
 	}
-	
+
 
 	private void handleSellItemRequestPacket(RequestPlayerSellItemPacket requestPlayerSellItemPacket, ServerDataEvent dataEvent) {
 		int status = runner.playerToGame.get(runner.connectionToPlayer.get(dataEvent.connectionID)).sellItem(runner.connectionToPlayer.get(dataEvent.connectionID), requestPlayerSellItemPacket.itemID);
@@ -215,12 +218,12 @@ public class ResponseWorker implements Runnable {
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
 		p.setX(90);
 		p.setY(870);
-		p.mover = new PlayerMover(lobby.map, p);
+		p.mover = new ObjectMover(lobby.map, p);
 */
 
 		runner.addToLobby(lobby, p, dataEvent.connectionID);
 
-		logger.log(Level.INFO, "resp with gameid " + lobby.getLobbyID() + " and player id " + p.getPlayerID());
+		logger.log(Level.INFO, "resp with gameid " + lobby.getLobbyID() + " and player id " +playerID);
 		RequestEnterLobbyResponsePacket resp = new RequestEnterLobbyResponsePacket(lobby,p);
 		resp.lobbyID = lobby.getLobbyID();
 		System.out.println(Arrays.toString(resp.getBytes().array()));
@@ -293,6 +296,7 @@ public class ResponseWorker implements Runnable {
 		dataEvent.server.send(dataEvent.socket, loginPak.getBytes().array());
 		if (player != null) {
 			dataEvent.server.connectionToPlayerID.put(dataEvent.socket, player.id);
+			logger.log(Level.INFO, "logged in player " + player.id);
 			dataEvent.server.send(dataEvent.socket, new PublicPlayerDataPacket(player).getBytes().array());
 		}
 		// }

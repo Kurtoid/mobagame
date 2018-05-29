@@ -43,9 +43,10 @@ public class RequestEnterGameResponsePacket extends Packet {
 	@Override
 	void readData(ByteBuffer buff) {
 		buff.rewind();
-		status = buff.getInt(5);
-		gameID = buff.getInt(5 + 4);
-		playerID = buff.getInt(5+4*2);
+		buff.position(5);
+		status = buff.getInt();
+		gameID = buff.getInt();
+		playerID = buff.getInt();
 		System.out.println("gameResp " + status + " " + gameID + " " + playerID);
 
 	}

@@ -9,15 +9,9 @@ import java.io.IOException;
 import javax.swing.*;
 
 import mobagame.core.networking.packets.DEBUG_ClientForceStartGame;
-import org.omg.PortableServer.ServantRetentionPolicyValue;
 
 import mobagame.core.game.GameCharcters;
-import mobagame.core.game.InGamePlayer;
-import mobagame.core.game.PlayerMover;
-import mobagame.core.game.maps.MainMap;
-import mobagame.core.networking.packets.RequestEnterGamePacket;
 import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
-import mobagame.launcher.game.ClientGame;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
 import mobagame.server.database.PlayerAccount;

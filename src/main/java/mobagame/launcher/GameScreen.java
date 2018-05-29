@@ -5,7 +5,6 @@
 package mobagame.launcher;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import mobagame.core.game.Ability;
@@ -13,8 +12,7 @@ import mobagame.core.game.Character;
 import mobagame.core.game.GameCharcters;
 import mobagame.core.game.GameItems;
 import mobagame.core.game.InGamePlayer;
-import mobagame.core.game.Item;
-import mobagame.core.game.PlayerMover;
+import mobagame.core.game.ObjectMover;
 import mobagame.core.game.maps.MainMap;
 import mobagame.core.networking.packets.*;
 import mobagame.launcher.game.ClientGame;
@@ -25,7 +23,6 @@ import mobagame.server.database.PlayerAccount;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.logging.*;
 
 @SuppressWarnings("serial")
@@ -66,7 +63,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		ClientGame g = new ClientGame(gameID);
 		InGamePlayer p = new InGamePlayer(playerID, GameCharcters.reaper);
 		g.setPlayerPlayer(p);
-		g.getPlayerPlayer().mover = new PlayerMover(g.map, g.getPlayerPlayer());
+		g.getPlayerPlayer().mover = new ObjectMover(g.map, g.getPlayerPlayer());
 		g.players.add(p);
 		g.map = new MainMap();
 		g.map.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
@@ -89,7 +86,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		// set up things
 
 		user.setGoldAmount(0);
-		
+
 		// listeners
 		f.addKeyListener(this);
 		f.addMouseListener(this);
@@ -446,12 +443,13 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 				.getResponse(PublicPlayerDataPacket.class);
 		PlayerAccount p = playerData.player;
 		DEBUG_JustJoinToAGame req = new DEBUG_JustJoinToAGame(p.id);
+		System.out.println("just join a game " + p.id);
 		try {
 			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(req.getBytes().array());
 			RspHandler.getInstance().waitForResponse();
 			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance()
 					.getResponse(RequestEnterGameResponsePacket.class);
-			System.out.println(game.playerID);
+			System.out.println("playerid is "+game.playerID);
 
 			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper);
 			s.testing = true;

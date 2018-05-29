@@ -1,16 +1,5 @@
 package mobagame.core.game;
 
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import mobagame.core.game.maps.MainMap;
-import mobagame.launcher.Shop;
-import mobagame.launcher.MyCanvas;
-import mobagame.launcher.GameScreen;
-
 public class InGamePlayer extends GameObject{
 
     private int playerID;
@@ -32,7 +21,7 @@ public class InGamePlayer extends GameObject{
     private int levelXp = 0;
     private int xpToNextLevel = 0;
     private int playerLevel = 1;
-    public PlayerMover mover;
+    public ObjectMover mover;
 
 
     //0 = Q, 1 = W, 2 = E, 3 = R
@@ -137,11 +126,11 @@ public class InGamePlayer extends GameObject{
         return playerLevel;
     }
 
-    public PlayerMover getMover() {
+    public ObjectMover getMover() {
         return mover;
     }
 
-    public void setMover(PlayerMover mover) {
+    public void setMover(ObjectMover mover) {
         this.mover = mover;
     }
 

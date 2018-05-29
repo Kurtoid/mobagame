@@ -16,7 +16,7 @@ public class Tower extends GameObject {
 		super();
 		health = i;
 		lastFiredTime = System.currentTimeMillis();
-		coolDownTime = 1000;
+		coolDownTime = 10000;
 	}
 
 	long lastFiredTime;
@@ -30,15 +30,16 @@ public class Tower extends GameObject {
 		return System.currentTimeMillis() - lastFiredTime > coolDownTime;
 	}
 
-	public Projectile fire(Point2D.Double pos, Game g) {
+	public Projectile fire(GameObject player, Game g) {
 		lastFiredTime = System.currentTimeMillis();
-		Projectile p = new Projectile(g.map);
-		p.target = pos;
+		SeekingProjectile p = new SeekingProjectile(g.map);
+		p.target = player.pos;
 		p.firedBy = this;
-		p.firedFrom = this.pos;
+		p.firedFrom = new Point2D.Double(pos.getX(), pos.getY());
 		p.team = this.team;
-		p.pos = this.pos;
+		p.pos = new Point2D.Double(pos.getX(), pos.getY());
 		p.mover.setTarget(p.target.getX(), p.target.getY());
+		p.targetObject = player;
 		return p;
 	}
 }

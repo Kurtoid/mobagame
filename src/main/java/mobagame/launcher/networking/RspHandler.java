@@ -174,6 +174,15 @@ public class RspHandler extends Thread {
 							System.out.println("Character select enter");
 							addToPackets(new NotifyPlayerEnterCharacterSelect(pkt));
 							break;
+						case Packet.PK_ID_PROJECTILE_MOVEMENT:
+							System.out.println("projectile movement");
+							addToPackets(new ProjectilePositionPacket(pkt));
+							break;
+						case Packet.PK_ID_NOTIFY_PROJECTILE_REMOVED:
+							System.out.println("projectile removed");
+							addToPackets(new NotifyProjectileRemovedPacket(pkt));
+							break;
+
 						default:
 							System.out.println("unknown packet " + Packet.getPacketID(pkt));
 							break;

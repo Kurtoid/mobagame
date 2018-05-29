@@ -38,7 +38,7 @@ public class NotifyPlayerDisconnectedPacket extends Packet {
 
 	@Override
 	public String toString() {
-		return "NotifyPlayerDisconnectedPacket [playerID=" + playerID + ", disconnectReason=" + disconnectReason + "]";
+		return "NotifyPlayerDisconnectedPacket [projectileID=" + playerID + ", disconnectReason=" + disconnectReason + "]";
 	}
 
 }
