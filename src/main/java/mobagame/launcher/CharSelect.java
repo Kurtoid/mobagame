@@ -51,6 +51,11 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		while (timeLeft >= 0) {
 			try {
 				Thread.sleep(1000);
+				RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
+				if(game!=null){
+					selectionScreen.setVisible(false);
+					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper);
+				}
 			} catch (InterruptedException e) {
 			}
 			timer.setText("" + timeLeft);
