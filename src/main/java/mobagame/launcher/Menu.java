@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 @SuppressWarnings("serial")
 public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
@@ -134,7 +135,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 			}
 		}
 	}
-	
+
 	public void actionPerformed(ActionEvent ae) { // TODO Send to appropriate windows
 		String cmd = ae.getActionCommand();
 
@@ -160,8 +161,12 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 //						RspHandler.getInstance().waitForResponse();
 						NotifyPlayerEnterCharacterSelect ecs = null;
 						do {
-							RspHandler.getInstance().waitForResponse(500);
 							System.out.println("checking for ecs");
+							try {
+							RspHandler.getInstance().waitForResponse(500);
+							}catch (TimeoutException e) {
+								// do nothing, just keep checking
+							}
 							ecs = (NotifyPlayerEnterCharacterSelect) RspHandler.getInstance().getResponse(NotifyPlayerEnterCharacterSelect.class);
 						}while(ecs==null);
 						System.out.println("ecs found");

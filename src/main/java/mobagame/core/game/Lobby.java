@@ -20,7 +20,7 @@ public class Lobby {
 	}
 
 	public boolean isFull() {
-		return /*players.size() >= Game.MAX_PLAYERS;*/ true;
+		return players.size() >= Game.MAX_PLAYERS;
 	}
 
 	public int getLobbyID() {
@@ -50,5 +50,20 @@ public class Lobby {
 		}
 
 		return g;
+	}
+
+	public Team assignTeam() {
+		int highTeamPlayers = 0;
+		int lowTeamPlayers = 0;
+		for(InGamePlayer p : players) {
+			if(p.team == null)
+				continue;
+			if(GameTeams.gameTeamsLookup.indexOf(p.team)==0) {
+				highTeamPlayers++;
+			}else {
+				lowTeamPlayers++;
+			}
+		}
+		return highTeamPlayers>lowTeamPlayers?GameTeams.lowTeam:GameTeams.highTeam;
 	}
 }
