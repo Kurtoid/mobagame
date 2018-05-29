@@ -19,6 +19,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.swing.JPanel;
 
@@ -35,7 +36,6 @@ import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
 
 public class MapPanel extends JPanel implements Runnable {
-	MainMap map;
 	Game game;
 
 	int translateX = 0;
@@ -57,7 +57,6 @@ public class MapPanel extends JPanel implements Runnable {
 		marker.timeCreated = System.currentTimeMillis();
 		marker.width = 20;
 		marker.height = 20;
-		map = g.map;
 		game = g;
 		try {
 			conn = ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port);
@@ -169,7 +168,7 @@ public class MapPanel extends JPanel implements Runnable {
 		Graphics2D graphics = (Graphics2D) g;
 		graphics.setColor(Color.black);
 		graphics.setStroke(new BasicStroke(getHeight() / 100));
-		Path2D tmp = (Path2D) map.getMap().clone();
+		Path2D tmp = (Path2D) game.map.getMap().clone();
 		tmp.transform(getCurrentTransform());
 		graphics.draw(tmp);
 		// for (InGamePlayer player : game.players) {
@@ -186,8 +185,8 @@ public class MapPanel extends JPanel implements Runnable {
 		graphics.setColor(Color.RED);
 			for(InGamePlayer player : game.players){
 				Point.Double point = new Point2D.Double(player.getX(), player.getY());
-				double pWidth = convertWidthFromServer(10, map.width) * scaleX;
-				double pHeight = convertHeightFromServer(10, map.height) * scaleY;
+				double pWidth = convertWidthFromServer(10, game.map.width) * scaleX;
+				double pHeight = convertHeightFromServer(10, game.map.height) * scaleY;
 //				double pWidth = 0;
 //				double pHeight = 0;
 
@@ -202,11 +201,11 @@ public class MapPanel extends JPanel implements Runnable {
 			graphics.setColor(t.team.color);
 			Point.Double p = new Point2D.Double(t.getX(), t.getY());
 			getCurrentTransform().transform(p, p);
-			int towerSize=2*(map.width/100);
+			int towerSize=2*(game.map.width/100);
 			if(t.type == Tower.TowerType.CORE){
-				towerSize = 4*(map.width/100);
+				towerSize = 4*(game.map.width/100);
 			}else if(t.type == Tower.TowerType.RESPAWN){
-				towerSize = 3*(map.width/100);
+				towerSize = 3*(game.map.width/100);
 			}
 			towerSize *= scaleX;
 			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
@@ -214,9 +213,10 @@ public class MapPanel extends JPanel implements Runnable {
 
 		for(Projectile proj : game.projectiles){
 			graphics.setColor(proj.team.color);
+//			graphics.setColor(Color.GREEN);
 			Point.Double p = new Point2D.Double(proj.getX(), proj.getY());
 			getCurrentTransform().transform(p, p);
-			int towerSize=1*(map.width/100);
+			int towerSize=1*(game.map.width/100);
 			towerSize *= scaleX;
 			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
 
@@ -225,8 +225,8 @@ public class MapPanel extends JPanel implements Runnable {
 
 	private AffineTransform getCurrentTransform() {
 		AffineTransform tx = new AffineTransform();
-		double centerX = map.width;
-		double centerY = map.height;
+		double centerX = game.map.width;
+		double centerY = game.map.height;
 		tx.translate(centerX, centerY);
 		tx.scale(scaleX, scaleY);
 		tx.translate(-centerX, -centerY);
@@ -237,8 +237,8 @@ public class MapPanel extends JPanel implements Runnable {
 
 	void resetPanAndZoom() {
 		System.out.println();
-		translateX = getWidth() / 2 - map.width / 2;
-		translateY = getHeight() / 2 - map.height / 2;
+		translateX = getWidth() / 2 - game.map.width / 2;
+		translateY = getHeight() / 2 - game.map.height / 2;
 		scaleX = 1;
 		scaleY = 1;
 	}
@@ -279,9 +279,6 @@ public class MapPanel extends JPanel implements Runnable {
 					// do server pings here
 					int processed = 0;
 //					System.out.println("updating from server");
-					for(Projectile proj : game.projectiles){
-						proj.update();
-					}
 					/*if(game.projectiles.size()>0){
 						System.out.println(game.projectiles.get(0).pos.toString());
 					}*/
@@ -305,8 +302,8 @@ public class MapPanel extends JPanel implements Runnable {
 									continue;
 								}
 //								System.out.println("found a player");
-								pkt.x = convertWidthFromServer(pkt.x, map.width);
-								pkt.y = convertHeightFromServer(pkt.y, map.height);
+								pkt.x = convertWidthFromServer(pkt.x, game.map.width);
+								pkt.y = convertHeightFromServer(pkt.y, game.map.height);
 
 								player.setX(pkt.x);
 								player.setY(pkt.y);
@@ -378,16 +375,35 @@ public class MapPanel extends JPanel implements Runnable {
 								}
 							}
 						}else if(NotifyProjectileFiredPacket.class.isInstance(p)){
+							System.out.println("firing projectile");
 							NotifyProjectileFiredPacket pkt = (NotifyProjectileFiredPacket) p;
-							Projectile proj = new Projectile(map);
-							proj.target = convertPointFromServer(pkt.target, map.width, map.height);
-							proj.firedFrom = convertPointFromServer(pkt.firedFrom, map.width, map.height);
-							proj.speed = convertHeightFromServer(pkt.speed, map.height);
+							SeekingProjectile proj = new SeekingProjectile(game.map);
 							proj.team = GameTeams.gameTeams[pkt.teamIDFiredFrom];
-							proj.pos = proj.firedFrom;
-							proj.mover.setTarget(proj.target.getX(), proj.target.getY());
+							proj.projectileID = pkt.projectileID;
+							System.out.println("projectile " + proj.projectileID + " added to array ");
 							game.projectiles.add(proj);
+						}else if(ProjectilePositionPacket.class.isInstance(p)){
+							ProjectilePositionPacket pkt = (ProjectilePositionPacket) p;
+//							System.out.println("looking for projectile " + pkt.projectileID);
+							for(Projectile proj : game.projectiles){
+								if(proj.projectileID - pkt.projectileID==0){
+									proj.setX(convertWidthFromServer(pkt.x, game.map.width));
+									proj.setY(convertHeightFromServer(pkt.y, game.map.height));
+//									System.out.println("found projectile");
+								}else{
+//									System.out.println(proj.projectileID + " is not " + pkt.projectileID);
+								}
+							}
+						}else if(NotifyProjectileRemovedPacket.class.isInstance(p)){
+							System.out.println("removing projectile");
+							NotifyProjectileRemovedPacket pkt = (NotifyProjectileRemovedPacket) p;
+							Iterator<Projectile> iter=game.projectiles.iterator();
+							while(iter.hasNext()) {
+								if(iter.next().projectileID == pkt.projectileID)
+									iter.remove();
+							}
 						}
+
 					}
 
 					if(getWidth()-mouseX<50) {
@@ -462,19 +478,19 @@ public class MapPanel extends JPanel implements Runnable {
 		return point;
 	}
 
-	public static double convertHeightFromServer(double input, double width) {
-		return (input / 1000) * width;
+	public static double convertHeightFromServer(double input, double height) {
+		return (input / 1000) * height;
 	}
 	public static double convertWidthFromServer(double input, double width) {
 		return (input / 1000) * width;
 	}
 
 	private double convertHeightToServer(double input) {
-		return ((input / (double) map.height) * 1000);
+		return ((input / (double) game.map.height) * 1000);
 	}
 
 	private double convertWidthToServer(double input) {
-		return  ((input / map.height) * 1000);
+		return  ((input / game.map.height) * 1000);
 	}
 
 }

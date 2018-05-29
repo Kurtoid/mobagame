@@ -32,7 +32,7 @@ public class InGamePlayer extends GameObject{
     private int levelXp = 0;
     private int xpToNextLevel = 0;
     private int playerLevel = 1;
-    public PlayerMover mover;
+    public ObjectMover mover;
 
 
     //0 = Q, 1 = W, 2 = E, 3 = R
@@ -137,11 +137,11 @@ public class InGamePlayer extends GameObject{
         return playerLevel;
     }
 
-    public PlayerMover getMover() {
+    public ObjectMover getMover() {
         return mover;
     }
 
-    public void setMover(PlayerMover mover) {
+    public void setMover(ObjectMover mover) {
         this.mover = mover;
     }
 
@@ -268,6 +268,7 @@ public class InGamePlayer extends GameObject{
         }
     }
 
+    // index of abilitys array
     private void abilityUpgrade(int index) {
         if (avalableUpgrades < 0 && abilityLevels[index] < 5){
             abilityLevels[index]++;

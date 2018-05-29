@@ -36,7 +36,9 @@ public class ServerGame extends Game {
 			if (t.canFire()) {
 				InGamePlayer player = getClosestPlayer(t.pos, map.width/20, GameTeams.getOppositeTeam(t.team));
 				if (player != null) {
-					Projectile p = (t.fire(player.pos, this));
+					Projectile p = (t.fire(player, this));
+					p.update();
+					System.out.println("projectile fired " + p.projectileID);
 					projectiles.add(p);
 					notifyPlayersAboutProjectileFired(p);
 				}
@@ -49,21 +51,32 @@ public class ServerGame extends Game {
 				p.update();
 				if (!p.active) {
 					iter.remove();
+					System.out.println("deactivated projectile " + p.projectileID);
+					notifyPlayersAboutProjectileRemoved(p);
 				}
 
 			}
 		}
 	}
 
+	private void notifyPlayersAboutProjectileRemoved(Projectile p) {
+		NotifyProjectileRemovedPacket pkt = new NotifyProjectileRemovedPacket();
+		pkt.projectileID = p.projectileID;
+		pkt.teamIDFiredFrom = GameTeams.gameTeamsLookup.indexOf(p.team);
+		for(InGamePlayer player : players){
+//			System.out.println("sending projectile fire to player " + player.getPlayerID());
+			runner.conn.send(runner.conn.playerToConnection.get(player), pkt.getBytes().array());
+		}
+
+	}
+
 	private void notifyPlayersAboutProjectileFired(Projectile p) {
 		NotifyProjectileFiredPacket pkt = new NotifyProjectileFiredPacket();
-		pkt.firedFrom = p.firedFrom;
-		pkt.target = p.target;
+		pkt.projectileID = p.projectileID;
 		pkt.teamIDFiredFrom = GameTeams.gameTeamsLookup.indexOf(p.team);
-		pkt.speed = p.speed;
 		for(InGamePlayer player : players){
+//			System.out.println("sending projectile fire to player " + player.getPlayerID());
 			runner.conn.send(runner.conn.playerToConnection.get(player), pkt.getBytes().array());
-
 		}
 	}
 
@@ -78,6 +91,17 @@ public class ServerGame extends Game {
 				logger.log(Level.INFO, "sending state" + posPak.toString());
 				conn.send(runner.conn.playerToConnection.get(player), posPak.getBytes().array());
 			}
+		}
+		for(Projectile p : projectiles){
+			ProjectilePositionPacket posPak = new ProjectilePositionPacket();
+			posPak.x = p.getX();
+			posPak.y = p.getY();
+			posPak.projectileID = p.projectileID;
+			for (InGamePlayer player : players) {
+//				logger.log(Level.INFO, "sending projectile packet" + posPak.toString());
+				conn.send(runner.conn.playerToConnection.get(player), posPak.getBytes().array());
+			}
+
 		}
 	}
 
@@ -234,6 +258,7 @@ public class ServerGame extends Game {
 			rpt.playerHealth = p.getCurrentHealth();
 			rpt.playerGold = p.getGoldAmount();
 			rpt.playerMana = p.getCurrentMana();
+			System.out.println("status report about player " + p.getPlayerID());
 			for (InGamePlayer p2 : players) {
 				runner.conn.send(runner.conn.playerToConnection.get(p2), rpt.getBytes().array());
 			}

@@ -1,8 +1,6 @@
 package mobagame.core.game;
 
 import mobagame.core.game.maps.MainMap;
-import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
-import mobagame.launcher.networking.ServerConnection;
 import mobagame.server.game.ServerGame;
 
 import java.nio.channels.SocketChannel;
@@ -47,7 +45,7 @@ public class Lobby {
 			p.team = GameTeams.lowTeam;
 			p.setX(90);
 			p.setY(870);
-			p.mover = new PlayerMover(g.map, p);
+			p.mover = new ObjectMover(g.map, p);
 
 		}
 

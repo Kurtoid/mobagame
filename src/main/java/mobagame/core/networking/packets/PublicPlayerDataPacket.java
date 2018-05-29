@@ -22,7 +22,7 @@ public class PublicPlayerDataPacket extends Packet{
 	@Override
 	public ByteBuffer getBytes() {
 		int dataSize = PACKET_SIZE_SIZE + PACKET_ID_SIZE + 4 + getNumBytes(MAX_USERNAME_LENGTH) + 4;
-		// playerID, username, level
+		// projectileID, username, level
 		ByteBuffer buff = ByteBuffer.allocate(dataSize);
 		buff.putInt(dataSize);
 		setPacketType(buff, PK_ID_PUBLIC_PLAYER_DATA);
