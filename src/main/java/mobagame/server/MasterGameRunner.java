@@ -162,6 +162,7 @@ public class MasterGameRunner extends Thread {
 //				games.add(g);
 				NotifyPlayerEnterCharacterSelect pkt = new NotifyPlayerEnterCharacterSelect();
 				for(InGamePlayer p : l.players){
+					pkt.teamID = GameTeams.gameTeamsLookup.indexOf(p.team);
 					conn.send(conn.playerToConnection.get(p), pkt.getBytes().array());
 				}
 //				lobbies.remove(l);

@@ -212,6 +212,7 @@ public class ResponseWorker implements Runnable {
 		int playerID = dataEvent.server.connectionToPlayerID(dataEvent.socket);
 		Lobby lobby = runner.findLobby(playerID);
 		InGamePlayer p = new InGamePlayer(playerID, GameCharcters.reaper);
+		p.team = lobby.assignTeam();
 		dataEvent.server.playerToConnection.put(p, dataEvent.socket);
 /*
 		p.team = GameTeams.lowTeam;
