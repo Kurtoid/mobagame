@@ -83,10 +83,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 		UIManager.put("OptionPane.messageFont", CHAT_FONT);
 		UIManager.put("OptionPane.buttonFont", MENU_FONT);
-
-		// set up things
-
-		user.setGoldAmount(0);
 		
 		// listeners
 		f.addKeyListener(this);

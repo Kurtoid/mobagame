@@ -22,7 +22,7 @@ public class Lobby {
 	}
 
 	public boolean isFull() {
-		return /*players.size() >= Game.MAX_PLAYERS;*/ true;
+		return players.size() >= Game.MAX_PLAYERS;//*/ true;
 	}
 
 	public int getLobbyID() {
