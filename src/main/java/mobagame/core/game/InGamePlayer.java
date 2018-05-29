@@ -1,5 +1,16 @@
 package mobagame.core.game;
 
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import mobagame.core.game.maps.MainMap;
+import mobagame.launcher.Shop;
+import mobagame.launcher.MyCanvas;
+import mobagame.launcher.GameScreen;
+
 public class InGamePlayer extends GameObject{
 
     private int playerID;
@@ -250,7 +261,7 @@ public class InGamePlayer extends GameObject{
     }
 
     public void useAbility(int index){
-        if ( cooldowns[index] > 0){
+        if ( cooldowns[index] > 0 || abilityLevels[index] == 0){
             System.out.println("Cannot use that ability");
         } else {
             // abi.use();
@@ -259,9 +270,9 @@ public class InGamePlayer extends GameObject{
 
     // index of abilitys array
     private void abilityUpgrade(int index) {
-        if (avalableUpgrades < 0 && abilityLevels[index-1] < 5){
-            abilityLevels[index-1]++;
-            cooldowns[index-1] =  30 - (abilityLevels[index-1]*5);
+        if (avalableUpgrades < 0 && abilityLevels[index] < 5){
+            abilityLevels[index]++;
+            cooldowns[index] =  30 - (abilityLevels[index]*5);
             // abi.upgrade();
         }
     }
