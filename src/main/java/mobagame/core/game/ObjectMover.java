@@ -4,7 +4,7 @@ import mobagame.core.game.maps.MainMap;
 
 import java.awt.geom.Ellipse2D;
 
-public class PlayerMover {
+public class ObjectMover {
 	// double speed = 4;
 	double targetx = 500;
 	double targety = 500;
@@ -12,11 +12,11 @@ public class PlayerMover {
 	MainMap map;
 	boolean hitTowers = true;
 
-	public PlayerMover(MainMap map, GameObject player) {
+	public ObjectMover(MainMap map, GameObject movableObject) {
 		this.map = map;
-		this.player = player;
-		targetx = player.getX();
-		targety = player.getY();
+		this.player = movableObject;
+		targetx = movableObject.getX();
+		targety = movableObject.getY();
 	}
 
 	public void update() {
@@ -66,8 +66,8 @@ public class PlayerMover {
 
 	boolean doesCollide(double x, double y, double playerWidth, double playerHeight) {
 		boolean collides = map.getMap().intersects(x - playerHeight / 2, y - playerHeight / 2, playerHeight, playerHeight);
-		//if (hitTowers) {
-		if(false){
+		if (hitTowers) {
+//		if(false){
 			for (int i = 0; i < map.towers.size() && !collides; i++) {
 				double towerSize = 2 * (map.width / 100);
 				if (map.towers.get(i).type == Tower.TowerType.CORE) {

@@ -1,9 +1,9 @@
 package mobagame.core.game;
 
 import mobagame.core.game.maps.MainMap;
-import mobagame.server.database.PlayerAccount;
 
 import java.awt.geom.Point2D;
+import java.util.Random;
 
 /**
  * a projectile fired by a player or tower
@@ -13,12 +13,12 @@ import java.awt.geom.Point2D;
 public class Projectile extends GameObject {
 	double damage;
 	public GameObject firedBy;
-	public PlayerMover mover;
+	public ObjectMover mover;
 	public boolean active = true;
-
+	public int projectileID = new Random().nextInt();
 	public Projectile(MainMap map) {
-		speed = 50;
-		mover = new PlayerMover(map, this);
+		speed = 100;
+		mover = new ObjectMover(map, this);
 		mover.hitTowers = false;
 	}
 
@@ -27,9 +27,9 @@ public class Projectile extends GameObject {
 	 */
 	public void update() {
 		mover.update();
-		if (Math.sqrt((target.getX() - pos.getX()) * (target.getX() - pos.getX()) + (target.getY() - pos.getY()) * (target.getY() - pos.getY())) < speed) {
-			active = false;
-		}
+//		if (new Point2D.Double(target.getX(), target.getY()).distance(pos) < speed) {
+//			active = false;
+//		}
 	}
 
 	public Point2D.Double target;
