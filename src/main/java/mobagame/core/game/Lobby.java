@@ -28,7 +28,7 @@ public class Lobby {
 	}
 
 	public void notifyPlayerJoinedLobby(InGamePlayer p) {
-
+		
 	}
 
 	public void tellClientAboutExistingPlayers(InGamePlayer p, SocketChannel socket) {
