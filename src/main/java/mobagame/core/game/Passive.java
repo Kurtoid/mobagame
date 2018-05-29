@@ -21,6 +21,17 @@ public class Passive extends Ability {
 		armorBeforePassive = player.getBaseArmor();
 		magicResistBeforePassive = player.getBaseMagicResist();
 	}
+	public Passive(Character player, int ratio, StatEffectType effTyp,StatRatioType ratTyp) {
+		phyPowBeforePassive = player.getBasePhyPow();
+		abiPowBeforePassive = player.getBaseAbiPow();
+		maxHealthBeforePassive = player.getBaseMaxHealth();
+		maxManaBeforePassive = player.getBaseMaxMana();
+		armorBeforePassive = player.getBaseArmor();
+		magicResistBeforePassive = player.getBaseMagicResist();
+		statRatio = ratio;
+		SET = effTyp;
+		SRT = ratTyp;
+	}
 	public void preparePassiveUpdate(InGamePlayer player) {
 		if (pass == PassiveType.StatEffect) {
 			switch (SET) {
@@ -55,6 +66,9 @@ public class Passive extends Ability {
 							break;
 						case AbiPowtoMaxHealth:
 							maxHealthBeforePassive = player.getMaxHealth() - (player.getAbiPow() * statRatio);
+							break;
+						case SpeedtoPhyPow:
+							phyPowBeforePassive = player.getPhyPow() - (int)(player.getSpeed() * statRatio);
 							break;
 						default:
 							System.out.println("Something is Wrong");
@@ -103,7 +117,7 @@ public class Passive extends Ability {
 				case StatRatio:
 					switch (SRT) {
 						case MaxHealthtoMaxMana:
-							player.setMaxMana(maxManaBeforePassive + (player.getMaxHealth() * statRatio)); 
+							player.setMaxMana(maxManaBeforePassive + (player.getMaxHealth() * statRatio));
 							break;
 						case MaxManatoMaxHealth:
 							player.setMaxHealth(maxHealthBeforePassive + (player.getMaxMana() * statRatio));

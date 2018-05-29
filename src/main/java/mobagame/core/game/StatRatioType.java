@@ -11,5 +11,6 @@ PhyPowtoMaxMana,
 MaxManatoPhyPow,
 MaxHealthtoAbiPow,
 AbiPowtoMaxHealth,
-NULL
+NULL,
+SpeedtoPhyPow
 }
