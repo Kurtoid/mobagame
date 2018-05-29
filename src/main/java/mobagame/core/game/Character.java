@@ -27,6 +27,25 @@ public class Character {
 
 	private int baseMagicResist;
 	private int magicResistScale;
+	
+	private int manaRegen;
+	public int getManaRegen() {
+		return manaRegen;
+	}
+
+	public void setManaRegen(int manaRegen) {
+		this.manaRegen = manaRegen;
+	}
+
+	private int healthRegen;
+
+	public int getHealthRegen() {
+		return healthRegen;
+	}
+
+	public void setHealthRegen(int healthRegen) {
+		this.healthRegen = healthRegen;
+	}
 
 	public int width = 10;
 	public int height = 10;
