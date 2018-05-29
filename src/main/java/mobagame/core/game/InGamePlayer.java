@@ -33,7 +33,7 @@ public class InGamePlayer extends GameObject{
     private int xpToNextLevel = 0;
     private int playerLevel = 1;
     public ObjectMover mover;
-
+    String username;
 
     //0 = Q, 1 = W, 2 = E, 3 = R
     public int[] abilityLevels = {0, 0, 0, 0};
@@ -41,6 +41,13 @@ public class InGamePlayer extends GameObject{
 
     public Item[] inventory = {(GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty),
             (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty)};
+
+    public InGamePlayer(int playerID, String playerUsername, Team gameTeam) {
+        super();
+        this.playerID = playerLevel;
+        this.username = playerUsername;
+        this.team = gameTeam;
+    }
 
     public Character getCharacter() {
         return character;

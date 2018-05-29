@@ -2,6 +2,9 @@ package mobagame.core.networking.packets;
 
 import java.nio.ByteBuffer;
 
+/**
+ * @author Kurt Wilson
+ */
 public class NotifyPlayerDisconnectedPacket extends Packet {
 	public static final int MANUAL_DISCONNECT = 0;
 	static final int CONNECTION_LOST = 1;

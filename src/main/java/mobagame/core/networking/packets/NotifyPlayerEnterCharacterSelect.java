@@ -3,9 +3,7 @@ package mobagame.core.networking.packets;
 import java.nio.ByteBuffer;
 
 /**
- * Sent from the client to the server to join a game with random (for now)
- * players
- *
+ * sent from the server to let the client know character select has begun
  * @author Kurt Wilson
  */
 public class NotifyPlayerEnterCharacterSelect extends Packet {

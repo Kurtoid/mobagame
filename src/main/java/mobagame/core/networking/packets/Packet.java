@@ -47,7 +47,7 @@ public abstract class Packet {
 	public static final byte PK_ID_DEBUG_THROW_ME_IN_A_GAME = 27;
 	public static final byte PK_ID_PROJECTILE_MOVEMENT = 28;
 	public static final byte PK_ID_NOTIFY_PROJECTILE_REMOVED = 29;
-
+	public static final byte PK_ID_CHARACTER_SELECT_SHOW_PLAYER = 30;
 	public static final byte PK_ID_RANDOM_BS_PACKET = 69;//?
 
 	public static int BYTES_PER_CHARACTER = 1;

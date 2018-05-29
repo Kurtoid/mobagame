@@ -25,7 +25,6 @@ import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
 import mobagame.core.networking.packets.DEBUG_JustJoinToAGame;
 import mobagame.core.networking.packets.PublicPlayerDataPacket;
-import mobagame.core.networking.packets.RequestEnterGamePacket;
 import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
@@ -210,7 +209,7 @@ public class Shop implements MobaGameLauncher {
 					.getResponse(RequestEnterGameResponsePacket.class);
 			System.out.println(game.playerID);
 
-			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper);
+			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper, teamOne);
 			testing = true;
 //		InGamePlayer user = new InGamePlayer(0);
 //		Shop s = new Shop(user);

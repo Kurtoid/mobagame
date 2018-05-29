@@ -1,14 +1,18 @@
 package mobagame.server;
 
 import java.nio.channels.SocketChannel;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import mobagame.core.game.*;
 import mobagame.core.game.maps.MainMap;
+import mobagame.core.networking.packets.CharacterSelectShowPlayer;
 import mobagame.core.networking.packets.NotifyPlayerEnterCharacterSelect;
 import mobagame.core.networking.packets.RequestEnterGameResponsePacket;
+import mobagame.server.database.PlayerAccount;
+import mobagame.server.database.PlayerAccountDBO;
 import mobagame.server.game.ServerGame;
 
 public class MasterGameRunner extends Thread {
@@ -164,6 +168,16 @@ public class MasterGameRunner extends Thread {
 				for(InGamePlayer p : l.players){
 					pkt.teamID = GameTeams.gameTeamsLookup.indexOf(p.team);
 					conn.send(conn.playerToConnection.get(p), pkt.getBytes().array());
+				}
+				PlayerAccountDBO playerDB = new PlayerAccountDBO();
+				for(InGamePlayer p : l.players){
+					CharacterSelectShowPlayer charNotif = new CharacterSelectShowPlayer();
+					charNotif.playerID = p.getPlayerID();
+					try {
+						charNotif.playerUsername = playerDB.getUsernameByID(p.getPlayerID());
+					}catch(SQLException e){
+						logger.log(Level.SEVERE, "couldn't find player id " + p.getPlayerID());
+					}
 				}
 //				lobbies.remove(l);
 			}

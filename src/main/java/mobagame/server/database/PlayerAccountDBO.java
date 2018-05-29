@@ -1,5 +1,6 @@
 package mobagame.server.database;
 
+import java.lang.reflect.Array;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
@@ -22,6 +23,8 @@ public class PlayerAccountDBO {
 	PreparedStatement loginAccount;
 	PreparedStatement getAccountByUsername;
 	PreparedStatement getAccountByEmail;
+	PreparedStatement getUsernameByIDStatement;
+
 
 	public PlayerAccountDBO() {
 		try {
@@ -32,6 +35,7 @@ public class PlayerAccountDBO {
 					.prepareStatement("SELECT * FROM PlayerAccount WHERE username = ? AND password = ?");
 			getAccountByUsername = db.getConnection().prepareStatement("SELECT * FROM PlayerAccount WHERE username = ?");
 			getAccountByEmail = db.getConnection().prepareStatement("SELECT * FROM PlayerAccount WHERE email = ?");
+			getUsernameByIDStatement = db.getConnection().prepareStatement("SELECT username FROM PlayerAccount WHERE id=?");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -144,5 +148,13 @@ public class PlayerAccountDBO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public String getUsernameByID(int playerID) throws SQLException {
+		getUsernameByIDStatement.setInt(1,playerID);
+		getUsernameByIDStatement.executeQuery();
+		ResultSet rs = getUsernameByIDStatement.getResultSet();
+		rs.next();
+		return rs.getString("username");
 	}
 }

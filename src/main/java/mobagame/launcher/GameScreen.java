@@ -23,6 +23,7 @@ import mobagame.server.database.PlayerAccount;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.*;
 
 @SuppressWarnings("serial")
@@ -56,9 +57,10 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	private MyCanvas[] inventoryCanvas;
 
 	// open menu window for playerName
-	public GameScreen(int gameID, PlayerAccount player, int playerID, Character character) {
+	public GameScreen(int gameID, PlayerAccount player, int playerID, Character character, ArrayList<InGamePlayer> players) {
 		System.out.println(gameID);
 		ClientGame g = new ClientGame(gameID);
+		g.players = players;
 		InGamePlayer p = new InGamePlayer(playerID, GameCharcters.reaper);
 		g.setPlayerPlayer(p);
 		g.getPlayerPlayer().mover = new ObjectMover(g.map, g.getPlayerPlayer());
@@ -445,7 +447,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 					.getResponse(RequestEnterGameResponsePacket.class);
 			System.out.println("playerid is "+game.playerID);
 
-			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper);
+			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper, new ArrayList<InGamePlayer>());
 			s.testing = true;
 			s.game.getPlayerPlayer().setGoldAmount(0);
 		} catch (IOException e) {
