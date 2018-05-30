@@ -1,5 +1,5 @@
 passive- 20% of movement speed is converted to physical power
 q- Dash in a direction
 w- Throws a dagger in a straight line
-e- 30% movement speed buff and 50% attack speed buff for 5 seconds
+e- 25% movement speed buff and 35% attack speed buff for 5 seconds
 r- Dash that deals damage then returns to start location
