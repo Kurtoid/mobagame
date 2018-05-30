@@ -16,5 +16,5 @@ Passive agileKiller = new Passive(this, 20, StatEffectType.StatRatio, StatRatioT
 Ability quickEscape = new Ability(AbilityType.Dash, DamageType.NULL, 40, 0, 0, 0, 0, 10, 1, 80);
 Ability daggerThrow = new Ability(AbilityType.Damage, DamageType.PHYSICAL, 50, 50, 0, 80, 20, 6, 0, 85);
 Ability swiftAssault = new Ability(AbilityType.StatEffect, DamageType.NULL, 40, 0, 0, 0, 0, 12, 5, 0);
-Ability swiftEnd = new Ability(AbilityType.DamageDash, DamageType.PHYSICAL, 80, 300, 0, 100, 75, 40, 3, 100);
+Ability swiftEnd = new Ability(AbilityType.DamageDash, DamageType.PHYSICAL, 80, 300, 0, 100, 75, 40, 5/* dash lasts 2 seconds*/ , 100);
 }
