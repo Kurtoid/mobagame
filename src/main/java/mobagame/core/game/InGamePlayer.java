@@ -310,15 +310,16 @@ public class InGamePlayer extends GameObject{
 		return target;
 	}
 
-	public Projectile attackTarget(GameObject target, Game g) {
+	public SeekingProjectile attackTarget(GameObject target, Game g) {
 		lastAttackTime = System.currentTimeMillis();
-		Projectile p = new Projectile(g.map);
+		SeekingProjectile p = new SeekingProjectile(g.map);
 		p.target = new Point2D.Double(target.pos.getX(), target.pos.getY());
 		p.firedBy = this;
 		p.firedFrom = new Point2D.Double(pos.getX(), pos.getY());
 		p.team = this.team;
 		p.pos = new Point2D.Double(pos.getX(), pos.getY());
 		p.mover.setTarget(p.target.getX(), p.target.getY());
+		p.targetObject = target;
 		return p;
 
 	}

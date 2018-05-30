@@ -7,14 +7,18 @@ import java.awt.geom.Point2D;
 public class Tower extends GameObject {
 	public TowerType type;
 	public int health;
+	public double maxHealth;
 	MainMap map;
+	public int id;
 	public enum TowerType {
 		CORE, RESPAWN, NORMAL
 	}
 
-	public Tower(int i) {
+	public Tower(int id, int i) {
 		super();
+		this.id = id;
 		health = i;
+		maxHealth = i;
 		lastFiredTime = System.currentTimeMillis();
 		coolDownTime = 10000;
 	}

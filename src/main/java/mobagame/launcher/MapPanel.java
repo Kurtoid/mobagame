@@ -209,6 +209,7 @@ public class MapPanel extends JPanel implements Runnable {
 			}
 			towerSize *= scaleX;
 			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+			HealthBarDrawer.draw((Graphics2D) g, t.health,t.maxHealth,Color.RED,  p, getSize());
 		}
 
 		for(Projectile proj : game.projectiles){
@@ -395,12 +396,19 @@ public class MapPanel extends JPanel implements Runnable {
 								}
 							}
 						}else if(NotifyProjectileRemovedPacket.class.isInstance(p)){
-							System.out.println("removing projectile");
+//							System.out.println("removing projectile");
 							NotifyProjectileRemovedPacket pkt = (NotifyProjectileRemovedPacket) p;
 							Iterator<Projectile> iter=game.projectiles.iterator();
 							while(iter.hasNext()) {
 								if(iter.next().projectileID == pkt.projectileID)
 									iter.remove();
+							}
+						}else if(NotifyTowerHealth.class.isInstance(p)){
+							NotifyTowerHealth pkt = (NotifyTowerHealth) p;
+							for(Tower t : game.map.towers){
+								if(t.id  == pkt.towerID){
+									t.health = pkt.health;
+								}
 							}
 						}
 

@@ -14,9 +14,11 @@ public class RspHandler extends Thread {
 	private BlockingQueue<ByteBuffer> responses;
 	private BlockingQueue<Packet> packets;
 	static RspHandler instance;
+
 	/**
 	 * called by the server thread
 	 * dont use this anywhere else
+	 *
 	 * @param rsp
 	 * @return whether the connection should be closed or not
 	 */
@@ -30,7 +32,7 @@ public class RspHandler extends Thread {
 	/**
 	 * waits for at least one response to have been processed
 	 */
-	public synchronized void waitForResponse()  {
+	public synchronized void waitForResponse() {
 		System.out.println("waiting for response");
 		while (packets.isEmpty()) {
 			try {
@@ -43,6 +45,7 @@ public class RspHandler extends Thread {
 
 	/**
 	 * waits for at least one response to have been processed, or <i>timeout</i> milliseconds
+	 *
 	 * @param timeout
 	 * @throws TimeoutException if it times out
 	 */
@@ -54,7 +57,7 @@ public class RspHandler extends Thread {
 				this.wait(timeout);
 			} catch (InterruptedException e) {
 			}
-			if(System.currentTimeMillis() - currentTime > timeout){
+			if (System.currentTimeMillis() - currentTime > timeout) {
 				throw new TimeoutException("the server took too long");
 			}
 		}
@@ -63,11 +66,12 @@ public class RspHandler extends Thread {
 
 	/**
 	 * waits for <i>amount</i> responses, or <i>timeout</i> milliseconds
+	 *
 	 * @param amount
 	 * @param timeout
 	 * @throws TimeoutException
 	 */
-	public synchronized void waitForResponse(int amount, long timeout) throws TimeoutException{
+	public synchronized void waitForResponse(int amount, long timeout) throws TimeoutException {
 		long currentTime = System.currentTimeMillis();
 //		System.out.println("waiting for response " + amount);
 		while (packets.size() < amount) {
@@ -75,7 +79,7 @@ public class RspHandler extends Thread {
 				this.wait(timeout);
 			} catch (InterruptedException e) {
 			}
-			if(System.currentTimeMillis() - currentTime > timeout){
+			if (System.currentTimeMillis() - currentTime > timeout) {
 				throw new TimeoutException("the server took too long");
 			}
 		}
@@ -108,81 +112,83 @@ public class RspHandler extends Thread {
 					byte[] tmp = new byte[len - 4];
 					b.get(tmp);
 					pkt.put(tmp);
-					System.out.println("cut array " + Arrays.toString(pkt.array()));
+//					System.out.println("cut array " + Arrays.toString(pkt.array()));
 					switch (Packet.getPacketID(pkt)) {
 						case Packet.PK_ID_RANDOM_BS_PACKET:
-							System.out.println("Bullshit");
+//							System.out.println("Bullshit");
 							addToPackets(new SendRandomDataPacket(pkt));
 							break;
 						case Packet.PK_ID_SIGNUP_RESPONSE:
-							System.out.println("SignupResponse");
+//							System.out.println("SignupResponse");
 							addToPackets(new SignupResponsePacket(pkt));
 							break;
 						case Packet.PK_ID_AUTH_STATUS:
-							System.out.println("LoginStatusPacket");
+//							System.out.println("LoginStatusPacket");
 							addToPackets(new LoginStatusPacket(pkt));
 							break;
 						case Packet.PK_ID_PUBLIC_PLAYER_DATA:
-							System.out.println("playerdata");
+//							System.out.println("playerdata");
 							addToPackets(new PublicPlayerDataPacket(pkt));
 							break;
 						case Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE:
-							System.out.println("request game resposne");
+//							System.out.println("request game resposne");
 							addToPackets(new RequestEnterGameResponsePacket(pkt));
 							break;
 						case Packet.PK_ID_PLAYER_REQUEST_ENTER_LOBBY_REPONSE:
-							System.out.println("request enter lobby response");
+//							System.out.println("request enter lobby response");
 							addToPackets(new RequestEnterLobbyResponsePacket(pkt));
 							break;
 						case Packet.PK_ID_PLAYER_MOVE_REPORT:
-							System.out.println("Player movement report");
+//							System.out.println("Player movement report");
 							addToPackets(new PlayerPositionPacket(pkt));
 							break;
 						case Packet.PK_ID_PLAYER_MOVEMENT:
-							System.out.println("player_movement");
+//							System.out.println("player_movement");
 							addToPackets(new PlayerPositionPacket(pkt));
 							break;
 						case Packet.PK_ID_NOTIFY_PLAYER_JOINED:
-							System.out.println("player joined");
+//							System.out.println("player joined");
 							addToPackets(new NotifyPlayerJoinedGamePacket(pkt));
 							break;
 						case Packet.PK_ID_NOTIFY_PLAYER_DISCONNECT:
-							System.out.println("Player disconnected");
+//							System.out.println("Player disconnected");
 							addToPackets(new NotifyPlayerDisconnectedPacket(pkt));
 							break;
 						case Packet.PK_ID_PLAYER_REQUEST_BUY_ITEM_RESPONSE:
-							System.out.println("Buy item response");
+//							System.out.println("Buy item response");
 							addToPackets(new RequestPlayerBuyItemResponsePacket(pkt));
 							break;
 						case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM_RESPONSE:
-							System.out.println("sell item response");
+//							System.out.println("sell item response");
 							addToPackets(new RequestPlayerSellItemResponsePacket(pkt));
 							break;
 						case Packet.PK_ID_PLAYER_STATUS_REPORT:
-							System.out.println("status report");
+//							System.out.println("status report");
 							addToPackets(new PlayerStatusReport(pkt));
 							break;
 						case Packet.PK_ID_PLAYER_USE_ITEM_RESPONSE:
-							System.out.println("used item");
+//							System.out.println("used item");
 							addToPackets(new PlayerUseItemResponsePacket(pkt));
 							break;
 						case Packet.PK_ID_NOTIFY_PROJECTILE_FIRED:
-							System.out.println("projectile fired");
+//							System.out.println("projectile fired");
 							addToPackets(new NotifyProjectileFiredPacket(pkt));
 							break;
 						case Packet.PK_ID_NOTIFY_PLAYER_ENTER_CHARACTER_SELECT:
-							System.out.println("Character select enter");
+//							System.out.println("Character select enter");
 							addToPackets(new NotifyPlayerEnterCharacterSelect(pkt));
 							break;
 						case Packet.PK_ID_PROJECTILE_MOVEMENT:
-							System.out.println("projectile movement");
+//							System.out.println("projectile movement");
 							addToPackets(new ProjectilePositionPacket(pkt));
 							break;
 						case Packet.PK_ID_NOTIFY_PROJECTILE_REMOVED:
-							System.out.println("projectile removed");
+//							System.out.println("projectile removed");
 							addToPackets(new NotifyProjectileRemovedPacket(pkt));
 							break;
-
+						case Packet.PK_ID_NOTIFY_TOWER_HEALTH:
+							System.out.println("tower health");
+							addToPackets(new NotifyTowerHealth(pkt));
 						default:
 							System.out.println("unknown packet " + Packet.getPacketID(pkt));
 							break;
@@ -194,6 +200,7 @@ public class RspHandler extends Thread {
 
 	/**
 	 * adds a packet to the queue, and notifys any waits
+	 *
 	 * @param p
 	 */
 	private synchronized void addToPackets(Packet p) {
@@ -204,6 +211,7 @@ public class RspHandler extends Thread {
 
 	/**
 	 * gets any next avalible response
+	 *
 	 * @return
 	 */
 	public synchronized Packet getResponse() {
@@ -219,6 +227,7 @@ public class RspHandler extends Thread {
 
 	/**
 	 * gets a response of a specified type
+	 *
 	 * @param c
 	 * @return
 	 */
@@ -246,13 +255,15 @@ public class RspHandler extends Thread {
 	}
 
 	public static RspHandler getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new RspHandler();
 		}
 		return instance;
 	}
 
-	public int getWaitingPackets(){ return packets.size();}
+	public int getWaitingPackets() {
+		return packets.size();
+	}
 
 	public void clear() {
 		responses = new LinkedBlockingQueue<ByteBuffer>();

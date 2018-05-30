@@ -3,17 +3,14 @@ package mobagame.server.game;
 import mobagame.core.game.*;
 import mobagame.core.game.maps.MainMap;
 import mobagame.core.networking.packets.*;
+import mobagame.core.networking.packets.NotifyTowerHealth;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
 
-import java.awt.geom.Point2D;
-import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static mobagame.core.game.ItemType.*;
 
 public class ServerGame extends Game {
 	Logger logger = Logger.getLogger(ServerGame.class.getName());
@@ -35,7 +32,7 @@ public class ServerGame extends Game {
 			if(player.canAttack()){
 				GameObject target = player.getAttackTarget(map.width/10);
 				if(target!=null) {
-					Projectile p = player.attackTarget(target, this);
+					SeekingProjectile p = player.attackTarget(target, this);
 					p.update();
 					System.out.println("projectile fired " + p.projectileID);
 					projectiles.add(p);
@@ -66,16 +63,21 @@ public class ServerGame extends Game {
 					notifyPlayersAboutProjectileRemoved(p);
 				} else {
 					if (p instanceof SeekingProjectile) {
-						if (((SeekingProjectile) p).targetObject instanceof InGamePlayer) {
-							InGamePlayer player = (InGamePlayer) ((SeekingProjectile) p).targetObject;
+						if(p.pos.equals(((SeekingProjectile) p).targetObject.pos)) {
+							if (((SeekingProjectile) p).targetObject instanceof InGamePlayer) {
+								InGamePlayer player = (InGamePlayer) ((SeekingProjectile) p).targetObject;
 //				System.out.println("damaged player");
-							p.active = false;
-							player.setCurrentHealth(player.getCurrentHealth() - (int) p.damage);
-						}else if (((SeekingProjectile) p).targetObject instanceof Tower) {
-							Tower tower = (Tower) ((SeekingProjectile) p).targetObject;
+								p.active = false;
+								player.setCurrentHealth(player.getCurrentHealth() - (int) p.damage);
+//							notifyClientAboutPlayerHealth(player);
+
+							} else if (((SeekingProjectile) p).targetObject instanceof Tower) {
+								Tower tower = (Tower) ((SeekingProjectile) p).targetObject;
 //				System.out.println("damaged player");
-							p.active = false;
-							tower.health = tower.health - (int)p.damage;
+								p.active = false;
+								tower.health = tower.health - (int) p.damage;
+								notifyClientAboutTowerHealth(tower);
+							}
 						}
 
 					} else {
@@ -84,6 +86,16 @@ public class ServerGame extends Game {
 				}
 
 			}
+		}
+	}
+
+	private void notifyClientAboutTowerHealth(Tower tower) {
+		NotifyTowerHealth pkt = new NotifyTowerHealth();
+		pkt.towerID = tower.id;
+		pkt.health = tower.health;
+		for(InGamePlayer player : players){
+//			System.out.println("sending projectile fire to player " + player.getPlayerID());
+			runner.conn.send(runner.conn.playerToConnection.get(player), pkt.getBytes().array());
 		}
 	}
 

@@ -14,9 +14,11 @@ public class MainMap {
 	public int height;
 	public int width;
 	public ArrayList<Tower> towers;
+
 	public MainMap() {
 		towers = new ArrayList<>();
 	}
+
 	public MainMap(int w, int h) {
 		width = w;
 		height = h;
@@ -61,72 +63,72 @@ public class MainMap {
 
 		upperMapPath.append(innerCircle, false);
 
-		Tower coreTop = new Tower(1000);
+		Tower coreTop = new Tower(0, 1000);
 		coreTop.setX(normalizeWidth(87.5));
-		coreTop.setY(normalizeWidth(100-87.5));
+		coreTop.setY(normalizeWidth(100 - 87.5));
 		coreTop.type = Tower.TowerType.CORE;
 		coreTop.team = GameTeams.highTeam;
 		towers.add(coreTop);
 
-		Tower respawnTop = new Tower(500);
+		Tower respawnTop = new Tower(1, 500);
 		respawnTop.setX(normalizeWidth(77));
-		respawnTop.setY(normalizeWidth(100-77));
+		respawnTop.setY(normalizeWidth(100 - 77));
 		respawnTop.type = Tower.TowerType.RESPAWN;
 		respawnTop.team = GameTeams.highTeam;
 		towers.add(respawnTop);
 
-		Tower normalTop = new Tower(500);
+		Tower normalTop = new Tower(2, 500);
 		normalTop.setX(normalizeWidth(66.667));
-		normalTop.setY(normalizeWidth(100-66.667));
+		normalTop.setY(normalizeWidth(100 - 66.667));
 		normalTop.type = Tower.TowerType.NORMAL;
 		normalTop.team = GameTeams.highTeam;
 		towers.add(normalTop);
 
-		normalTop = new Tower(500);
+		normalTop = new Tower(3, 500);
 		normalTop.setX(normalizeWidth(51.556));
-		normalTop.setY(normalizeWidth(100-58.356));
+		normalTop.setY(normalizeWidth(100 - 58.356));
 		normalTop.type = Tower.TowerType.NORMAL;
 		normalTop.team = GameTeams.highTeam;
 		towers.add(normalTop);
 
-		normalTop = new Tower(500);
+		normalTop = new Tower(4, 500);
 		normalTop.setX(normalizeWidth(58.356));
-		normalTop.setY(normalizeWidth(100-51.556));
+		normalTop.setY(normalizeWidth(100 - 51.556));
 		normalTop.type = Tower.TowerType.NORMAL;
 		normalTop.team = GameTeams.highTeam;
 		towers.add(normalTop);
 
 
-		Tower coreBottom = new Tower(1000);
-		coreBottom.setX(normalizeWidth(100-87.5));
+		Tower coreBottom = new Tower(5, 1000);
+		coreBottom.setX(normalizeWidth(100 - 87.5));
 		coreBottom.setY(normalizeWidth(87.5));
 		coreBottom.type = Tower.TowerType.CORE;
 		coreBottom.team = GameTeams.lowTeam;
 		towers.add(coreBottom);
 
-		Tower respawnBottom = new Tower(500);
-		respawnBottom.setX(normalizeWidth(100-77));
+		Tower respawnBottom = new Tower(6, 500);
+		respawnBottom.setX(normalizeWidth(100 - 77));
 		respawnBottom.setY(normalizeWidth(77));
 		respawnBottom.type = Tower.TowerType.RESPAWN;
 		respawnBottom.team = GameTeams.lowTeam;
 		towers.add(respawnBottom);
 
-		Tower normalBottom = new Tower(500);
-		normalBottom.setX(normalizeWidth(100-66.667));
+		Tower normalBottom = new Tower(7, 500);
+		normalBottom.setX(normalizeWidth(100 - 66.667));
 		normalBottom.setY(normalizeWidth(66.667));
 		normalBottom.type = Tower.TowerType.NORMAL;
 		normalBottom.team = GameTeams.lowTeam;
 		towers.add(normalBottom);
 
-		normalBottom = new Tower(500);
-		normalBottom.setX(normalizeWidth(100-51.556));
+		normalBottom = new Tower(8, 500);
+		normalBottom.setX(normalizeWidth(100 - 51.556));
 		normalBottom.setY(normalizeWidth(58.356));
 		normalBottom.type = Tower.TowerType.NORMAL;
 		normalBottom.team = GameTeams.lowTeam;
 		towers.add(normalBottom);
 
-		normalBottom = new Tower(500);
-		normalBottom.setX(normalizeWidth(100-58.356));
+		normalBottom = new Tower(9, 500);
+		normalBottom.setX(normalizeWidth(100 - 58.356));
 		normalBottom.setY(normalizeWidth(51.556));
 		normalBottom.type = Tower.TowerType.NORMAL;
 		normalBottom.team = GameTeams.lowTeam;

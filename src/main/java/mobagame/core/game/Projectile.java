@@ -11,7 +11,7 @@ import java.util.Random;
  * @author Kurt Wilson
  */
 public class Projectile extends GameObject {
-	public double damage;
+	public double damage=100;
 	public GameObject firedBy;
 	public ObjectMover mover;
 	public boolean active = true;
