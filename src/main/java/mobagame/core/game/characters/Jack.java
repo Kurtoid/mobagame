@@ -10,7 +10,7 @@ import mobagame.core.game.StatRatioType;
 
 public class Jack extends Character{
 public Jack() {
-		super("Jack", "resources/Character/Jack.png", 65, 60, 20, 525, 30, 320, 7, 64, 0, 0, 5, 5, 7, 7, 3, 5);
+		super("Jack", "resources/Character/Jack.png", 65, 60, 20, 525, 30, 320, 7, 64, 0, 0, 5, 5, 7, 7, 3, 5, 0.73);
 }
 Passive agileKiller = new Passive(this, 20, StatEffectType.StatRatio, StatRatioType.SpeedtoPhyPow);
 Ability quickEscape = new Ability(AbilityType.Dash, DamageType.NULL, 40, 0, 0, 0, 0, 10, 1, 80);
