@@ -28,14 +28,33 @@ public class Character {
 	private int baseMagicResist;
 	private int magicResistScale;
 
+	private int manaRegen;
+	public int getManaRegen() {
+		return manaRegen;
+	}
+
 	private double autoAttackCooldown = 1000;
+
+	public void setManaRegen(int manaRegen) {
+		this.manaRegen = manaRegen;
+	}
+
+	private int healthRegen;
+
+	public int getHealthRegen() {
+		return healthRegen;
+	}
+
+	public void setHealthRegen(int healthRegen) {
+		this.healthRegen = healthRegen;
+	}
 
 	public int width = 10;
 	public int height = 10;
 
 	public Character(String name, String imageLocation, int range, int speed, int maxHealthScale, int baseMaxHealth,
 			int maxManaScale, int baseMaxMana, int phyPowScale, int basePhyPow, int abiPowScale, int baseAbiPow,
-			int armorScale, int baseArmor, int magicResistScale, int baseMagicResist, double autoAttackCooldown) {
+			int armorScale, int baseArmor, int magicResistScale, int baseMagicResist, int baseManaRegen, int baseHealthRegen, double autoAttackCooldown) {
 		this.name = name;
 		this.imageLocation = imageLocation;
 		this.range = range;
@@ -52,6 +71,8 @@ public class Character {
 		this.armorScale = armorScale;
 		this.baseMagicResist = baseMagicResist;
 		this.magicResistScale = magicResistScale;
+		this.manaRegen = baseManaRegen;
+		this.healthRegen = baseHealthRegen;
 	}
 
 	public int getBaseMaxHealth() {

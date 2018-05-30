@@ -58,7 +58,8 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 
 	JScrollPane JSP = new JScrollPane(charSelectMenu); 
 	public ImageIcon placeHolderImage = new ImageIcon("resources/Black.png");
-	public ImageIcon reaperCharPic = new ImageIcon("resource/Character/Reaper.png");
+	public ImageIcon reaperCharPic = new ImageIcon("resources/Character/Reaper.png");
+	public ImageIcon jackCharPic = new ImageIcon("resources/Character/Jack.png");
 	JButton startButton;
 	PlayerAccount player;
 	ServerConnection conn;
@@ -140,7 +141,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		red5.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
 		JLabel blue1CharImage = new JLabel(placeHolderImage);
 		JLabel blue2CharImage = new JLabel(reaperCharPic);
-		JLabel blue3CharImage = new JLabel(placeHolderImage);
+		JLabel blue3CharImage = new JLabel(jackCharPic);
 		JLabel blue4CharImage = new JLabel(placeHolderImage);
 		JLabel blue5CharImage = new JLabel(placeHolderImage);
 		JLabel red1CharImage = new JLabel(placeHolderImage);

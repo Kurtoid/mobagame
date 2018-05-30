@@ -2,18 +2,38 @@ package mobagame.core.game;
 
 public class Ability {
 	public enum DamageType {
-		PHYSICAL, MAGICAL
+		PHYSICAL, MAGICAL, NULL
 	};
-
 	private String abiName;
 	private int manaCost;
 	private int baseDamage;
 	private int abiPowRatio;
 	private int phyPowRatio;
 	private int damScale;
-	
+	private int cooldown;
+	private int duration;
+	private DamageType dT;
+	private AbilityType aT;
+	//private AbilityType abiType;
+		private int range;
+		private String imageLocation;
+		private DamageType damageType;
+		private InGamePlayer caster;
+
 	public Ability() {
 		imageLocation = "resources/Black.png";
+	}
+	public Ability(AbilityType AT, DamageType DT, int newManaCost, int newBaseDamage, int newAbiPowRatio, int newPhyPowRatio, int newDamScale, int newCooldown, int newDuration, int newRange) {
+		aT = AT;
+		dT = DT;
+		manaCost = newManaCost;
+		baseDamage = newBaseDamage;
+		abiPowRatio = newAbiPowRatio;
+		phyPowRatio = newPhyPowRatio;
+		damScale = newDamScale;
+		cooldown = newCooldown;
+		duration = newDuration;
+		range = newRange;
 	}
 
 	public int getDamScale() {
@@ -32,11 +52,7 @@ public class Ability {
 		this.caster = caster;
 	}
 
-//private AbilityType abiType;
-	private int range;
-	private String imageLocation;
-	private DamageType damageType;
-	private InGamePlayer caster;
+
 
 	public String getAbiName() {
 		return abiName;
