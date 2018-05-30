@@ -53,8 +53,8 @@ public class Character {
 	public int height = 10;
 
 	public Character(String name, String imageLocation, int range, int speed, int maxHealthScale, int baseMaxHealth,
-			int maxManaScale, int baseMaxMana, int phyPowScale, int basePhyPow, int abiPowScale, int baseAbiPow,
-			int armorScale, int baseArmor, int magicResistScale, int baseMagicResist, int baseManaRegen, int baseHealthRegen, double autoAttackCooldown) {
+	                 int maxManaScale, int baseMaxMana, int phyPowScale, int basePhyPow, int abiPowScale, int baseAbiPow,
+	                 int armorScale, int baseArmor, int magicResistScale, int baseMagicResist, int baseManaRegen, int baseHealthRegen, double autoAttackCooldown) {
 		this.name = name;
 		this.imageLocation = imageLocation;
 		this.range = range;
@@ -73,6 +73,7 @@ public class Character {
 		this.magicResistScale = magicResistScale;
 		this.manaRegen = baseManaRegen;
 		this.healthRegen = baseHealthRegen;
+		this.autoAttackCooldown = autoAttackCooldown;
 	}
 
 	public int getBaseMaxHealth() {
