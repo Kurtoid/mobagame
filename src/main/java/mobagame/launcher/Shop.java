@@ -209,7 +209,7 @@ public class Shop implements MobaGameLauncher {
 					.getResponse(RequestEnterGameResponsePacket.class);
 			System.out.println(game.playerID);
 
-			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper, teamOne);
+			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper, new ArrayList<InGamePlayer>());
 			testing = true;
 //		InGamePlayer user = new InGamePlayer(0);
 //		Shop s = new Shop(user);

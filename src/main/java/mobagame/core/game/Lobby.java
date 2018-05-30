@@ -46,6 +46,7 @@ public class Lobby {
 			p.setX(90);
 			p.setY(870);
 			p.mover = new ObjectMover(g.map, p);
+			p.game = g;
 
 		}
 

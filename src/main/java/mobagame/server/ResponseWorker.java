@@ -127,6 +127,8 @@ public class ResponseWorker implements Runnable {
 		p.setX(90);
 		p.setY(870);
 		p.mover = new ObjectMover(g.map, p);
+		p.game = g;
+
 		runner.addToGame(g, p, dataEvent.connectionID);
 
 		logger.log(Level.INFO, "resp with gameid " + g.getGameID() + " and player id " + p.getPlayerID());
@@ -147,6 +149,7 @@ public class ResponseWorker implements Runnable {
 		for(InGamePlayer p : l.players){
 			runner.playerToLobby.remove(p);
 			runner.playerToGame.put(p,g);
+			p.game = g;
 		}
 		runner.games.add(g);
 		RequestEnterGameResponsePacket pkt = new RequestEnterGameResponsePacket();

@@ -31,6 +31,17 @@ public class ServerGame extends Game {
 			if (player.mover.atTarget()) {
 				logger.log(Level.INFO, "player reached target");
 			}
+
+			if(player.canAttack()){
+				GameObject target = player.getAttackTarget(map.width/10);
+				if(target!=null) {
+					Projectile p = player.attackTarget(target, this);
+					p.update();
+					System.out.println("projectile fired " + p.projectileID);
+					projectiles.add(p);
+					notifyPlayersAboutProjectileFired(p);
+				}
+			}
 		}
 		for(Tower t : map.towers) {
 			if (t.canFire()) {

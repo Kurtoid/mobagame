@@ -28,12 +28,14 @@ public class Character {
 	private int baseMagicResist;
 	private int magicResistScale;
 
+	private double autoAttackCooldown = 1000;
+
 	public int width = 10;
 	public int height = 10;
 
 	public Character(String name, String imageLocation, int range, int speed, int maxHealthScale, int baseMaxHealth,
 			int maxManaScale, int baseMaxMana, int phyPowScale, int basePhyPow, int abiPowScale, int baseAbiPow,
-			int armorScale, int baseArmor, int magicResistScale, int baseMagicResist) {
+			int armorScale, int baseArmor, int magicResistScale, int baseMagicResist, double autoAttackCooldown) {
 		this.name = name;
 		this.imageLocation = imageLocation;
 		this.range = range;
@@ -152,5 +154,13 @@ public class Character {
 		for (int x = 0; x < abilities.length; x++) {
 			abilities[x] = new Ability();
 		}
+	}
+
+	public double getAutoAttackCooldown() {
+		return autoAttackCooldown;
+	}
+
+	public void setAutoAttackCooldown(double autoAttackCooldown) {
+		this.autoAttackCooldown = autoAttackCooldown;
 	}
 }

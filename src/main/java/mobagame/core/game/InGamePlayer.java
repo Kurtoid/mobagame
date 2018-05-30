@@ -1,15 +1,6 @@
 package mobagame.core.game;
 
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import mobagame.core.game.maps.MainMap;
-import mobagame.launcher.Shop;
-import mobagame.launcher.MyCanvas;
-import mobagame.launcher.GameScreen;
+import java.awt.geom.Point2D;
 
 public class InGamePlayer extends GameObject{
 
@@ -33,7 +24,9 @@ public class InGamePlayer extends GameObject{
     private int xpToNextLevel = 0;
     private int playerLevel = 1;
     public ObjectMover mover;
+    public Game game;
     String username;
+    long lastAttackTime;
 
     //0 = Q, 1 = W, 2 = E, 3 = R
     public int[] abilityLevels = {0, 0, 0, 0};
@@ -283,4 +276,50 @@ public class InGamePlayer extends GameObject{
             // abi.upgrade();
         }
     }
+
+    public boolean canAttack(){
+	    return System.currentTimeMillis() > (lastAttackTime + character.getAutoAttackCooldown());
+    }
+
+	/**
+	 * gets a valid target for the player
+	 * TODO: make range based off of character
+	 * @return
+	 */
+	public GameObject getAttackTarget(double range) {
+    	GameObject target = null;
+		double minDistance = Double.MAX_VALUE;
+
+		for(InGamePlayer p : game.players){
+			if(GameTeams.getOppositeTeam(team)==p.team){
+				if(p.pos.distance(pos)<minDistance && p.pos.distance(pos)<=range){
+					minDistance = p.pos.distance(pos);
+					target = p;
+				}
+			}
+	    }
+		for(Tower p : game.map.towers){
+			if(GameTeams.getOppositeTeam(team)==p.team&& p.pos.distance(pos)<=range){
+				if(p.pos.distance(pos)<minDistance){
+					minDistance = p.pos.distance(pos);
+					target = p;
+				}
+			}
+		}
+
+		return target;
+	}
+
+	public Projectile attackTarget(GameObject target, Game g) {
+		lastAttackTime = System.currentTimeMillis();
+		Projectile p = new Projectile(g.map);
+		p.target = new Point2D.Double(target.pos.getX(), target.pos.getY());
+		p.firedBy = this;
+		p.firedFrom = new Point2D.Double(pos.getX(), pos.getY());
+		p.team = this.team;
+		p.pos = new Point2D.Double(pos.getX(), pos.getY());
+		p.mover.setTarget(p.target.getX(), p.target.getY());
+		return p;
+
+	}
 }
