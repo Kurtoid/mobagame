@@ -6,7 +6,6 @@ import mobagame.core.networking.packets.*;
 import mobagame.core.networking.packets.NotifyTowerHealth;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
-import sun.awt.AWTAccessor;
 
 import java.awt.*;
 import java.nio.channels.SocketChannel;

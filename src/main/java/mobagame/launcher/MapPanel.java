@@ -29,7 +29,6 @@ import mobagame.core.networking.packets.*;
 import mobagame.launcher.game.gamePlayObjects.ClickMarker;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
-import sun.awt.image.ToolkitImage;
 
 /**
  * @author Kurt Wilson
