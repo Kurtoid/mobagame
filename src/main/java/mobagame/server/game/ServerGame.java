@@ -30,7 +30,7 @@ public class ServerGame extends Game {
 			}
 
 			if(player.canAttack()){
-				GameObject target = player.getAttackTarget(map.width/10);
+				GameObject target = player.getAttackTarget(map.width/20);
 				if(target!=null) {
 					SeekingProjectile p = player.attackTarget(target, this);
 					p.update();
@@ -42,7 +42,7 @@ public class ServerGame extends Game {
 		}
 		for(Tower t : map.towers) {
 			if (t.canFire()) {
-				InGamePlayer player = getClosestPlayer(t.pos, map.width/20, GameTeams.getOppositeTeam(t.team));
+				GameObject player = getClosestPlayer(t.pos, map.width/10, GameTeams.getOppositeTeam(t.team));
 				if (player != null) {
 					Projectile p = (t.fire(player, this));
 					p.update();

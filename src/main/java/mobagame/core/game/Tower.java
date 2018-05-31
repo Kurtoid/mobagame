@@ -4,12 +4,16 @@ import mobagame.core.game.maps.MainMap;
 
 import java.awt.geom.Point2D;
 
+/**
+ * @author Kurt Wilson
+ */
 public class Tower extends GameObject {
 	public TowerType type;
 	public int health;
 	public double maxHealth;
 	MainMap map;
 	public int id;
+
 	public enum TowerType {
 		CORE, RESPAWN, NORMAL
 	}
@@ -31,7 +35,7 @@ public class Tower extends GameObject {
 	long coolDownTime;
 
 	public boolean canFire() {
-		return System.currentTimeMillis() - lastFiredTime > coolDownTime;
+		return System.currentTimeMillis() - lastFiredTime > coolDownTime && health > 0;
 	}
 
 	public Projectile fire(GameObject player, Game g) {

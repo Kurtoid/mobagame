@@ -35,6 +35,10 @@ import mobagame.launcher.game.gamePlayObjects.ClickMarker;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
 
+/**
+ * @author Kurt Wilson
+ * @author Katelynn Morrison
+ */
 public class MapPanel extends JPanel implements Runnable {
 	Game game;
 
@@ -198,7 +202,11 @@ public class MapPanel extends JPanel implements Runnable {
 //		}
 
 		for(Tower t : game.map.towers){
-			graphics.setColor(t.team.color);
+			if (t.health <= 0) {
+				graphics.setColor(Color.GRAY);
+			} else {
+				graphics.setColor(t.team.color);
+			}
 			Point.Double p = new Point2D.Double(t.getX(), t.getY());
 			getCurrentTransform().transform(p, p);
 			int towerSize=2*(game.map.width/100);
@@ -398,11 +406,7 @@ public class MapPanel extends JPanel implements Runnable {
 						}else if(NotifyProjectileRemovedPacket.class.isInstance(p)){
 //							System.out.println("removing projectile");
 							NotifyProjectileRemovedPacket pkt = (NotifyProjectileRemovedPacket) p;
-							Iterator<Projectile> iter=game.projectiles.iterator();
-							while(iter.hasNext()) {
-								if(iter.next().projectileID == pkt.projectileID)
-									iter.remove();
-							}
+							game.projectiles.removeIf(projectile -> projectile.projectileID == pkt.projectileID);
 						}else if(NotifyTowerHealth.class.isInstance(p)){
 							NotifyTowerHealth pkt = (NotifyTowerHealth) p;
 							for(Tower t : game.map.towers){
