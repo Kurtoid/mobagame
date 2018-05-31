@@ -40,7 +40,7 @@ public class ServerGame extends Game {
 				}
 			}
 			if(player.getCurrentHealth() <= 0) {
-				System.exit(0);
+				System.out.println("player ded " + player.getPlayerID());
 			}
 		}
 		for(Tower t : map.towers) {

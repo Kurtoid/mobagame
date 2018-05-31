@@ -3,6 +3,7 @@ package mobagame.core.game;
 import mobagame.core.game.maps.MainMap;
 import mobagame.server.game.ServerGame;
 
+import java.awt.geom.Point2D;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Random;
@@ -43,7 +44,7 @@ public class Lobby {
 		for(InGamePlayer p : players){
 			g.players.add(p);
 //			p.team = GameTeams.lowTeam;
-			p.pos = p.team.spawnPoint;
+			p.pos = new Point2D.Double(p.team.spawnPoint.getX(), p.team.spawnPoint.getY());
 			p.mover = new ObjectMover(g.map, p);
 			p.game = g;
 

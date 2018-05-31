@@ -238,7 +238,6 @@ public class ResponseWorker implements Runnable {
 		p.mover = new ObjectMover(lobby.map, p);
 */
 
-		runner.addToLobby(lobby, p, dataEvent.connectionID);
 
 		logger.log(Level.INFO, "resp with gameid " + lobby.getLobbyID() + " and player id " +playerID);
 		RequestEnterLobbyResponsePacket resp = new RequestEnterLobbyResponsePacket(lobby,p);
@@ -246,6 +245,9 @@ public class ResponseWorker implements Runnable {
 		resp.playerID = p.getPlayerID();
 //		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
+
+		runner.addToLobby(lobby, p, dataEvent.connectionID);
+
 //		lobby.notifyPlayerJoinedLobby(p);
 //		lobby.tellClientAboutExistingPlayers(p, dataEvent.socket);
 
