@@ -43,8 +43,7 @@ public class Lobby {
 		for(InGamePlayer p : players){
 			g.players.add(p);
 			p.team = GameTeams.lowTeam;
-			p.setX(90);
-			p.setY(870);
+			p.pos = p.team.spawnPoint;
 			p.mover = new ObjectMover(g.map, p);
 			p.game = g;
 

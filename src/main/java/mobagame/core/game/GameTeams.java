@@ -3,12 +3,13 @@ package mobagame.core.game;
 import mobagame.core.game.Team;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameTeams {
-	public static Team highTeam = new Team("Red", Color.RED);
-	public static Team lowTeam = new Team("Blue", Color.BLUE);
+	public static Team highTeam = new Team("Red", Color.RED, new Point2D.Double(1000-90, 1000-870));
+	public static Team lowTeam = new Team("Blue", Color.BLUE, new Point2D.Double(90,870));
 
 	public static Team getOppositeTeam(Team team) {
 		if(gameTeamsLookup.indexOf(team)==1){

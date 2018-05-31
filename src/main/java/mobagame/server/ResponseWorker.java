@@ -158,6 +158,11 @@ public class ResponseWorker implements Runnable {
 		for(InGamePlayer p : g.players){
 			pkt.playerID = p.getPlayerID();
 			dataEvent.server.send(dataEvent.server.playerToConnection.get(p), pkt.getBytes().array());
+			PlayerPositionPacket pos = new PlayerPositionPacket();
+			pos.x = p.getX();
+			pos.y = p.getY();
+			pos.playerID = p.getPlayerID();
+			dataEvent.server.send(dataEvent.server.playerToConnection.get(p), pos.getBytes().array());
 		}
 
 
