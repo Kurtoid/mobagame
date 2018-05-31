@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameTeams {
-	public static Team highTeam = new Team("Red", Color.RED, new Point2D.Double(1000-90, 1000-870));
-	public static Team lowTeam = new Team("Blue", Color.BLUE, new Point2D.Double(90,870));
+	public static Team highTeam = new Team("Red", Color.RED, new Point2D.Double(1000-90, 90));
+	public static Team lowTeam = new Team("Blue", Color.BLUE, new Point2D.Double(90,1000-90));
 
 	public static Team getOppositeTeam(Team team) {
 		if(gameTeamsLookup.indexOf(team)==1){
