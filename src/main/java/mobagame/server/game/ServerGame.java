@@ -6,7 +6,9 @@ import mobagame.core.networking.packets.*;
 import mobagame.core.networking.packets.NotifyTowerHealth;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
+import sun.awt.AWTAccessor;
 
+import java.awt.*;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -53,6 +55,12 @@ public class ServerGame extends Game {
 					projectiles.add(p);
 					notifyPlayersAboutProjectileFired(p);
 				}
+			}
+			if (t.id == 0 && t.health <= 0){
+				System.out.println("Bottom team wins");
+			}
+			if (t.id == 5 && t.health <= 0){
+				System.out.println("Top team wins");
 			}
 		}
 		{

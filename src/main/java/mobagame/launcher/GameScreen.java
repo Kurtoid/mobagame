@@ -7,13 +7,8 @@ package mobagame.launcher;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-import mobagame.core.game.Ability;
+import mobagame.core.game.*;
 import mobagame.core.game.Character;
-import mobagame.core.game.GameCharcters;
-import mobagame.core.game.GameItems;
-import mobagame.core.game.GameTeams;
-import mobagame.core.game.InGamePlayer;
-import mobagame.core.game.ObjectMover;
 import mobagame.core.game.maps.MainMap;
 import mobagame.core.networking.packets.*;
 import mobagame.launcher.game.ClientGame;
@@ -39,6 +34,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	private boolean lefty = false;
 
 	private InGamePlayer user;
+	private PlayerAccount account;
 
 	private int goldPerSecond = 3;
 	private JButton gold;
@@ -75,6 +71,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		g.map.makeMap();
 		this.game = g;
 		user = p;
+		this.account = player;
 
 		inventoryCanvas = new MyCanvas[] {
 				MyCanvas.load(p.inventory[0].getImageLocation(), SCREEN_SIZE.width / 40),
@@ -282,6 +279,18 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			mana.setText(user.getCurrentMana() + " / " + user.getMaxMana());
 			refreshInventory();
 			refreshAbilities();
+			for (Tower t: game.map.towers) {
+				if (t.id == 0 && t.health <= 0) {
+					System.out.println("Bottom team wins");
+					JOptionPane.showMessageDialog(f, "Bottom team wins", "Winner", JOptionPane.INFORMATION_MESSAGE);
+					new Menu(account, false);
+					f.setVisible(false);
+				}else if (t.id == 5 && t.health <= 0) {
+						System.out.println("Top team wins");
+					JOptionPane.showMessageDialog(f, "Top team wins", "Winner", JOptionPane.INFORMATION_MESSAGE);
+						new Menu(account, false);
+					}
+			}
 		}
 	}
 
@@ -324,6 +333,11 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			abilities.add(abilitiesImages[x]);
 		}
 		logger.log(Level.INFO, "Abilities repainted");
+	}
+
+	public void endGame(){
+		new Menu(account, false);
+		f.setVisible(false);
 	}
 
 	public void keyPressed(KeyEvent ke) {
