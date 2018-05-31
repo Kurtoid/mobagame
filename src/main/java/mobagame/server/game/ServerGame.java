@@ -8,6 +8,7 @@ import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -30,9 +31,9 @@ public class ServerGame extends Game {
 				logger.log(Level.INFO, "player reached target");
 			}
 
-			if(player.canAttack()){
-				GameObject target = player.getAttackTarget(map.width/20);
-				if(target!=null) {
+			if (player.canAttack()) {
+				GameObject target = player.getAttackTarget(map.width / 20);
+				if (target != null) {
 					SeekingProjectile p = player.attackTarget(target, this);
 					p.update();
 					System.out.println("projectile fired " + p.projectileID);
@@ -40,8 +41,29 @@ public class ServerGame extends Game {
 					notifyPlayersAboutProjectileFired(p);
 				}
 			}
-			if(player.getCurrentHealth() <= 0) {
-				player.setCurrentHealth(player.getCurrentHealth() - 2134324231);
+			if (player.getCurrentHealth() <= 0 && !player.isDead()) {
+
+				player.setDeathTime(player.getLevel() * 5);
+
+				player.setRespawnTime();
+
+				player.setDead(true);
+
+				player.pos = new Point2D.Double(Math.random() * 1000 + 1000000, Math.random() * 1000 + 1000000);
+
+			} else if (player.isDead()) {
+
+				if (System.currentTimeMillis() <= player.getRespawnTime()) {
+
+					player.setCurrentHealth(player.getMaxHealth());
+
+					player.pos = new Point2D.Double(player.team.spawnPoint.getX(), player.team.spawnPoint.getY());
+
+					player.setCurrentMana(player.getMaxMana());
+
+					player.setDead(false);
+
+				}
 			}
 		}
 		for(Tower t : map.towers) {
@@ -57,9 +79,11 @@ public class ServerGame extends Game {
 			}
 			if (t.id == 0 && t.health <= 0){
 				System.out.println("Bottom team wins");
+				endGame();
 			}
 			if (t.id == 5 && t.health <= 0){
 				System.out.println("Top team wins");
+				endGame();
 			}
 		}
 		{
@@ -97,6 +121,10 @@ public class ServerGame extends Game {
 
 			}
 		}
+	}
+
+	private void endGame() {
+		runner.games.remove(this);
 	}
 
 	private void notifyClientAboutTowerHealth(Tower tower) {
