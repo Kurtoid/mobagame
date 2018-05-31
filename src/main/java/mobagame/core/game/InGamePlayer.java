@@ -18,7 +18,7 @@ public class InGamePlayer extends GameObject{
 	public void setDeathTime(int deathTime) {
 		this.deathTime = deathTime;
 	}
-
+	
 	private int phyPow;
     private int abiPow;
     private int maxHealth;
