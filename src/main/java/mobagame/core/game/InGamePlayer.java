@@ -6,8 +6,20 @@ public class InGamePlayer extends GameObject{
 
     private int playerID;
     private Character character;
+    private boolean dead;
+    public boolean isDead() {
+		return dead;
+	}
 
-    private int phyPow;
+	public void setDead(boolean dead) {
+		this.dead = dead;
+	}
+
+	public void setDeathTime(int deathTime) {
+		this.deathTime = deathTime;
+	}
+
+	private int phyPow;
     private int abiPow;
     private int maxHealth;
     private int maxMana;
@@ -27,6 +39,7 @@ public class InGamePlayer extends GameObject{
     public Game game;
     String username;
     long lastAttackTime;
+    long respawnTime;
 
     //0 = Q, 1 = W, 2 = E, 3 = R
     public int[] abilityLevels = {0, 0, 0, 0};
@@ -34,6 +47,7 @@ public class InGamePlayer extends GameObject{
 
     public Item[] inventory = {(GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty),
             (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty)};
+	private int deathTime;
 
     public InGamePlayer(int playerID, String playerUsername, Team gameTeam) {
         super();
@@ -308,6 +322,15 @@ public class InGamePlayer extends GameObject{
 		}
 
 		return target;
+	}
+	public int getDeathTime() {
+		return this.deathTime;
+	}
+	public void setRespawnTime() {
+		respawnTime = System.currentTimeMillis() + (deathTime * 1000);
+	}
+	public long getRespawnTime() {
+		return this.respawnTime;
 	}
 
 	public SeekingProjectile attackTarget(GameObject target, Game g) {

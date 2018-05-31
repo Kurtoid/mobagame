@@ -66,6 +66,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		g.getPlayerPlayer().mover = new ObjectMover(g.map, g.getPlayerPlayer());
 		if (!g.players.contains(p))
 			g.players.add(p);
+		System.out.println("I am " + p.getPlayerID());
 		g.map = new MainMap();
 		g.map.setSize(SCREEN_SIZE.width, SCREEN_SIZE.height);
 		g.map.makeMap();

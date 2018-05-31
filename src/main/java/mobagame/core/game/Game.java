@@ -11,7 +11,7 @@ public abstract class Game {
 
 	private InGamePlayer playerPlayer;
 	public MainMap map;
-	final static int MAX_PLAYERS = 2;//10;
+	final static int MAX_PLAYERS = 3;//10;
 	public int gameID;
 
 	public Game() {

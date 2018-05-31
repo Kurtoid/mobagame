@@ -124,6 +124,8 @@ public class ResponseWorker implements Runnable {
 		p.team = GameTeams.lowTeam;
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
 		runner.conn.connectionToPlayerID.put(dataEvent.socket, p.getPlayerID());
+		runner.connectionToPlayer.put(dataEvent.connectionID, p);
+
 		p.setX(90);
 		p.setY(870);
 		p.mover = new ObjectMover(g.map, p);
@@ -213,8 +215,9 @@ public class ResponseWorker implements Runnable {
 
 	private void handleRequestMovementPacket(RequestPlayerMovementPacket requestPlayerMovementPacket,
 			ServerDataEvent dataEvent) {
-		logger.log(Level.INFO, "conn id " + dataEvent.connectionID);
-		runner.getPlayer(dataEvent.connectionID).mover.setTarget(requestPlayerMovementPacket.x,
+		InGamePlayer ply = runner.getPlayer(dataEvent.connectionID);
+		logger.log(Level.INFO, "movement for conn id " + dataEvent.connectionID + " and player " + ply.getPlayerID());
+		ply.mover.setTarget(requestPlayerMovementPacket.x,
 				requestPlayerMovementPacket.y);
 	}
 
@@ -224,7 +227,9 @@ public class ResponseWorker implements Runnable {
 		Lobby lobby = runner.findLobby(playerID);
 		InGamePlayer p = new InGamePlayer(playerID, GameCharcters.reaper);
 		p.team = lobby.assignTeam();
-		dataEvent.server.playerToConnection.put(p, dataEvent.socket);
+		runner.conn.playerToConnection.put(p, dataEvent.socket);
+		runner.conn.connectionToPlayerID.put(dataEvent.socket, p.getPlayerID());
+		runner.connectionToPlayer.put(dataEvent.connectionID, p);
 /*
 		p.team = GameTeams.lowTeam;
 		runner.conn.playerToConnection.put(p, dataEvent.socket);
@@ -233,7 +238,6 @@ public class ResponseWorker implements Runnable {
 		p.mover = new ObjectMover(lobby.map, p);
 */
 
-		runner.addToLobby(lobby, p, dataEvent.connectionID);
 
 		logger.log(Level.INFO, "resp with gameid " + lobby.getLobbyID() + " and player id " +playerID);
 		RequestEnterLobbyResponsePacket resp = new RequestEnterLobbyResponsePacket(lobby,p);
@@ -241,6 +245,9 @@ public class ResponseWorker implements Runnable {
 		resp.playerID = p.getPlayerID();
 //		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
+
+		runner.addToLobby(lobby, p, dataEvent.connectionID);
+
 //		lobby.notifyPlayerJoinedLobby(p);
 //		lobby.tellClientAboutExistingPlayers(p, dataEvent.socket);
 

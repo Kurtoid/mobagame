@@ -1,5 +1,6 @@
 package mobagame.launcher.networking;
 
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -107,95 +108,99 @@ public class RspHandler extends Thread {
 				int len = b.getInt();
 //				System.out.println("len " + len);
 				if (len > 0) {
-					ByteBuffer pkt = ByteBuffer.allocate(len);
-					pkt.putInt(len);
-					byte[] tmp = new byte[len - 4];
-					b.get(tmp);
-					pkt.put(tmp);
+					try {
+						ByteBuffer pkt = ByteBuffer.allocate(len);
+						pkt.putInt(len);
+						byte[] tmp = new byte[len - 4];
+						b.get(tmp);
+						pkt.put(tmp);
 //					System.out.println("cut array " + Arrays.toString(pkt.array()));
-					switch (Packet.getPacketID(pkt)) {
-						case Packet.PK_ID_RANDOM_BS_PACKET:
+						switch (Packet.getPacketID(pkt)) {
+							case Packet.PK_ID_RANDOM_BS_PACKET:
 //							System.out.println("Bullshit");
-							addToPackets(new SendRandomDataPacket(pkt));
-							break;
-						case Packet.PK_ID_SIGNUP_RESPONSE:
+								addToPackets(new SendRandomDataPacket(pkt));
+								break;
+							case Packet.PK_ID_SIGNUP_RESPONSE:
 //							System.out.println("SignupResponse");
-							addToPackets(new SignupResponsePacket(pkt));
-							break;
-						case Packet.PK_ID_AUTH_STATUS:
+								addToPackets(new SignupResponsePacket(pkt));
+								break;
+							case Packet.PK_ID_AUTH_STATUS:
 //							System.out.println("LoginStatusPacket");
-							addToPackets(new LoginStatusPacket(pkt));
-							break;
-						case Packet.PK_ID_PUBLIC_PLAYER_DATA:
+								addToPackets(new LoginStatusPacket(pkt));
+								break;
+							case Packet.PK_ID_PUBLIC_PLAYER_DATA:
 //							System.out.println("playerdata");
-							addToPackets(new PublicPlayerDataPacket(pkt));
-							break;
-						case Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE:
+								addToPackets(new PublicPlayerDataPacket(pkt));
+								break;
+							case Packet.PK_ID_PLAYER_REQUEST_ENTER_GAME_REPONSE:
 //							System.out.println("request game resposne");
-							addToPackets(new RequestEnterGameResponsePacket(pkt));
-							break;
-						case Packet.PK_ID_PLAYER_REQUEST_ENTER_LOBBY_REPONSE:
+								addToPackets(new RequestEnterGameResponsePacket(pkt));
+								break;
+							case Packet.PK_ID_PLAYER_REQUEST_ENTER_LOBBY_REPONSE:
 //							System.out.println("request enter lobby response");
-							addToPackets(new RequestEnterLobbyResponsePacket(pkt));
-							break;
-						case Packet.PK_ID_PLAYER_MOVE_REPORT:
+								addToPackets(new RequestEnterLobbyResponsePacket(pkt));
+								break;
+							case Packet.PK_ID_PLAYER_MOVE_REPORT:
 //							System.out.println("Player movement report");
-							addToPackets(new PlayerPositionPacket(pkt));
-							break;
-						case Packet.PK_ID_PLAYER_MOVEMENT:
+								addToPackets(new PlayerPositionPacket(pkt));
+								break;
+							case Packet.PK_ID_PLAYER_MOVEMENT:
 //							System.out.println("player_movement");
-							addToPackets(new PlayerPositionPacket(pkt));
-							break;
-						case Packet.PK_ID_NOTIFY_PLAYER_JOINED:
+								addToPackets(new PlayerPositionPacket(pkt));
+								break;
+							case Packet.PK_ID_NOTIFY_PLAYER_JOINED:
 //							System.out.println("player joined");
-							addToPackets(new NotifyPlayerJoinedGamePacket(pkt));
-							break;
-						case Packet.PK_ID_NOTIFY_PLAYER_DISCONNECT:
+								addToPackets(new NotifyPlayerJoinedGamePacket(pkt));
+								break;
+							case Packet.PK_ID_NOTIFY_PLAYER_DISCONNECT:
 //							System.out.println("Player disconnected");
-							addToPackets(new NotifyPlayerDisconnectedPacket(pkt));
-							break;
-						case Packet.PK_ID_PLAYER_REQUEST_BUY_ITEM_RESPONSE:
+								addToPackets(new NotifyPlayerDisconnectedPacket(pkt));
+								break;
+							case Packet.PK_ID_PLAYER_REQUEST_BUY_ITEM_RESPONSE:
 //							System.out.println("Buy item response");
-							addToPackets(new RequestPlayerBuyItemResponsePacket(pkt));
-							break;
-						case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM_RESPONSE:
+								addToPackets(new RequestPlayerBuyItemResponsePacket(pkt));
+								break;
+							case Packet.PK_ID_PLAYER_REQUEST_SELL_ITEM_RESPONSE:
 //							System.out.println("sell item response");
-							addToPackets(new RequestPlayerSellItemResponsePacket(pkt));
-							break;
-						case Packet.PK_ID_PLAYER_STATUS_REPORT:
+								addToPackets(new RequestPlayerSellItemResponsePacket(pkt));
+								break;
+							case Packet.PK_ID_PLAYER_STATUS_REPORT:
 //							System.out.println("status report");
-							addToPackets(new PlayerStatusReport(pkt));
-							break;
-						case Packet.PK_ID_PLAYER_USE_ITEM_RESPONSE:
+								addToPackets(new PlayerStatusReport(pkt));
+								break;
+							case Packet.PK_ID_PLAYER_USE_ITEM_RESPONSE:
 //							System.out.println("used item");
-							addToPackets(new PlayerUseItemResponsePacket(pkt));
-							break;
-						case Packet.PK_ID_NOTIFY_PROJECTILE_FIRED:
+								addToPackets(new PlayerUseItemResponsePacket(pkt));
+								break;
+							case Packet.PK_ID_NOTIFY_PROJECTILE_FIRED:
 //							System.out.println("projectile fired");
-							addToPackets(new NotifyProjectileFiredPacket(pkt));
-							break;
-						case Packet.PK_ID_NOTIFY_PLAYER_ENTER_CHARACTER_SELECT:
+								addToPackets(new NotifyProjectileFiredPacket(pkt));
+								break;
+							case Packet.PK_ID_NOTIFY_PLAYER_ENTER_CHARACTER_SELECT:
 //							System.out.println("Character select enter");
-							addToPackets(new NotifyPlayerEnterCharacterSelect(pkt));
-							break;
-						case Packet.PK_ID_PROJECTILE_MOVEMENT:
+								addToPackets(new NotifyPlayerEnterCharacterSelect(pkt));
+								break;
+							case Packet.PK_ID_PROJECTILE_MOVEMENT:
 //							System.out.println("projectile movement");
-							addToPackets(new ProjectilePositionPacket(pkt));
-							break;
-						case Packet.PK_ID_NOTIFY_PROJECTILE_REMOVED:
+								addToPackets(new ProjectilePositionPacket(pkt));
+								break;
+							case Packet.PK_ID_NOTIFY_PROJECTILE_REMOVED:
 //							System.out.println("projectile removed");
-							addToPackets(new NotifyProjectileRemovedPacket(pkt));
-							break;
-						case Packet.PK_ID_NOTIFY_TOWER_HEALTH:
-							System.out.println("tower health");
-							addToPackets(new NotifyTowerHealth(pkt));
-							break;
-						case Packet.PK_ID_CHARACTER_SELECT_SHOW_PLAYER:
-							System.out.println("show player");
-							addToPackets(new CharacterSelectShowPlayer(pkt));
-						default:
-							System.out.println("unknown packet " + Packet.getPacketID(pkt));
-							break;
+								addToPackets(new NotifyProjectileRemovedPacket(pkt));
+								break;
+							case Packet.PK_ID_NOTIFY_TOWER_HEALTH:
+								System.out.println("tower health");
+								addToPackets(new NotifyTowerHealth(pkt));
+								break;
+							case Packet.PK_ID_CHARACTER_SELECT_SHOW_PLAYER:
+								System.out.println("show player");
+								addToPackets(new CharacterSelectShowPlayer(pkt));
+							default:
+								System.out.println("unknown packet " + Packet.getPacketID(pkt));
+								break;
+						}
+					}catch (BufferUnderflowException e) {
+						System.out.println("malformed packet");
 					}
 				}
 			}
