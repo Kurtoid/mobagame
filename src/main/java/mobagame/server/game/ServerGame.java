@@ -40,7 +40,7 @@ public class ServerGame extends Game {
 				}
 			}
 			if(player.getCurrentHealth() <= 0) {
-
+				System.exit(0);
 			}
 		}
 		for(Tower t : map.towers) {
