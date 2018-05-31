@@ -32,6 +32,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	public boolean testing = false;
 	private boolean usePadAndBar = false;
 	private boolean lefty = false;
+	private boolean gameEnd = false;
 
 	private InGamePlayer user;
 	private PlayerAccount account;
@@ -58,6 +59,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	// open menu window for playerName
 	public GameScreen(int gameID, PlayerAccount player, InGamePlayer p, Character character,
 			ArrayList<InGamePlayer> players) {
+		gameEnd = false;
 		System.out.println(gameID);
 		ClientGame g = new ClientGame(gameID);
 		g.players = players;
@@ -267,7 +269,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	}
 
 	public void run() {
-		while (true) {
+		while (! gameEnd) {
 			try {
 				Thread.sleep(1000 / goldPerSecond);
 			} catch (InterruptedException e) {
@@ -284,12 +286,14 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 				if (t.id == 0 && t.health <= 0) {
 					System.out.println("Bottom team wins");
 					JOptionPane.showMessageDialog(f, "Bottom team wins", "Winner", JOptionPane.INFORMATION_MESSAGE);
-					new Menu(account, false);
+					new Login();
 					f.setVisible(false);
+					gameEnd = true;
 				}else if (t.id == 5 && t.health <= 0) {
 						System.out.println("Top team wins");
 					JOptionPane.showMessageDialog(f, "Top team wins", "Winner", JOptionPane.INFORMATION_MESSAGE);
-						new Menu(account, false);
+						new Login();
+					gameEnd = true;
 					}
 			}
 		}

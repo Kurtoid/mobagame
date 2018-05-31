@@ -19,7 +19,7 @@ public class MasterGameRunner extends Thread {
 	public Map<InGamePlayer, Lobby> playerToLobby = new HashMap<>();
 	Logger logger = Logger.getLogger(this.getClass().getName());
 
-	Set<ServerGame> games;
+	public Set<ServerGame> games;
 	Set<Lobby> lobbies;
 	Map<Integer, InGamePlayer> connectionToPlayer = new HashMap<>();
 
@@ -222,17 +222,7 @@ public class MasterGameRunner extends Thread {
 	public void addToLobby(Lobby lobby, InGamePlayer p, int connectionID) {
 		lobby.players.add(p);
 		playerToLobby.put(p, lobby);
-		int playersInTop = 0;
-		int playersInBottom = 0;
-		for(InGamePlayer player : lobby.players){
-			if(GameTeams.gameTeamsLookup.indexOf(player.team)==0){
-				playersInTop++;
-			}else{
-				playersInBottom++;
-			}
-		}
-		p.team = playersInBottom > playersInTop ? GameTeams.highTeam : GameTeams.lowTeam;
-//		p.setGoldAmount(5000);
+		p.setGoldAmount(500);
 		connectionToPlayer.put(connectionID, p);
 //		playerToGame.put(p, g);
 

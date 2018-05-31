@@ -10,9 +10,9 @@ import java.util.Random;
 
 public class Lobby {
 	public ArrayList<InGamePlayer> players;
-	public boolean waitingForPlayers=true;
+	public boolean waitingForPlayers = true;
 	long timeStarted;
-	long timeToWait = 90*1000;
+	long timeToWait = 90 * 1000;
 	protected int lobbyID;
 
 	public Lobby() {
@@ -25,11 +25,11 @@ public class Lobby {
 	}
 
 	public int getLobbyID() {
-		return  lobbyID;
+		return lobbyID;
 	}
 
 	public void notifyPlayerJoinedLobby(InGamePlayer p) {
-		
+
 	}
 
 	public void tellClientAboutExistingPlayers(InGamePlayer p, SocketChannel socket) {
@@ -40,8 +40,8 @@ public class Lobby {
 		m.setServerMode();
 		m.makeMap();
 
-		ServerGame g= new ServerGame(m);
-		for(InGamePlayer p : players){
+		ServerGame g = new ServerGame(m);
+		for (InGamePlayer p : players) {
 			g.players.add(p);
 //			p.team = GameTeams.lowTeam;
 			p.pos = new Point2D.Double(p.team.spawnPoint.getX(), p.team.spawnPoint.getY());
@@ -54,17 +54,26 @@ public class Lobby {
 	}
 
 	public Team assignTeam() {
+		System.out.println("ASSIGNING TEAM");
 		int highTeamPlayers = 0;
 		int lowTeamPlayers = 0;
-		for(InGamePlayer p : players) {
-			if(p.team == null)
+		for (InGamePlayer p : players) {
+			if (p.team == null)
 				continue;
-			if(GameTeams.gameTeamsLookup.indexOf(p.team)==0) {
+			if (GameTeams.gameTeamsLookup.indexOf(p.team) == 0) {
 				highTeamPlayers++;
-			}else {
+			} else {
 				lowTeamPlayers++;
 			}
 		}
-		return highTeamPlayers>lowTeamPlayers?GameTeams.lowTeam:GameTeams.highTeam;
+		if (highTeamPlayers > lowTeamPlayers) {
+			System.out.println("using low team");
+
+			return GameTeams.lowTeam;
+		} else {
+			System.out.println("using high team");
+
+			return GameTeams.highTeam;
+		}
 	}
 }
