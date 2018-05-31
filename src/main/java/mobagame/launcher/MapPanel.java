@@ -29,6 +29,7 @@ import mobagame.core.networking.packets.*;
 import mobagame.launcher.game.gamePlayObjects.ClickMarker;
 import mobagame.launcher.networking.RspHandler;
 import mobagame.launcher.networking.ServerConnection;
+import sun.awt.image.ToolkitImage;
 
 /**
  * @author Kurt Wilson
@@ -52,7 +53,10 @@ public class MapPanel extends JPanel implements Runnable {
 	ClickMarker marker;
 	static Image RED_TOWER_PROJECTILE_IMAGE;
 	static Image BLUE_TOWER_PROJECTILE_IMAGE;
-	static Image TOWER_IMAGE;
+	static Image RED_TOWER_IMAGE;
+	static Image BLUE_TOWER_IMAGE;
+	static Image DESTROYED_TOWER_IMAGE;
+
 
 	public MapPanel(Game g) {
 		setUpImages();
@@ -169,6 +173,9 @@ public class MapPanel extends JPanel implements Runnable {
 		Image i = Toolkit.getDefaultToolkit().getImage("resources/Projectiles/TowerProjectile.png");
 		RED_TOWER_PROJECTILE_IMAGE = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(i.getSource(), new TeamColorFilter(GameTeams.highTeam.color)));
 		BLUE_TOWER_PROJECTILE_IMAGE = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(i.getSource(), new TeamColorFilter(GameTeams.lowTeam.color)));
+		RED_TOWER_IMAGE = Toolkit.getDefaultToolkit().createImage("resources/Towers/REDTOWER.PNG");
+		BLUE_TOWER_IMAGE = Toolkit.getDefaultToolkit().createImage("resources/Towers/BlueTower.png");
+		DESTROYED_TOWER_IMAGE = Toolkit.getDefaultToolkit().createImage("resources/Towers/DestroyedTower.png");
 
 	}
 
@@ -208,11 +215,6 @@ public class MapPanel extends JPanel implements Runnable {
 //		}
 
 		for(Tower t : game.map.towers){
-			if (t.health <= 0) {
-				graphics.setColor(Color.GRAY);
-			} else {
-				graphics.setColor(t.team.color);
-			}
 			Point.Double p = new Point2D.Double(t.getX(), t.getY());
 			getCurrentTransform().transform(p, p);
 			int towerSize=2*(game.map.width/100);
@@ -222,7 +224,16 @@ public class MapPanel extends JPanel implements Runnable {
 				towerSize = 3*(game.map.width/100);
 			}
 			towerSize *= scaleX;
-			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+//			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+			if(t.health>0) {
+				if (t.team == GameTeams.lowTeam) {
+					graphics.drawImage(RED_TOWER_IMAGE, (int) p.x - towerSize / 2, (int) p.y - towerSize / 2, towerSize, towerSize, null, null);
+				} else {
+					graphics.drawImage(BLUE_TOWER_IMAGE, (int) p.x - towerSize / 2, (int) p.y - towerSize / 2, towerSize, towerSize, null, null);
+				}
+			}else{
+				graphics.drawImage(DESTROYED_TOWER_IMAGE, (int) p.x - towerSize / 2, (int) p.y - towerSize / 2, towerSize, towerSize, null, null);
+			}
 			HealthBarDrawer.draw((Graphics2D) g, t.health,t.maxHealth,Color.RED,  p, getSize());
 		}
 
@@ -234,7 +245,7 @@ public class MapPanel extends JPanel implements Runnable {
 			int towerSize=1*(game.map.width/100);
 			towerSize *= scaleX;
 //			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
-			graphics.drawImage(RED_TOWER_PROJECTILE_IMAGE, (int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize, Color.white, null);
+			graphics.drawImage(RED_TOWER_PROJECTILE_IMAGE, (int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize, null, null);
 
 
 		}
