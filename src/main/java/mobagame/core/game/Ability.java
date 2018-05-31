@@ -24,7 +24,8 @@ public class Ability {
 		private String imageLocation;
 		private DamageType damageType;
 		private InGamePlayer caster;
-
+public boolean active = false;
+public long activatedTime;
 	public Ability() {
 		imageLocation = "resources/Black.png";
 	}
