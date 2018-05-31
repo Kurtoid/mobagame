@@ -185,4 +185,8 @@ public class Character {
 	public void setAutoAttackCooldown(double autoAttackCooldown) {
 		this.autoAttackCooldown = autoAttackCooldown;
 	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
 }

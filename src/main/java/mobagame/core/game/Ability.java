@@ -1,6 +1,11 @@
 package mobagame.core.game;
 
 public class Ability {
+	public int getLevel() {
+		// TODO: implement me!
+		return 0;
+	}
+
 	public enum DamageType {
 		PHYSICAL, MAGICAL, NULL
 	};
