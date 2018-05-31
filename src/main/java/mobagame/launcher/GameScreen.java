@@ -32,7 +32,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 	Logger logger = Logger.getLogger(this.getClass().getName());
 
-	public final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.getWidth() / 16 * 3 + "px'>";
+	public final String chatWrap = "<html><body style='width: " + SCREEN_SIZE.width / 16 * 3 + "px'>";
 
 	public boolean testing = false;
 	private boolean usePadAndBar = false;
@@ -48,7 +48,8 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 	private JPanel inventory;
 	private JScrollPane chat;
-	JPanel chatText = new JPanel(new GridLayout(0, 1));
+	private JPanel abilities;
+	private JPanel chatText = new JPanel(new GridLayout(0, 1));
 	private JLabel health = new JLabel("Loading health");
 	private JLabel mana = new JLabel("Loading mana");
 
@@ -56,6 +57,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 	ClientGame game;
 	private MyCanvas[] inventoryCanvas;
+	private MyCanvas[] abilitiesImages;
 
 	// open menu window for playerName
 	public GameScreen(int gameID, PlayerAccount player, InGamePlayer p, Character character,
@@ -63,6 +65,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		System.out.println(gameID);
 		ClientGame g = new ClientGame(gameID);
 		g.players = players;
+//		InGamePlayer p = new InGamePlayer(player.id, GameCharcters.reaper);
 		g.setPlayerPlayer(p);
 		g.getPlayerPlayer().mover = new ObjectMover(g.map, g.getPlayerPlayer());
 		if (!g.players.contains(p))
@@ -74,7 +77,8 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		this.game = g;
 		user = p;
 
-		inventoryCanvas = new MyCanvas[] { MyCanvas.load(p.inventory[0].getImageLocation(), SCREEN_SIZE.width / 40),
+		inventoryCanvas = new MyCanvas[] {
+				MyCanvas.load(p.inventory[0].getImageLocation(), SCREEN_SIZE.width / 40),
 				MyCanvas.load(p.inventory[1].getImageLocation(), SCREEN_SIZE.width / 40),
 				MyCanvas.load(p.inventory[2].getImageLocation(), SCREEN_SIZE.width / 40),
 				MyCanvas.load(p.inventory[3].getImageLocation(), SCREEN_SIZE.width / 40),
@@ -82,6 +86,12 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 				MyCanvas.load(p.inventory[5].getImageLocation(), SCREEN_SIZE.width / 40),
 				MyCanvas.load(p.inventory[6].getImageLocation(), SCREEN_SIZE.width / 40),
 				MyCanvas.load(p.inventory[7].getImageLocation(), SCREEN_SIZE.width / 40) };
+
+		abilitiesImages = new MyCanvas[] {
+				new MyCanvas(user.getCharacter().getAbiq().getImageLocation(), SCREEN_SIZE.width / 40),
+				new MyCanvas(user.getCharacter().getAbiw().getImageLocation(), SCREEN_SIZE.width / 40),
+				new MyCanvas(user.getCharacter().getAbie().getImageLocation(), SCREEN_SIZE.width / 40),
+				new MyCanvas(user.getCharacter().getAbir().getImageLocation(), SCREEN_SIZE.width / 40) };
 
 		UIManager.put("OptionPane.messageFont", CHAT_FONT);
 		UIManager.put("OptionPane.buttonFont", MENU_FONT);
@@ -116,10 +126,12 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		layered.setSize(SCREEN_SIZE);
 		JPanel front = new JPanel(gbl);
 		front.setSize(SCREEN_SIZE);
+		chatText.setSize(SCREEN_SIZE.width / 4, SCREEN_SIZE.height);
 		chat = new JScrollPane(chatText);
 		chat.setSize(SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
 		JPanel stats = new JPanel(gbl);
 		d.setSize((SCREEN_SIZE.width / 4), (SCREEN_SIZE.height));
+		abilities = new JPanel();
 		stats.setMaximumSize(d);
 		inventory = new JPanel(gbl);
 		inventory.setSize(SCREEN_SIZE.width / 5, SCREEN_SIZE.height / 10);
@@ -165,16 +177,16 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		// chat
 		addToChat(user.toString());
 		chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		c.gridy = 1;
+		c.gridx = 0;
+		c.anchor = GridBagConstraints.SOUTHWEST;
+//		front.add(chat, c);
 
 		// stats
 		c.gridy = 0;
-		Ability[] abilities = { (user.getCharacter().getAbiq()), (user.getCharacter().getAbiw()),
-				(user.getCharacter().getAbie()), (user.getCharacter().getAbir()) };
 
-		for (int x = 0; x < abilities.length; x++) {
-			c.gridx = x;
-			stats.add(new MyCanvas(abilities[x].getImageLocation(), SCREEN_SIZE.width / 40), c);
-		}
+		stats.add(abilities, c);
+
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
@@ -197,10 +209,6 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		}
 
-		c.gridy = 1;
-		c.gridx = 0;
-		c.anchor = GridBagConstraints.SOUTHWEST;
-		front.add(chat, c);
 		chat.setBorder(yellow);
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.SOUTH;
@@ -256,6 +264,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 	public void addToChat(String text) {
 		JLabel temp = new JLabel(chatWrap + "" + text);
+		temp.setSize(SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
 		temp.setFont(CHAT_FONT);
 		chatText.add(temp);
 	}
@@ -273,6 +282,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			f.requestFocus();
 			mana.setText(user.getCurrentMana() + " / " + user.getMaxMana());
 			refreshInventory();
+			refreshAbilities();
 		}
 	}
 
@@ -302,12 +312,19 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	}
 
 	public void refreshInventory() {
-
 		for (int y = 0; y < user.getInventory().length; y++) {
 			inventoryCanvas[y].setImageLocation(user.getInventory()[y].getImageLocation());
 		}
 		inventory.repaint();
-		logger.log(Level.INFO, " Inventory repainted");
+		logger.log(Level.INFO, "Inventory repainted");
+	}
+
+	public void refreshAbilities() {
+		abilities.removeAll();
+		for (int x = 0; x < abilitiesImages.length; x++) {
+			abilities.add(abilitiesImages[x]);
+		}
+		logger.log(Level.INFO, "Abilities repainted");
 	}
 
 	public void keyPressed(KeyEvent ke) {
@@ -328,35 +345,39 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		case KeyEvent.VK_M:
 			// GOTO In-Game
 			logger.log(Level.INFO, "GOTO In-Game");
-			JOptionPane.showMessageDialog(f, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(f, "Not yet implemented", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 			break;
 		case KeyEvent.VK_Q:
 			// USE Q ability
 			logger.log(Level.INFO, "USE Q ability");
-			// charater.UseAbility(Q);
+			// charater.UseAbility(0);
+			abilitiesImages[0].setImageLocation("resources/Untitled.png");
 			break;
 		case KeyEvent.VK_W:
 			// USE W ability
 			logger.log(Level.INFO, "USE W ability");
-			// charater.UseAbility(W);
+			// charater.UseAbility(1);
+			abilitiesImages[1].setImageLocation("resources/Untitled.png");
 			break;
 		case KeyEvent.VK_E:
 			// USE E ability
 			logger.log(Level.INFO, "USE E ability");
-			// charater.UseAbility(E);
+			// charater.UseAbility(2);
+			abilitiesImages[2].setImageLocation("resources/Untitled.png");
 			break;
 		case KeyEvent.VK_R:
 			// USE R ability
 			logger.log(Level.INFO, "USE R ability");
-			// charater.UseAbility(R);
+			// charater.UseAbility(3);
+			abilitiesImages[3].setImageLocation("resources/Untitled.png");
 			break;
 		case KeyEvent.VK_D:
-			// USE D ability
+			// USE D ability NYI
 			logger.log(Level.INFO, "USE D ability");
 			// charater.UseAbility(D);
 			break;
 		case KeyEvent.VK_F:
-			// USE F ability
+			// USE F ability NYI
 			logger.log(Level.INFO, "USE F ability");
 			// charater.UseAbility(F);
 			break;
@@ -429,7 +450,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		if (SHOP.equals(cmd)) { // GOTO Shop
 			new Shop(user);
 		} else if (MENU.equals(cmd)) { // GOTO In-Game
-			JOptionPane.showMessageDialog(f, "TO In-Game", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(f, "Not Yet Implemented", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			JOptionPane.showMessageDialog(f, "Something went wrong", "Error Message", JOptionPane.ERROR_MESSAGE);
 		}

@@ -23,10 +23,10 @@ public class Profile extends JFrame implements ActionListener, MobaGameLauncher 
 	private static String EMAIL = "email";
 	private static String MENU = "menu";
 
-	public Profile(PlayerAccount name) {
+	public Profile(PlayerAccount p) {
 		super(GAME_NAME);
 
-		player = name;
+		player = p;
 
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		setResizable(false);
@@ -142,7 +142,8 @@ public class Profile extends JFrame implements ActionListener, MobaGameLauncher 
 			JOptionPane.showMessageDialog(null, "This feature is currently unavailable", "EDIT", JOptionPane.INFORMATION_MESSAGE);
 		} else 	if (MENU.equals(cmd)) {
 			// menu
-			new Menu();
+			new Menu(player, false);
+			setVisible(false);
 		} else {
 			logger.log(Level.WARNING, "Invalid Action");
 		}
