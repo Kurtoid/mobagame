@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
+import org.omg.PortableServer.ServantRetentionPolicyValue;
+
 import mobagame.core.game.GameTeams;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.networking.packets.CharacterSelectShowPlayer;
@@ -61,21 +63,23 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	public ImageIcon reaperCharPic = new ImageIcon("resources/Character/Reaper.png");
 	public ImageIcon jackCharPic = new ImageIcon("resources/Character/Jack.png");
 	JButton startButton;
-	PlayerAccount player;
+	InGamePlayer player;
 	ServerConnection conn;
 	Thread thisThread;
-	boolean stopCounter = false;
+	boolean gameStarted = false;
 	//thread to run the countdown timer
 	public void run() {
 		long startTime = System.currentTimeMillis();
 		System.out.println("countdown timer started");
-		while (timeLeft >= 0) {
+		while (timeLeft > 0) {
 			try {
 				Thread.sleep(100); // 10 times per second should be enough
 				RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
 				if (game != null) {
 					selectionScreen.setVisible(false);
-					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper, teamOne);
+					new GameScreen(game.gameID, playerAcc, player, GameCharcters.reaper, teamOne);
+					gameStarted = true;
+					return;
 				}
 				CharacterSelectShowPlayer cssp = (CharacterSelectShowPlayer) RspHandler.getInstance().getResponse(CharacterSelectShowPlayer.class);
 				if(cssp!=null){
@@ -92,18 +96,21 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			System.out.println(timeLeft);
 			timeLeft--;
 			selectionScreen.setVisible(true);
+//			gameStarted = true;
+			if(gameStarted)return;
 		}
-		if(!stopCounter) {
-			selectionScreen.setVisible(false);
 //		RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
 //		RspHandler h = RspHandler.getInstance();
 //			conn.send(req.getBytes().array(), h);
 //			h.waitForResponse();
 			RspHandler.getInstance().waitForResponse();
+			selectionScreen.setVisible(false);
+
 			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
 			teamOne.addAll(teamTwo);
-			new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper, teamOne);
-		}
+			new GameScreen(game.gameID, playerAcc, player, GameCharcters.reaper, teamOne);
+			return;
+		
 	}
 	//Meathod to start countdown timer thread
 	public void start() {
@@ -112,8 +119,9 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	}
 
 	private GridBagConstraints gbc = new GridBagConstraints();
+	private PlayerAccount playerAcc;
 
-	public CharSelect(PlayerAccount player, int lobbyID) {
+	public CharSelect(PlayerAccount acc, InGamePlayer player, int lobbyID) {
 
 		this.player = player;
 		try {
@@ -122,6 +130,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		playerAcc = acc;
 		charSelectMenu.setLayout(new GridLayout(10, 10));
 		JSP.setSize((int)(WINDOW_WIDTH/1.5), (int)(WINDOW_HEIGHT/2));
 		JSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -162,7 +171,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		red3CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
 		red4CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
 		red5CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		blue1User = new JLabel("  " + player.getUsername());
+		blue1User = new JLabel("  " + acc.getUsername());
 		blue2User = new JLabel(PLAYER_NAME_TEMP_STRING);
 		blue3User = new JLabel(PLAYER_NAME_TEMP_STRING);
 		blue4User = new JLabel(PLAYER_NAME_TEMP_STRING);
@@ -255,7 +264,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO: second arguement is character id
-				System.out.println("sending with player id " + player.id);
+				System.out.println("sending with player id " + player.getPlayerID());
 				DEBUG_ClientForceStartGame req = new DEBUG_ClientForceStartGame();
 				req.lobbyID = lobbyID;
 				RspHandler h = RspHandler.getInstance();
@@ -265,9 +274,8 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 					RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
 					System.out.println(game.playerID);
 					timeLeft = 1;
-
-					stopCounter = true;
-					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper, teamOne);
+					gameStarted = true;
+					new GameScreen(game.gameID, acc, player, GameCharcters.reaper, teamOne);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

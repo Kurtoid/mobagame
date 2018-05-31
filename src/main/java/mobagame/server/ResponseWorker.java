@@ -154,8 +154,11 @@ public class ResponseWorker implements Runnable {
 		runner.games.add(g);
 		RequestEnterGameResponsePacket pkt = new RequestEnterGameResponsePacket();
 		pkt.gameID = g.gameID;
-		pkt.playerID = dataEvent.server.connectionToPlayerID(dataEvent.socket);
 		for(InGamePlayer p : g.players){
+			pkt.playerID = p.getPlayerID();
+
+			g.tellClientAboutExistingPlayers(p, dataEvent.server.playerToConnection.get(p));
+
 			pkt.playerID = p.getPlayerID();
 			dataEvent.server.send(dataEvent.server.playerToConnection.get(p), pkt.getBytes().array());
 			PlayerPositionPacket pos = new PlayerPositionPacket();
@@ -235,7 +238,8 @@ public class ResponseWorker implements Runnable {
 		logger.log(Level.INFO, "resp with gameid " + lobby.getLobbyID() + " and player id " +playerID);
 		RequestEnterLobbyResponsePacket resp = new RequestEnterLobbyResponsePacket(lobby,p);
 		resp.lobbyID = lobby.getLobbyID();
-		System.out.println(Arrays.toString(resp.getBytes().array()));
+		resp.playerID = p.getPlayerID();
+//		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
 //		lobby.notifyPlayerJoinedLobby(p);
 //		lobby.tellClientAboutExistingPlayers(p, dataEvent.socket);
