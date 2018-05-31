@@ -1,12 +1,6 @@
 package mobagame.launcher;
 
-import java.awt.AWTException;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Robot;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -18,6 +12,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.awt.image.FilteredImageSource;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -55,8 +50,12 @@ public class MapPanel extends JPanel implements Runnable {
 	int mouseY;
 	ServerConnection conn;
 	ClickMarker marker;
+	static Image RED_TOWER_PROJECTILE_IMAGE;
+	static Image BLUE_TOWER_PROJECTILE_IMAGE;
+	static Image TOWER_IMAGE;
 
 	public MapPanel(Game g) {
+		setUpImages();
 		marker = new ClickMarker();
 		marker.timeCreated = System.currentTimeMillis();
 		marker.width = 20;
@@ -166,6 +165,13 @@ public class MapPanel extends JPanel implements Runnable {
 		});
 	}
 
+	private void setUpImages() {
+		Image i = Toolkit.getDefaultToolkit().getImage("resources/Projectiles/TowerProjectile.png");
+		RED_TOWER_PROJECTILE_IMAGE = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(i.getSource(), new TeamColorFilter(GameTeams.highTeam.color)));
+		BLUE_TOWER_PROJECTILE_IMAGE = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(i.getSource(), new TeamColorFilter(GameTeams.lowTeam.color)));
+
+	}
+
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -187,18 +193,18 @@ public class MapPanel extends JPanel implements Runnable {
 			graphics.fillRect((int) p.getX(), (int) p.getY(), marker.width, marker.height);
 		}
 		graphics.setColor(Color.RED);
-			for(InGamePlayer player : game.players){
-				Point.Double point = new Point2D.Double(player.getX(), player.getY());
-				double pWidth = convertWidthFromServer(10, game.map.width) * scaleX;
-				double pHeight = convertHeightFromServer(10, game.map.height) * scaleY;
+		for(InGamePlayer player : game.players){
+			Point.Double point = new Point2D.Double(player.getX(), player.getY());
+			double pWidth = convertWidthFromServer(10, game.map.width) * scaleX;
+			double pHeight = convertHeightFromServer(10, game.map.height) * scaleY;
 //				double pWidth = 0;
 //				double pHeight = 0;
 
-				point.x = point.getX();
-				point.y = point.getY();
-				getCurrentTransform().transform(point, point);
-				graphics.fillRect((int)(point.getX()-pWidth/2), (int)(point.getY()-pHeight/2), (int)pWidth, (int)pHeight);
-			}
+			point.x = point.getX();
+			point.y = point.getY();
+			getCurrentTransform().transform(point, point);
+			graphics.fillRect((int)(point.getX()-pWidth/2), (int)(point.getY()-pHeight/2), (int)pWidth, (int)pHeight);
+		}
 //		}
 
 		for(Tower t : game.map.towers){
@@ -227,7 +233,9 @@ public class MapPanel extends JPanel implements Runnable {
 			getCurrentTransform().transform(p, p);
 			int towerSize=1*(game.map.width/100);
 			towerSize *= scaleX;
-			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+//			graphics.fillOval((int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize);
+			graphics.drawImage(RED_TOWER_PROJECTILE_IMAGE, (int)p.x-towerSize/2, (int)p.y-towerSize/2, towerSize, towerSize, Color.white, null);
+
 
 		}
 	}
