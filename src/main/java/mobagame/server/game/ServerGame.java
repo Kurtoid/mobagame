@@ -79,6 +79,12 @@ public class ServerGame extends Game {
 //				System.out.println("damaged player");
 								p.active = false;
 								player.setCurrentHealth(player.getCurrentHealth() - (int) p.damage);
+								if(player.getCurrentHealth() <= 0) {
+									if(p.getFiredBy() instanceof InGamePlayer) {
+										InGamePlayer firedFrom = (InGamePlayer) p.getFiredBy();
+										firedFrom.setGoldAmount(firedFrom.getGoldAmount() + 300);
+									}
+								}
 //							notifyClientAboutPlayerHealth(player);
 
 							} else if (((SeekingProjectile) p).targetObject instanceof Tower) {

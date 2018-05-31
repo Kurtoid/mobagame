@@ -37,6 +37,9 @@ public class Projectile extends GameObject {
 //			active = false;
 //		}
 	}
+	public GameObject getFiredBy() {
+		return firedBy;
+	}
 
 	public Point2D.Double target;
 
