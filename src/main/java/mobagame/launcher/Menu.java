@@ -120,9 +120,9 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 
 		add(pane);
 
-		if (testing) {
+//		if (testing) {
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		}
+//		}
 		setVisible(true);
 		changeFontRecursive(this, MENU_FONT);
 	}

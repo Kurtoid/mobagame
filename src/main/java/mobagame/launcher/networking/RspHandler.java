@@ -189,6 +189,10 @@ public class RspHandler extends Thread {
 						case Packet.PK_ID_NOTIFY_TOWER_HEALTH:
 							System.out.println("tower health");
 							addToPackets(new NotifyTowerHealth(pkt));
+							break;
+						case Packet.PK_ID_CHARACTER_SELECT_SHOW_PLAYER:
+							System.out.println("show player");
+							addToPackets(new CharacterSelectShowPlayer(pkt));
 						default:
 							System.out.println("unknown packet " + Packet.getPacketID(pkt));
 							break;
