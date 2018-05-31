@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 
 import mobagame.core.game.GameCharcters;
 import mobagame.core.game.GameItems;
+import mobagame.core.game.GameTeams;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.game.Item;
 import mobagame.core.networking.packets.DEBUG_JustJoinToAGame;
@@ -202,18 +203,20 @@ public class Shop implements MobaGameLauncher {
 				.getResponse(PublicPlayerDataPacket.class);
 		PlayerAccount p = playerData.player;
 		DEBUG_JustJoinToAGame req = new DEBUG_JustJoinToAGame(p.id);
+		System.out.println("just join a game " + p.id);
 		try {
 			ServerConnection.getInstance(ServerConnection.ip, ServerConnection.port).send(req.getBytes().array());
 			RspHandler.getInstance().waitForResponse();
 			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance()
 					.getResponse(RequestEnterGameResponsePacket.class);
-			System.out.println(game.playerID);
-
-			GameScreen s = new GameScreen(game.gameID, p, game.playerID,  GameCharcters.reaper, new ArrayList<InGamePlayer>());
-			testing = true;
-//		InGamePlayer user = new InGamePlayer(0);
-//		Shop s = new Shop(user);
-//		user.setGoldAmount(5000);
+			System.out.println("playerid is " + game.playerID);
+			InGamePlayer plr = new InGamePlayer(p.id, GameCharcters.jack);
+			plr.team = GameTeams.lowTeam;
+			plr.pos = plr.team.spawnPoint;
+			GameScreen s = new GameScreen(game.gameID, new PlayerAccount(p.username), plr, GameCharcters.reaper,
+					new ArrayList<InGamePlayer>());
+			s.testing = true;
+			s.game.getPlayerPlayer().setGoldAmount(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

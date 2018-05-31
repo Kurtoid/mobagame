@@ -238,6 +238,7 @@ public class ResponseWorker implements Runnable {
 		logger.log(Level.INFO, "resp with gameid " + lobby.getLobbyID() + " and player id " +playerID);
 		RequestEnterLobbyResponsePacket resp = new RequestEnterLobbyResponsePacket(lobby,p);
 		resp.lobbyID = lobby.getLobbyID();
+		resp.playerID = p.getPlayerID();
 //		System.out.println(Arrays.toString(resp.getBytes().array()));
 		dataEvent.server.send(dataEvent.socket, resp.getBytes().array());
 //		lobby.notifyPlayerJoinedLobby(p);

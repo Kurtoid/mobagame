@@ -12,5 +12,5 @@ public class Team {
 		spawnPoint = spawn;
 	}
 
-	Point2D.Double spawnPoint;
+	public Point2D.Double spawnPoint;
 }

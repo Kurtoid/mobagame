@@ -4,6 +4,9 @@
 
 package mobagame.launcher;
 
+import mobagame.core.game.GameCharcters;
+import mobagame.core.game.GameTeams;
+import mobagame.core.game.InGamePlayer;
 import mobagame.core.networking.packets.NotifyPlayerEnterCharacterSelect;
 import mobagame.core.networking.packets.NotifyProjectileFiredPacket;
 import mobagame.core.networking.packets.RequestEnterLobbyPacket;
@@ -156,6 +159,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 						resp = (RequestEnterLobbyResponsePacket) RspHandler.getInstance().getResponse(RequestEnterLobbyResponsePacket.class);
 						playButton.setText("Joined lobby");
 						System.out.println("joined lobby");
+						InGamePlayer p = new InGamePlayer(player.id, GameCharcters.jack);
 						repaint();
 
 //						RspHandler.getInstance().waitForResponse();
@@ -170,7 +174,8 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 							ecs = (NotifyPlayerEnterCharacterSelect) RspHandler.getInstance().getResponse(NotifyPlayerEnterCharacterSelect.class);
 						}while(ecs==null);
 						System.out.println("ecs found");
-						new CharSelect(player, resp.lobbyID);
+						p.team = GameTeams.gameTeams[ecs.teamID];
+						new CharSelect(player, p, resp.lobbyID);
 						Menu.this.setVisible(false);
 
 					} catch (IOException e) {
