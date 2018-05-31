@@ -38,12 +38,13 @@ Ability swiftAssault = new Ability(AbilityType.StatEffect, DamageType.NULL, 40, 
 			setSpeed(getSpeed() - speedChange);
 			setAutoAttackCooldown(getAutoAttackCooldown() + autoAttackCooldownChange);
 		}
-		
+
 	}
 };
 Ability swiftEnd = new Ability(AbilityType.DamageDash, DamageType.PHYSICAL, 80, 300, 0, 100, 75, 40, 5/* dash lasts 1 seconds*/ , 100) {
 	void use() {
 		//Dashes lasts 1 second then after 4 seconds it teleports back to the starting position <--Dash can move through characters
+
 	}
 };
 }
