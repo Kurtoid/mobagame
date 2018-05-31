@@ -6,7 +6,7 @@ import java.awt.geom.Point2D;
 
 public class Tower extends GameObject {
 	public TowerType type;
-	int health;
+	public int health;
 	MainMap map;
 	public enum TowerType {
 		CORE, RESPAWN, NORMAL

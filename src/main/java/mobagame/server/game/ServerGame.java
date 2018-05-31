@@ -64,6 +64,23 @@ public class ServerGame extends Game {
 					iter.remove();
 					System.out.println("deactivated projectile " + p.projectileID);
 					notifyPlayersAboutProjectileRemoved(p);
+				} else {
+					if (p instanceof SeekingProjectile) {
+						if (((SeekingProjectile) p).targetObject instanceof InGamePlayer) {
+							InGamePlayer player = (InGamePlayer) ((SeekingProjectile) p).targetObject;
+//				System.out.println("damaged player");
+							p.active = false;
+							player.setCurrentHealth(player.getCurrentHealth() - (int) p.damage);
+						}else if (((SeekingProjectile) p).targetObject instanceof Tower) {
+							Tower tower = (Tower) ((SeekingProjectile) p).targetObject;
+//				System.out.println("damaged player");
+							p.active = false;
+							tower.health = tower.health - (int)p.damage;
+						}
+
+					} else {
+
+					}
 				}
 
 			}

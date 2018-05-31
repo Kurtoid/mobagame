@@ -13,14 +13,6 @@ public class SeekingProjectile extends Projectile {
 		target = targetObject.pos;
 		mover.setTarget(target.getX(), target.getY());
 		super.update();
-		if(pos.equals(target) || !active){
-			if(targetObject instanceof InGamePlayer){
-				InGamePlayer p = (InGamePlayer) targetObject;
-//				System.out.println("damaged player");
-				active = false;
-				p.setCurrentHealth(p.getCurrentHealth()-10);
-			}
-		}
 	}
 
 }
