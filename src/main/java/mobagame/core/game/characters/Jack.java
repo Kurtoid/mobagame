@@ -12,6 +12,8 @@ public class Jack extends Character{
 public Jack() {
 		super("Jack", "resources/Character/Jack.png", 65, 60, 20, 525, 30, 320, 7, 64, 0, 0, 5, 5, 7, 7, 3, 5, (1/0.73));
 }
+double speedChange;
+double autoAttackCooldownChange;
 Passive agileKiller = new Passive(this, 20, StatEffectType.StatRatio, StatRatioType.SpeedtoPhyPow);
 Ability quickEscape = new Ability(AbilityType.Dash, DamageType.NULL, 40, 0, 0, 0, 0, 10, 1, 80){
 	void use(){
@@ -23,12 +25,16 @@ Ability swiftAssault = new Ability(AbilityType.StatEffect, DamageType.NULL, 40, 
 	void use(){
 		if(!this.active) {
 			activatedTime = System.currentTimeMillis();
-			double speedChange = getSpeed() * (((swiftAssault.getLevel() - 1) * 0.05) + 0.25);
-			double autoAttackCooldownChange = getAutoAttackCooldown() * (1 - (swiftAssault.getLevel() * 0.05 + 0.35));
+			speedChange = getSpeed() * (((swiftAssault.getLevel() - 1) * 0.05) + 0.25);
+			autoAttackCooldownChange = getAutoAttackCooldown() * ((swiftAssault.getLevel() * 0.05 + 0.35));
 			setSpeed(getSpeed() + speedChange);
-			setAutoAttackCooldown(5);
+			setAutoAttackCooldown(getAutoAttackCooldown() + autoAttackCooldownChange);
 			active = true;
+		}else if(activatedTime + 5 <= System.currentTimeMillis()){
+			setSpeed(getSpeed() - speedChange);
+			setAutoAttackCooldown(getAutoAttackCooldown() + autoAttackCooldownChange);
 		}
+		
 	}
 };
 Ability swiftEnd = new Ability(AbilityType.DamageDash, DamageType.PHYSICAL, 80, 300, 0, 100, 75, 40, 5/* dash lasts 2 seconds*/ , 100);
