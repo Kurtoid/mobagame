@@ -6,6 +6,14 @@ public class CharacterSelectShowPlayer extends Packet{
 	public int playerID;
 	public String playerUsername;
 	public int teamID;
+
+	public CharacterSelectShowPlayer(ByteBuffer pkt) {
+		readData(pkt);
+	}
+	public CharacterSelectShowPlayer() {
+
+	}
+
 	@Override
 	public ByteBuffer getBytes() {
 		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + getNumBytes(MAX_USERNAME_LENGTH)+4+4;

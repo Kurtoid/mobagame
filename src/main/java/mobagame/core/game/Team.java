@@ -9,6 +9,7 @@ public class Team {
 	public Team(String name, Color c, Point2D.Double spawn) {
 		this.name = name;
 		this.color = c;
+		spawnPoint = spawn;
 	}
 
 	Point2D.Double spawnPoint;

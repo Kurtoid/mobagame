@@ -375,9 +375,11 @@ public class MapPanel extends JPanel implements Runnable {
 						}else if(PlayerStatusReport.class.isInstance(p)) {
 							PlayerStatusReport rpt = (PlayerStatusReport) p;
 							InGamePlayer player = game.getPlayer(rpt.playerID);
-							player.setCurrentHealth(rpt.playerHealth);
-							player.setCurrentMana(rpt.playerMana);
-							player.setGoldAmount(rpt.playerGold);
+							if(player!=null) {
+								player.setCurrentHealth(rpt.playerHealth);
+								player.setCurrentMana(rpt.playerMana);
+								player.setGoldAmount(rpt.playerGold);
+							}
 						}else if(PlayerUseItemResponsePacket.class.isInstance(p)) {
 							PlayerUseItemResponsePacket res = (PlayerUseItemResponsePacket) p;
 							int itemID = res.itemID;

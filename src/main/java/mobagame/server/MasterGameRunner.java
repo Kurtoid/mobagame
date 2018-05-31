@@ -164,11 +164,6 @@ public class MasterGameRunner extends Thread {
 				}*/
 //				ServerGame g = l.startGame();
 //				games.add(g);
-				NotifyPlayerEnterCharacterSelect pkt = new NotifyPlayerEnterCharacterSelect();
-				for(InGamePlayer p : l.players){
-					pkt.teamID = GameTeams.gameTeamsLookup.indexOf(p.team);
-					conn.send(conn.playerToConnection.get(p), pkt.getBytes().array());
-				}
 				PlayerAccountDBO playerDB = new PlayerAccountDBO();
 				for(InGamePlayer p : l.players){
 					CharacterSelectShowPlayer charNotif = new CharacterSelectShowPlayer();
@@ -179,6 +174,12 @@ public class MasterGameRunner extends Thread {
 						logger.log(Level.SEVERE, "couldn't find player id " + p.getPlayerID());
 					}
 				}
+				NotifyPlayerEnterCharacterSelect pkt = new NotifyPlayerEnterCharacterSelect();
+				for(InGamePlayer p : l.players){
+					pkt.teamID = GameTeams.gameTeamsLookup.indexOf(p.team);
+					conn.send(conn.playerToConnection.get(p), pkt.getBytes().array());
+				}
+
 //				lobbies.remove(l);
 			}
 		}
