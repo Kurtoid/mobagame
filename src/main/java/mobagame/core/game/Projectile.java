@@ -21,7 +21,13 @@ public class Projectile extends GameObject {
 		mover = new ObjectMover(map, this);
 		mover.hitTowers = false;
 	}
-
+	//Carson
+	public Projectile(MainMap map, double damage, double speed) {
+		this.damage = damage;
+		this.speed = speed;
+		mover = new ObjectMover(map, this);
+	}
+	//Carson
 	/**
 	 * may be null
 	 */
