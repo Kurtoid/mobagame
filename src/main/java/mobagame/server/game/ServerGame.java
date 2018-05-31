@@ -41,6 +41,7 @@ public class ServerGame extends Game {
 			}
 			if(player.getCurrentHealth() <= 0) {
 				System.out.println("player ded " + player.getPlayerID());
+				player.setCurrentHealth(player.getCurrentHealth() - 2134324231);
 			}
 		}
 		for(Tower t : map.towers) {
