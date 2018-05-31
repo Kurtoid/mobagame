@@ -286,13 +286,13 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 				if (t.id == 0 && t.health <= 0) {
 					System.out.println("Bottom team wins");
 					JOptionPane.showMessageDialog(f, "Bottom team wins", "Winner", JOptionPane.INFORMATION_MESSAGE);
-					new Menu(account, false);
+					new Login();
 					f.setVisible(false);
 					gameEnd = true;
 				}else if (t.id == 5 && t.health <= 0) {
 						System.out.println("Top team wins");
 					JOptionPane.showMessageDialog(f, "Top team wins", "Winner", JOptionPane.INFORMATION_MESSAGE);
-						new Menu(account, false);
+						new Login();
 					gameEnd = true;
 					}
 			}
