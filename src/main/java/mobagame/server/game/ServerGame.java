@@ -7,6 +7,7 @@ import mobagame.core.networking.packets.NotifyTowerHealth;
 import mobagame.server.ConnectionListener;
 import mobagame.server.MasterGameRunner;
 
+import java.awt.geom.Point2D;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -39,8 +40,18 @@ public class ServerGame extends Game {
 					notifyPlayersAboutProjectileFired(p);
 				}
 			}
-			if(player.getCurrentHealth() <= 0) {
-				player.setCurrentHealth(player.getCurrentHealth() - 2134324231);
+			if(player.getCurrentHealth() <= 0 && !player.isDead()) {
+				player.setDeathTime(player.getLevel() * 5);
+				player.setRespawnTime();
+				player.setDead(true);
+				player.pos = new Point2D.Double(Math.random() * 1000 + 1000000, Math.random() * 1000 + 1000000);
+			}else if(player.isDead()) {
+				if(System.currentTimeMillis() <= player.getRespawnTime()) {
+					player.setCurrentHealth(player.getMaxHealth());
+					player.pos = new Point2D.Double(player.team.spawnPoint.getX(), player.team.spawnPoint.getY());
+					player.setCurrentMana(player.getMaxMana());
+					player.setDead(false);
+				}
 			}
 		}
 		for(Tower t : map.towers) {
