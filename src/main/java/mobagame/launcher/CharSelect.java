@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
+import org.omg.PortableServer.ServantRetentionPolicyValue;
+
 import mobagame.core.game.GameTeams;
 import mobagame.core.game.InGamePlayer;
 import mobagame.core.networking.packets.CharacterSelectShowPlayer;
@@ -64,7 +66,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	PlayerAccount player;
 	ServerConnection conn;
 	Thread thisThread;
-	boolean stopCounter = false;
+	boolean gameStarted = false;
 	//thread to run the countdown timer
 	public void run() {
 		long startTime = System.currentTimeMillis();
@@ -76,6 +78,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 				if (game != null) {
 					selectionScreen.setVisible(false);
 					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper, teamOne);
+					return;
 				}
 				CharacterSelectShowPlayer cssp = (CharacterSelectShowPlayer) RspHandler.getInstance().getResponse(CharacterSelectShowPlayer.class);
 				if(cssp!=null){
@@ -92,18 +95,21 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			System.out.println(timeLeft);
 			timeLeft--;
 			selectionScreen.setVisible(true);
+			gameStarted = true;
+			if(gameStarted)return;
 		}
-		if(!stopCounter) {
-			selectionScreen.setVisible(false);
 //		RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
 //		RspHandler h = RspHandler.getInstance();
 //			conn.send(req.getBytes().array(), h);
 //			h.waitForResponse();
 			RspHandler.getInstance().waitForResponse();
+			selectionScreen.setVisible(false);
+
 			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
 			teamOne.addAll(teamTwo);
 			new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper, teamOne);
-		}
+			return;
+		
 	}
 	//Meathod to start countdown timer thread
 	public void start() {
@@ -265,8 +271,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 					RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
 					System.out.println(game.playerID);
 					timeLeft = 1;
-
-					stopCounter = true;
+					gameStarted = true;
 					new GameScreen(game.gameID, player, game.playerID, GameCharcters.reaper, teamOne);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block

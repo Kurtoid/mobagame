@@ -173,6 +173,10 @@ public class MasterGameRunner extends Thread {
 					}catch(SQLException e){
 						logger.log(Level.SEVERE, "couldn't find player id " + p.getPlayerID());
 					}
+					for(InGamePlayer p2 : l.players){
+						conn.send(conn.playerToConnection.get(p2), charNotif.getBytes().array());
+					}
+
 				}
 				NotifyPlayerEnterCharacterSelect pkt = new NotifyPlayerEnterCharacterSelect();
 				for(InGamePlayer p : l.players){
