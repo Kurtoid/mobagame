@@ -202,7 +202,7 @@ public class MapPanel extends JPanel implements Runnable {
 		ArrayList<InGamePlayer> players = game.players;
 		for (int i = 0; i < players.size(); i++) {
 			InGamePlayer player = players.get(i);
-			graphics.setColor(player.team.color);
+			graphics.setColor(GameTeams.getOppositeTeam((player.team)).color);
 
 			Point.Double point = new Point2D.Double(player.getX(), player.getY());
 			double pWidth = convertWidthFromServer(10, game.map.width) * scaleX;
