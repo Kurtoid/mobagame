@@ -343,7 +343,7 @@ public class MapPanel extends JPanel implements Runnable {
 							System.out.println("new player!");
 							if(game.getPlayer(pkt.playerID) == null) {
 								InGamePlayer plr = new InGamePlayer(pkt.playerID,  GameCharcters.reaper);
-								plr.team = GameTeams.lowTeam;
+								plr.team = GameTeams.gameTeams[pkt.teamID];
 								game.players.add(plr);
 								System.out.println("new player added");
 							}else{

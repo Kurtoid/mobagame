@@ -1,6 +1,7 @@
 package mobagame.launcher;
 
 //Carson Mango 5/26/18
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,8 +27,8 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	final String PLAYER_NAME_TEMP_STRING = " Temp";
 	private int timeLeft = 90;
 	private JLabel timer = new JLabel("" + 90);
-	ArrayList<InGamePlayer> teamOne=new ArrayList<>();
-	ArrayList<InGamePlayer> teamTwo=new ArrayList<>();
+	ArrayList<InGamePlayer> teamOne = new ArrayList<>();
+	ArrayList<InGamePlayer> teamTwo = new ArrayList<>();
 
 	JFrame selectionScreen = new JFrame("Character Select");
 
@@ -58,7 +59,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	JLabel red5User;
 
 
-	JScrollPane JSP = new JScrollPane(charSelectMenu); 
+	JScrollPane JSP = new JScrollPane(charSelectMenu);
 	public ImageIcon placeHolderImage = new ImageIcon("resources/Black.png");
 	public ImageIcon reaperCharPic = new ImageIcon("resources/Character/Reaper.png");
 	public ImageIcon jackCharPic = new ImageIcon("resources/Character/Jack.png");
@@ -67,6 +68,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 	ServerConnection conn;
 	Thread thisThread;
 	boolean gameStarted = false;
+
 	//thread to run the countdown timer
 	public void run() {
 		long startTime = System.currentTimeMillis();
@@ -82,10 +84,10 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 					return;
 				}
 				CharacterSelectShowPlayer cssp = (CharacterSelectShowPlayer) RspHandler.getInstance().getResponse(CharacterSelectShowPlayer.class);
-				if(cssp!=null){
-					if(cssp.teamID==0){
+				if (cssp != null) {
+					if (cssp.teamID == 0) {
 						teamOne.add(new InGamePlayer(cssp.playerID, cssp.playerUsername, GameTeams.gameTeams[cssp.teamID]));
-					}else{
+					} else {
 						teamTwo.add(new InGamePlayer(cssp.playerID, cssp.playerUsername, GameTeams.gameTeams[cssp.teamID]));
 					}
 				}
@@ -97,21 +99,22 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 			timeLeft--;
 			selectionScreen.setVisible(true);
 //			gameStarted = true;
-			if(gameStarted)return;
+			if (gameStarted) return;
 		}
 //		RequestEnterGamePacket req = new RequestEnterGamePacket(player.id, 1);
 //		RspHandler h = RspHandler.getInstance();
 //			conn.send(req.getBytes().array(), h);
 //			h.waitForResponse();
-			RspHandler.getInstance().waitForResponse();
-			selectionScreen.setVisible(false);
+		RspHandler.getInstance().waitForResponse();
+		selectionScreen.setVisible(false);
 
-			RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
-			teamOne.addAll(teamTwo);
-			new GameScreen(game.gameID, playerAcc, player, GameCharcters.reaper, teamOne);
-			return;
-		
+		RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) RspHandler.getInstance().getResponse(RequestEnterGameResponsePacket.class);
+		teamOne.addAll(teamTwo);
+		new GameScreen(game.gameID, playerAcc, player, GameCharcters.reaper, teamOne);
+		return;
+
 	}
+
 	//Meathod to start countdown timer thread
 	public void start() {
 		thisThread = new Thread(this);
@@ -132,22 +135,22 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		}
 		playerAcc = acc;
 		charSelectMenu.setLayout(new GridLayout(10, 10));
-		JSP.setSize((int)(WINDOW_WIDTH/1.5), (int)(WINDOW_HEIGHT/2));
+		JSP.setSize((int) (WINDOW_WIDTH / 1.5), (int) (WINDOW_HEIGHT / 2));
 		JSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		JSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		//Setting up character select menu
-		blueTeamSelect.setSize((int)(WINDOW_WIDTH / 2.6), (int)(WINDOW_HEIGHT / 3.125));
-		redTeamSelect.setSize((int)(WINDOW_WIDTH / 2.6), (int)(WINDOW_HEIGHT / 3.125));
-		blue1.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
-		blue2.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
-		blue3.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
-		blue4.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
-		blue5.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
-		red1.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
-		red2.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
-		red3.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
-		red4.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
-		red5.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_HEIGHT / 3.125));
+		blueTeamSelect.setSize((int) (WINDOW_WIDTH / 2.6), (int) (WINDOW_HEIGHT / 3.125));
+		redTeamSelect.setSize((int) (WINDOW_WIDTH / 2.6), (int) (WINDOW_HEIGHT / 3.125));
+		blue1.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
+		blue2.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
+		blue3.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
+		blue4.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
+		blue5.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
+		red1.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
+		red2.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
+		red3.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
+		red4.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
+		red5.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_HEIGHT / 3.125));
 		JLabel blue1CharImage = new JLabel(placeHolderImage);
 		JLabel blue2CharImage = new JLabel(reaperCharPic);
 		JLabel blue3CharImage = new JLabel(jackCharPic);
@@ -161,16 +164,16 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		red5CharImage.setHorizontalAlignment(SwingConstants.RIGHT);
 		JLabel test = new JLabel(reaperCharPic);
 		JLabel test2 = new JLabel("Hi");
-		blue1CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		blue2CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		blue3CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		blue4CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		blue5CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		red1CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		red2CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		red3CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		red4CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
-		red5CharImage.setSize((int)(WINDOW_WIDTH / 10), (int)(WINDOW_WIDTH / 10));
+		blue1CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
+		blue2CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
+		blue3CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
+		blue4CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
+		blue5CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
+		red1CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
+		red2CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
+		red3CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
+		red4CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
+		red5CharImage.setSize((int) (WINDOW_WIDTH / 10), (int) (WINDOW_WIDTH / 10));
 		blue1User = new JLabel("  " + acc.getUsername());
 		blue2User = new JLabel(PLAYER_NAME_TEMP_STRING);
 		blue3User = new JLabel(PLAYER_NAME_TEMP_STRING);
@@ -214,7 +217,7 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 		red1.add(red1CharImage);
 		red2.add(red2CharImage);
 		red3.add(red3CharImage);
-	 	red4.add(red4CharImage);
+		red4.add(red4CharImage);
 		red5.add(red5CharImage);
 		blue1.add(blue1User);
 		blue2.add(blue2User);
@@ -272,6 +275,11 @@ public class CharSelect implements Runnable, MobaGameLauncher {
 					conn.send(req.getBytes().array(), h);
 					h.waitForResponse();
 					RequestEnterGameResponsePacket game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
+					do {
+						h.waitForResponse();
+						game = (RequestEnterGameResponsePacket) h.getResponse(RequestEnterGameResponsePacket.class);
+
+					} while (game == null);
 					System.out.println(game.playerID);
 					timeLeft = 1;
 					gameStarted = true;

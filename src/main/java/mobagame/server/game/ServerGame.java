@@ -43,7 +43,7 @@ public class ServerGame extends Game {
 			}
 			if (player.getCurrentHealth() <= 0 && !player.isDead()) {
 
-				player.setDeathTime(player.getLevel() * 5);
+				player.setDeathTime();
 
 				player.setRespawnTime();
 
@@ -203,6 +203,8 @@ public class ServerGame extends Game {
 	public void notifyPlayerJoinedGame(InGamePlayer newPlayer) {
 		NotifyPlayerJoinedGamePacket p = new NotifyPlayerJoinedGamePacket();
 		p.playerID = newPlayer.getPlayerID();
+		p.teamID = GameTeams.gameTeamsLookup.indexOf(newPlayer.team);
+
 		for (InGamePlayer player : players) {
 			if (!player.equals(newPlayer)) {
 				runner.conn.send(runner.conn.playerToConnection.get(player), p.getBytes().array());
