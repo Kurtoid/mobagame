@@ -53,27 +53,16 @@ public class Lobby {
 		return g;
 	}
 
+	boolean highTeam = true;
+
 	public Team assignTeam() {
 		System.out.println("ASSIGNING TEAM");
-		int highTeamPlayers = 0;
-		int lowTeamPlayers = 0;
-		for (InGamePlayer p : players) {
-			if (p.team == null) {
-				System.out.println("player skipped, there must be a problem");
-			} else if (GameTeams.gameTeamsLookup.indexOf(p.team) == 0) {
-				lowTeamPlayers++;
-			} else {
-				highTeamPlayers++;
-			}
-		}
-		if (highTeamPlayers > lowTeamPlayers) {
-			System.out.println("using low team");
-
-			return GameTeams.lowTeam;
-		} else {
-			System.out.println("using high team");
-
+		if (highTeam) {
+			highTeam = false;
 			return GameTeams.highTeam;
+		} else {
+			highTeam = true;
+			return GameTeams.lowTeam;
 		}
 	}
 }
