@@ -299,6 +299,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 						System.out.println("Top team wins");
 					JOptionPane.showMessageDialog(f, "Top team wins", "Winner", JOptionPane.INFORMATION_MESSAGE);
 						new Login();
+					f.setVisible(false);
 					gameEnd = true;
 					}
 			}
