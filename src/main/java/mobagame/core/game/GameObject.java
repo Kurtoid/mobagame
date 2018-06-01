@@ -6,7 +6,7 @@ import java.awt.geom.Point2D;
 public abstract class GameObject {
 	public Point2D.Double pos = new Point2D.Double(0,0);
 	// this can be null, or a team
-	public Team team;
+	public Team team = null;
 	public double speed;
 
 	public double getX(){

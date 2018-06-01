@@ -6,16 +6,17 @@ public class PlayerPositionPacket extends Packet {
 	public double x;
 	public double y;
 	public int playerID;
-
+	public int teamID;
 	@Override
 	public ByteBuffer getBytes() {
-		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 8 + 8;
+		int dataSize = PACKET_ID_SIZE + PACKET_SIZE_SIZE + 4 + 8 + 8 + 4;
 		ByteBuffer buff = ByteBuffer.allocate(dataSize);
 		buff.putInt(dataSize);
 		setPacketType(buff, PK_ID_PLAYER_MOVEMENT);
 		buff.putInt(playerID);
 		buff.putDouble(x);
 		buff.putDouble(y);
+		buff.putInt(teamID);
 		return buff;
 	}
 
@@ -34,6 +35,7 @@ public class PlayerPositionPacket extends Packet {
 		playerID = buff.getInt(5);
 		x = buff.getDouble(9);
 		y = buff.getDouble(17);
+		teamID = buff.getInt(25);
 		System.out.println(toString());
 	}
 

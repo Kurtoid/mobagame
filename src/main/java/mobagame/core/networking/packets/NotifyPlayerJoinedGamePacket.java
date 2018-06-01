@@ -18,6 +18,7 @@ public class NotifyPlayerJoinedGamePacket extends Packet{
 		buff.putInt(dataSize);
 		setPacketType(buff, PK_ID_NOTIFY_PLAYER_JOINED);
 		buff.putInt(playerID);
+		buff.putInt(teamID);
 		return buff;
 	}
 

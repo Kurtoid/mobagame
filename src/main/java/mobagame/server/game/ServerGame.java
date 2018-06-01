@@ -182,6 +182,7 @@ public class ServerGame extends Game {
 			posPak.x = p.getX();
 			posPak.y = p.getY();
 			posPak.playerID = p.getPlayerID();
+			posPak.teamID = GameTeams.gameTeamsLookup.indexOf(p);
 			for (InGamePlayer player : players) {
 				logger.log(Level.INFO, "sending state" + posPak.toString());
 				conn.send(runner.conn.playerToConnection.get(player), posPak.getBytes().array());
