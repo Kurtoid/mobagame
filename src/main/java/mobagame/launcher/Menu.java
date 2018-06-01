@@ -191,8 +191,9 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 			worker.execute();
 // Katelynn did the rest of this
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
-			 new Profile(player);
-			 setVisible(false);
+			JOptionPane.showMessageDialog(controllingFrame, "The profile page is currently offline", "GO TO", JOptionPane.INFORMATION_MESSAGE);
+//			 new Profile(player);
+//			 setVisible(false);
 
 		} else if (SETTINGS.equals(cmd)) { // GO TO Settings
 			JOptionPane.showMessageDialog(controllingFrame, "TO Settings", "GO TO", JOptionPane.INFORMATION_MESSAGE);

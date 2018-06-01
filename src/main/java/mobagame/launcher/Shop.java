@@ -143,9 +143,7 @@ public class Shop implements MobaGameLauncher {
 		f.add(shop);
 
 		changeFontRecursive(f, GAME_FONT);
-		if (testing) {
-			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		}
+		f.setAutoRequestFocus(true);
 		f.setAlwaysOnTop(true);
 		f.setVisible(true);
 	}

@@ -97,7 +97,7 @@ public class Login implements ActionListener, MobaGameLauncher {
 		fogotButto.addActionListener(this);
 		loginButto.addActionListener(this);
 		createAccButto.addActionListener(this);
-		ImageIcon icon1 = new ImageIcon("resources//pixil-frame-0.png");
+		ImageIcon icon1 = new ImageIcon("resources//OtherLoadingScreenIfWanted.png");
 		JLabel a = new JLabel("Username:");
 		JLabel b = new JLabel("Password:");
 		JLabel e = new JLabel("");

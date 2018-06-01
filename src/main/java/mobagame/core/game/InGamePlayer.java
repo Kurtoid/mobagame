@@ -1,11 +1,13 @@
 package mobagame.core.game;
 
+import mobagame.core.game.characters.Jack;
+
 import java.awt.geom.Point2D;
 
 public class InGamePlayer extends GameObject{
 
     private int playerID;
-    private Character character;
+    private Character character = new Jack();
     private boolean dead;
     public boolean isDead() {
 		return dead;
@@ -72,7 +74,8 @@ public class InGamePlayer extends GameObject{
 
     private void setCharacter(Character character) {
         this.character = character;
-        this.currentHealth = maxHealth = character.getBaseMaxHealth();
+        this.currentHealth =character.getBaseMaxHealth();
+        this. maxHealth = character.getBaseMaxHealth();
         this.currentMana = maxMana = character.getBaseMaxMana();
         this.phyPow = character.getBasePhyPow();
         this.abiPow = character.getBaseAbiPow();

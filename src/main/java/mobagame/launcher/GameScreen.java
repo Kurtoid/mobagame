@@ -46,6 +46,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	private JPanel inventory;
 	private JScrollPane chat;
 	private JPanel abilities;
+	private JPanel stats;
 	private JPanel chatText = new JPanel(new GridLayout(0, 1));
 	private JLabel health = new JLabel("Loading health");
 	private JLabel mana = new JLabel("Loading mana");
@@ -130,7 +131,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		chatText.setSize(SCREEN_SIZE.width / 4, SCREEN_SIZE.height);
 		chat = new JScrollPane(chatText);
 		chat.setSize(SCREEN_SIZE.width / 4, SCREEN_SIZE.height / 2);
-		JPanel stats = new JPanel(gbl);
+		stats = new JPanel(gbl);
 		d.setSize((SCREEN_SIZE.width / 4), (SCREEN_SIZE.height));
 		abilities = new JPanel();
 		stats.setMaximumSize(d);
@@ -176,6 +177,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		mapPanel.add(miniMap, c);
 
 		// chat
+		// chat was removed since it was not being used
 		addToChat(user.toString());
 		chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		c.gridy = 1;
@@ -211,7 +213,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		if (testing) {
 			f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		}
-
+		
 		chat.setBorder(yellow);
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.SOUTH;
@@ -264,6 +266,10 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		gold.setFont(MENU_FONT);
 		changeFontRecursive(chat, CHAT_FONT);
 		f.setFocusable(true);
+		
+		user.setCurrentMana(user.getMaxMana());
+		user.setCurrentHealth(user.getMaxHealth());
+		
 		start();
 	}
 
@@ -284,9 +290,12 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			gold.setText("$" + user.getGoldAmount());
 			chat.repaint();
 			health.setText(user.getCurrentHealth() + " / " + user.getMaxHealth());
-			f.requestFocus();
 			mana.setText(user.getCurrentMana() + " / " + user.getMaxMana());
+			health.repaint();
+			mana.repaint();
+			stats.repaint();
 			refreshInventory();
+			f.requestFocus();
 			refreshAbilities();
 			for (Tower t: game.map.towers) {
 				if (t.id == 0 && t.health <= 0) {
@@ -372,6 +381,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			logger.log(Level.INFO, "GOTO In-Game");
 			JOptionPane.showMessageDialog(f, "Not yet implemented", "GOTO", JOptionPane.INFORMATION_MESSAGE);
 			break;
+			/* NYI
 		case KeyEvent.VK_Q:
 			// USE Q ability
 			logger.log(Level.INFO, "USE Q ability");
@@ -396,6 +406,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 			// charater.UseAbility(3);
 			abilitiesImages[3].setImageLocation("resources/Untitled.png");
 			break;
+			//*/
 		case KeyEvent.VK_D:
 			// USE D ability NYI
 			logger.log(Level.INFO, "USE D ability");
@@ -449,7 +460,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		case KeyEvent.VK_ESCAPE:
 			// Escape pressed
 			logger.log(Level.INFO, "Escape pressed");
-			System.exit(0);
+			f.setVisible(false);
 			break;
 		}
 	}
@@ -475,7 +486,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		if (SHOP.equals(cmd)) { // GOTO Shop
 			new Shop(user);
 		} else if (MENU.equals(cmd)) { // GOTO In-Game
-			JOptionPane.showMessageDialog(f, "Not Yet Implemented", "GOTO", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(f, "Not Yet Implemented", "GOTO InGameMenu", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			JOptionPane.showMessageDialog(f, "Something went wrong", "Error Message", JOptionPane.ERROR_MESSAGE);
 		}
