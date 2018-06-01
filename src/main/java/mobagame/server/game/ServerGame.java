@@ -102,11 +102,16 @@ public class ServerGame extends Game {
 								InGamePlayer player = (InGamePlayer) ((SeekingProjectile) p).targetObject;
 //				System.out.println("damaged player");
 								p.active = false;
-								player.setCurrentHealth(player.getCurrentHealth() - (int) p.damage);
+								if(p.getFiredBy() instanceof InGamePlayer) {
+									InGamePlayer firingPlayer = (InGamePlayer) p.getFiredBy();
+									player.setCurrentHealth(player.getCurrentHealth() - (int) (firingPlayer.getPhyPow() - player.getArmor()));
+								}else {
+									player.setCurrentHealth(player.getCurrentHealth() - (int) (p.damage - player.getArmor()));
+								}
 								if(player.getCurrentHealth() <= 0) {
 									if(p.getFiredBy() instanceof InGamePlayer) {
-										InGamePlayer firedFrom = (InGamePlayer) p.getFiredBy();
-										firedFrom.setGoldAmount(firedFrom.getGoldAmount() + 300);
+										InGamePlayer firingPlayer = (InGamePlayer) p.getFiredBy();
+										firingPlayer.setGoldAmount(firingPlayer.getGoldAmount() + 300);
 									}
 								}
 //							notifyClientAboutPlayerHealth(player);
@@ -115,7 +120,13 @@ public class ServerGame extends Game {
 								Tower tower = (Tower) ((SeekingProjectile) p).targetObject;
 //				System.out.println("damaged player");
 								p.active = false;
-								tower.health = tower.health - (int) p.damage;
+								if(p.getFiredBy() instanceof InGamePlayer) {
+									InGamePlayer firingPlayer = (InGamePlayer) p.getFiredBy();
+									tower.health = tower.health - (int) firingPlayer.getPhyPow();
+									if(tower.health <= 0) {
+										firingPlayer.setGoldAmount(firingPlayer.getGoldAmount() + 150);
+									}
+								}
 								notifyClientAboutTowerHealth(tower);
 							}
 						}
