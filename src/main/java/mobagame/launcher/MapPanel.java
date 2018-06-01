@@ -346,6 +346,9 @@ public class MapPanel extends JPanel implements Runnable {
 								plr.team = GameTeams.lowTeam;
 								game.players.add(plr);
 								System.out.println("new player added");
+							}else{
+								InGamePlayer ply = game.getPlayer(pkt.playerID);
+								ply.team = GameTeams.gameTeams[pkt.teamID];
 							}
 						}else if(NotifyPlayerDisconnectedPacket.class.isInstance(p)) {
 							NotifyPlayerDisconnectedPacket pkt = (NotifyPlayerDisconnectedPacket) p;

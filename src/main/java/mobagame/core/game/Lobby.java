@@ -58,12 +58,12 @@ public class Lobby {
 		int highTeamPlayers = 0;
 		int lowTeamPlayers = 0;
 		for (InGamePlayer p : players) {
-			if (p.team == null)
-				continue;
-			if (GameTeams.gameTeamsLookup.indexOf(p.team) == 0) {
-				highTeamPlayers++;
-			} else {
+			if (p.team == null) {
+				System.out.println("player skipped, there must be a problem");
+			} else if (GameTeams.gameTeamsLookup.indexOf(p.team) == 0) {
 				lowTeamPlayers++;
+			} else {
+				highTeamPlayers++;
 			}
 		}
 		if (highTeamPlayers > lowTeamPlayers) {

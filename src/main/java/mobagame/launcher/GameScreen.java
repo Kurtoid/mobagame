@@ -66,7 +66,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 //		InGamePlayer p = new InGamePlayer(player.id, GameCharcters.reaper);
 		g.setPlayerPlayer(p);
 		g.getPlayerPlayer().mover = new ObjectMover(g.map, g.getPlayerPlayer());
-		if (!g.players.contains(p))
+//		if (!g.players.contains(p))
 			g.players.add(p);
 		System.out.println("I am " + p.getPlayerID());
 		g.map = new MainMap();

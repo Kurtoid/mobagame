@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 public class NotifyPlayerJoinedGamePacket extends Packet{
 	public int playerID;
-
+	public int teamID;
 	public NotifyPlayerJoinedGamePacket(ByteBuffer buff){
 		readData(buff);
 	}
@@ -13,7 +13,7 @@ public class NotifyPlayerJoinedGamePacket extends Packet{
 	}
 	@Override
 	public ByteBuffer getBytes() {
-		int dataSize = PACKET_SIZE_SIZE + PACKET_ID_SIZE + 4;
+		int dataSize = PACKET_SIZE_SIZE + PACKET_ID_SIZE + 4 + 4;
 		ByteBuffer buff = ByteBuffer.allocate(dataSize);
 		buff.putInt(dataSize);
 		setPacketType(buff, PK_ID_NOTIFY_PLAYER_JOINED);
@@ -24,6 +24,9 @@ public class NotifyPlayerJoinedGamePacket extends Packet{
 	@Override
 	void readData(ByteBuffer buff) {
 		buff.rewind();
-		playerID = buff.getInt(5);
+		buff.position(5);
+		playerID = buff.getInt();
+		teamID = buff.getInt();
+
 	}
 }

@@ -19,6 +19,6 @@ public class GameTeams {
 		}
 	}
 
-	static public Team[] gameTeams = {highTeam, lowTeam};
+	static public Team[] gameTeams = {lowTeam, highTeam};
 	static public ArrayList<Team> gameTeamsLookup = new ArrayList<Team>(Arrays.asList(gameTeams));
 }

@@ -168,6 +168,12 @@ public class ResponseWorker implements Runnable {
 			pos.y = p.getY();
 			pos.playerID = p.getPlayerID();
 			dataEvent.server.send(dataEvent.server.playerToConnection.get(p), pos.getBytes().array());
+			NotifyPlayerJoinedGamePacket npjgp = new NotifyPlayerJoinedGamePacket();
+			npjgp.playerID = p.getPlayerID();
+			npjgp.teamID = GameTeams.gameTeamsLookup.indexOf(p.team);
+			for(InGamePlayer p2 : g.players){
+				dataEvent.server.send(dataEvent.server.playerToConnection.get(p2), pkt.getBytes().array());
+			}
 		}
 
 
