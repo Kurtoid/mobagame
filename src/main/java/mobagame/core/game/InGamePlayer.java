@@ -15,8 +15,8 @@ public class InGamePlayer extends GameObject{
 		this.dead = dead;
 	}
 
-	public void setDeathTime(int deathTime) {
-		this.deathTime = deathTime;
+	public void setDeathTime() {
+		deathTime = this.getLevel() * 5;
 	}
 	
 	private int phyPow;
