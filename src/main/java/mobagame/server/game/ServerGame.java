@@ -247,15 +247,17 @@ public class ServerGame extends Game {
 							switch (i.getType()[z]) {
 							case Health:
 								user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
+								user.setCurrentHealth(user.getCurrentHealth() + i.getEffectPoints()[z]);
 								break;
 							case Mana:
 								user.setMaxMana(user.getMaxMana() + i.getEffectPoints()[z]);
+								user.setCurrentMana(user.getCurrentMana() + i.getEffectPoints()[z]);
 								break;
 							case PhysicalPower:
-								user.setMaxHealth(user.getMaxHealth() + i.getEffectPoints()[z]);
+								user.setPhyPow(user.getPhyPow() + i.getEffectPoints()[z]);
 								break;
 							case AbilityPower:
-								user.setPhyPow(user.getPhyPow() + i.getEffectPoints()[z]);
+								user.setAbiPow(user.getAbiPow() + i.getEffectPoints()[z]);
 								break;
 							case Speed:
 								user.setSpeed(user.getSpeed() + i.getEffectPoints()[z]);
@@ -300,15 +302,21 @@ public class ServerGame extends Game {
 							switch (item.getType()[z]) {
 							case Health:
 								user.setMaxHealth(user.getMaxHealth() - item.getEffectPoints()[z]);
+								if(user.getCurrentHealth() > user.getMaxHealth()) {
+									user.setCurrentHealth(user.getMaxHealth());
+								}
 								break;
 							case Mana:
 								user.setMaxMana(user.getMaxMana() - item.getEffectPoints()[z]);
+								if(user.getCurrentMana() > user.getMaxMana()) {
+									user.setCurrentMana(user.getMaxMana());
+								}
 								break;
 							case PhysicalPower:
-								user.setMaxHealth(user.getMaxHealth() - item.getEffectPoints()[z]);
+								user.setPhyPow(user.getMaxHealth() - item.getEffectPoints()[z]);
 								break;
 							case AbilityPower:
-								user.setPhyPow(user.getPhyPow() - item.getEffectPoints()[z]);
+								user.setAbiPow(user.getPhyPow() - item.getEffectPoints()[z]);
 								break;
 							case Speed:
 								user.setSpeed(user.getSpeed() - item.getEffectPoints()[z]);
