@@ -14,6 +14,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.image.FilteredImageSource;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.JPanel;
@@ -198,7 +199,9 @@ public class MapPanel extends JPanel implements Runnable {
 			graphics.setColor(Color.GREEN);
 			graphics.fillRect((int) p.getX(), (int) p.getY(), marker.width, marker.height);
 		}
-		for(InGamePlayer player : game.players){
+		ArrayList<InGamePlayer> players = game.players;
+		for (int i = 0; i < players.size(); i++) {
+			InGamePlayer player = players.get(i);
 			graphics.setColor(player.team.color);
 
 			Point.Double point = new Point2D.Double(player.getX(), player.getY());
@@ -210,7 +213,7 @@ public class MapPanel extends JPanel implements Runnable {
 			point.x = point.getX();
 			point.y = point.getY();
 			getCurrentTransform().transform(point, point);
-			graphics.fillRect((int)(point.getX()-pWidth/2), (int)(point.getY()-pHeight/2), (int)pWidth, (int)pHeight);
+			graphics.fillRect((int) (point.getX() - pWidth / 2), (int) (point.getY() - pHeight / 2), (int) pWidth, (int) pHeight);
 		}
 //		}
 

@@ -1,6 +1,7 @@
 package mobagame.launcher;
 
-//Carson Mango 5/26/18
+//Carson Mango
+// We decided to bypass this part since we only have one character at the moment
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

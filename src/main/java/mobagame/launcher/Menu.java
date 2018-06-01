@@ -73,6 +73,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 		adminButton.addActionListener(this);
 
 		JLabel messageLabel = new JLabel("Welcome " + playerName + " to " + GAME_NAME);
+		messageLabel.setHorizontalAlignment(JLabel.CENTER);
 
 		// make layout
 		JPanel pane = new JPanel(new GridBagLayout());
@@ -93,6 +94,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 
 		// middle (photo)
 		c.gridwidth = 3;
+		c.weighty = 100;
 		c.gridx = 0;
 		c.gridy = 1;
 		pane.add(messageLabel, c);
@@ -101,7 +103,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 		if (isAdmin) {
 			c.gridwidth = 1;
 			c.ipady = 100; // reset to default
-			c.weighty = 1.0; // request any extra vertical space
+			c.weighty = 1; // request any extra vertical space
 			c.anchor = GridBagConstraints.PAGE_END; // bottom of space
 			c.gridy = 2;
 
@@ -113,7 +115,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 
 		} else {
 			c.ipady = 100; // reset to default
-			c.weighty = 1.0; // request any extra vertical space
+			c.weighty = 1; // request any extra vertical space
 			c.anchor = GridBagConstraints.PAGE_END; // bottom of space
 			c.gridwidth = 3;
 			c.gridx = 0;
@@ -147,6 +149,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 			playButton.setEnabled(false);
 			playButton.setText("Searching for lobby");
 			repaint();
+			// Kurt did this lobby stuff
 			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 				@Override
 				protected Void doInBackground() throws Exception {
@@ -186,7 +189,7 @@ public class Menu extends JFrame implements ActionListener, MobaGameLauncher {
 				}
 			};
 			worker.execute();
-
+// Katelynn did the rest of this
 		} else if (PROFILE.equals(cmd)) { // GO TO Profile
 			 new Profile(player);
 			 setVisible(false);

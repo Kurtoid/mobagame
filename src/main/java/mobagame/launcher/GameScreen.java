@@ -58,6 +58,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 	// open menu window for playerName
 	public GameScreen(int gameID, PlayerAccount player, InGamePlayer p, Character character,
+	// Kurt
 			ArrayList<InGamePlayer> players) {
 		gameEnd = false;
 		System.out.println(gameID);
@@ -76,6 +77,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		user = p;
 		this.account = player;
 
+//Katelynn
 		inventoryCanvas = new MyCanvas[] {
 				MyCanvas.load(p.inventory[0].getImageLocation(), SCREEN_SIZE.width / 40),
 				MyCanvas.load(p.inventory[1].getImageLocation(), SCREEN_SIZE.width / 40),
@@ -183,10 +185,12 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 
 		// stats
 		c.gridy = 0;
+		stats.setPreferredSize(new Dimension(SCREEN_SIZE.width / 10,SCREEN_SIZE.width / 40 * 3));
 
-		stats.add(abilities, c);
+		//stats.add(abilities, c);
 
 		c.anchor = GridBagConstraints.CENTER;
+
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridwidth = 4;
@@ -245,6 +249,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		front.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		layered.add(front, new Integer(1), 0);
 
+//Kurt
 		MapPanel background = new MapPanel(game);
 		background.setBounds(0, 0, SCREEN_SIZE.width, SCREEN_SIZE.height);
 		background.resetPanAndZoom();
@@ -253,6 +258,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 		Thread t = new Thread(background);
 		t.start();
 
+//Katelynn
 		f.setVisible(true);
 		changeFontRecursive(f, GAME_FONT);
 		gold.setFont(MENU_FONT);
@@ -475,6 +481,7 @@ public class GameScreen implements ActionListener, KeyListener, MouseListener, R
 	}
 
 	public static void main(String[] args) {
+	//Kurt
 		Login.fakeLogin();
 		RspHandler.getInstance().waitForResponse(); // wait for one (maybe two) packets, or three seconds
 		PublicPlayerDataPacket playerData = (PublicPlayerDataPacket) RspHandler.getInstance()
