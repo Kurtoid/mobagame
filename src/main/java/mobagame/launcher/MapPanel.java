@@ -335,7 +335,11 @@ public class MapPanel extends JPanel implements Runnable {
 
 								player.setX(pkt.x);
 								player.setY(pkt.y);
-								player.team = GameTeams.gameTeams[pkt.teamID];
+								try {
+									player.team = GameTeams.gameTeams[pkt.teamID];
+								}catch(ArrayIndexOutOfBoundsException e){
+
+								}
 //						System.out.println(p.x + " " + p.y);
 
 							}
