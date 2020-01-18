@@ -99,12 +99,8 @@ public class MasterGameRunner extends Thread {
 				while (now - lastUpdateTime < TIME_BETWEEN_UPDATES) {
 					Thread.yield();
 
-					// This stops the app from consuming all your CPU. It makes this slightly less
-					// accurate, but is worth it.
-					// You can remove this line and it will still work (better), your CPU just
-					// climbs on certain OSes.
-					// FYI on some OS's this can cause pretty bad stuttering. Scroll down and have a
-					// look at different peoples' solutions to this.
+					// Don't consume all CPU resources
+					// TODO: convert to some kind of scheduling system
 					try {
 						Thread.sleep(1);
 					} catch (Exception e) {
