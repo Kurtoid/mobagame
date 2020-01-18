@@ -4,24 +4,31 @@ import mobagame.core.game.characters.Jack;
 
 import java.awt.geom.Point2D;
 
-public class InGamePlayer extends GameObject{
+public class InGamePlayer extends GameObject {
 
     private int playerID;
     private Character character = new Jack();
     private boolean dead;
+
     public boolean isDead() {
-		return dead;
-	}
+        return dead;
+    }
 
-	public void setDead(boolean dead) {
-		this.dead = dead;
-	}
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
 
-	public void setDeathTime() {
-		deathTime = this.getLevel() * 5;
-	}
-	
-	private int phyPow;
+    public void setDeathTime() {
+        deathTime = this.getLevel() * 5;
+    }
+
+    public void kill() {
+        setDeathTime();
+        setRespawnTime();
+        setDead(true);
+    }
+
+    private int phyPow;
     private int abiPow;
     private int maxHealth;
     private int maxMana;
@@ -43,13 +50,13 @@ public class InGamePlayer extends GameObject{
     long lastAttackTime;
     long respawnTime;
 
-    //0 = Q, 1 = W, 2 = E, 3 = R
-    public int[] abilityLevels = {0, 0, 0, 0};
-    public int[] cooldowns = {0, 0, 0, 0};
+    // 0 = Q, 1 = W, 2 = E, 3 = R
+    public int[] abilityLevels = { 0, 0, 0, 0 };
+    public int[] cooldowns = { 0, 0, 0, 0 };
 
-    public Item[] inventory = {(GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty),
-            (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty)};
-	private int deathTime;
+    public Item[] inventory = { (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty),
+            (GameItems.empty), (GameItems.empty), (GameItems.empty), (GameItems.empty) };
+    private int deathTime;
 
     public InGamePlayer(int playerID, String playerUsername, Team gameTeam) {
         super();
@@ -74,8 +81,8 @@ public class InGamePlayer extends GameObject{
 
     private void setCharacter(Character character) {
         this.character = character;
-        this.currentHealth =character.getBaseMaxHealth();
-        this. maxHealth = character.getBaseMaxHealth();
+        this.currentHealth = character.getBaseMaxHealth();
+        this.maxHealth = character.getBaseMaxHealth();
         this.currentMana = maxMana = character.getBaseMaxMana();
         this.phyPow = character.getBasePhyPow();
         this.abiPow = character.getBaseAbiPow();
@@ -212,21 +219,11 @@ public class InGamePlayer extends GameObject{
     }
 
     public String toString() {
-        return  "phyPow = " + phyPow +
-                ", abiPow = " + abiPow +
-                ", maxHealth = " + maxHealth +
-                ", maxMana = " + maxMana +
-                ", speed = " + speed +
-                ", armor = " + armor +
-                ", magicResist =" + magicResist +
-                ", currentHealth = " + currentHealth +
-                ", currentMana = " + currentMana +
-                ", goldAmount = " + goldAmount +
-                ", xp = " + xp +
-                ", levelXp = " + levelXp +
-                ", xpToNextLevel = " + xpToNextLevel +
-                ", playerLevel = " + playerLevel +
-                ", position = " + pos;
+        return "phyPow = " + phyPow + ", abiPow = " + abiPow + ", maxHealth = " + maxHealth + ", maxMana = " + maxMana
+                + ", speed = " + speed + ", armor = " + armor + ", magicResist =" + magicResist + ", currentHealth = "
+                + currentHealth + ", currentMana = " + currentMana + ", goldAmount = " + goldAmount + ", xp = " + xp
+                + ", levelXp = " + levelXp + ", xpToNextLevel = " + xpToNextLevel + ", playerLevel = " + playerLevel
+                + ", position = " + pos;
     }
 
     public void setCurrentHealth(int currentHealth) {
@@ -277,8 +274,8 @@ public class InGamePlayer extends GameObject{
         return abilityLevels[index - 1];
     }
 
-    public void useAbility(int index){
-        if ( cooldowns[index] > 0 || abilityLevels[index] == 0){
+    public void useAbility(int index) {
+        if (cooldowns[index] > 0 || abilityLevels[index] == 0) {
             System.out.println("Cannot use that ability");
         } else {
             // abi.use();
@@ -287,66 +284,69 @@ public class InGamePlayer extends GameObject{
 
     // index of abilitys array
     private void abilityUpgrade(int index) {
-        if (avalableUpgrades < 0 && abilityLevels[index] < 5){
+        if (avalableUpgrades < 0 && abilityLevels[index] < 5) {
             abilityLevels[index]++;
-            cooldowns[index] =  30 - (abilityLevels[index]*5);
+            cooldowns[index] = 30 - (abilityLevels[index] * 5);
             // abi.upgrade();
         }
     }
 
-    public boolean canAttack(){
-	    return System.currentTimeMillis() > (lastAttackTime + character.getAutoAttackCooldown());
+    public boolean canAttack() {
+        return System.currentTimeMillis() > (lastAttackTime + character.getAutoAttackCooldown());
     }
 
-	/**
-	 * gets a valid target for the player
-	 * TODO: make range based off of character
-	 * @return
-	 */
-	public GameObject getAttackTarget(double range) {
-    	GameObject target = null;
-		double minDistance = Double.MAX_VALUE;
+    /**
+     * gets a valid target for the player TODO: make range based off of character
+     * 
+     * @return
+     */
+    public GameObject getAttackTarget(double range) {
+        GameObject target = null;
+        double minDistance = Double.MAX_VALUE;
 
-		for(InGamePlayer p : game.players){
-			if(GameTeams.getOppositeTeam(team)==p.team){
-				if(p.pos.distance(pos)<minDistance && p.pos.distance(pos)<=range){
-					minDistance = p.pos.distance(pos);
-					target = p;
-				}
-			}
-	    }
-		for(Tower p : game.map.towers){
-			if(GameTeams.getOppositeTeam(team)==p.team&& p.pos.distance(pos)<=range){
-				if(p.pos.distance(pos)<minDistance){
-					minDistance = p.pos.distance(pos);
-					target = p;
-				}
-			}
-		}
+        for (InGamePlayer p : game.players) {
+            if (GameTeams.getOppositeTeam(team) == p.team) {
+                if (p.pos.distance(pos) < minDistance && p.pos.distance(pos) <= range) {
+                    minDistance = p.pos.distance(pos);
+                    target = p;
+                }
+            }
+        }
+        for (Tower p : game.map.towers) {
+            if (GameTeams.getOppositeTeam(team) == p.team && p.pos.distance(pos) <= range) {
+                if (p.pos.distance(pos) < minDistance) {
+                    minDistance = p.pos.distance(pos);
+                    target = p;
+                }
+            }
+        }
 
-		return target;
-	}
-	public int getDeathTime() {
-		return this.deathTime;
-	}
-	public void setRespawnTime() {
-		respawnTime = System.currentTimeMillis() + (deathTime * 1000);
-	}
-	public long getRespawnTime() {
-		return this.respawnTime;
-	}
+        return target;
+    }
 
-	public SeekingProjectile attackTarget(GameObject target, Game g) {
-		lastAttackTime = System.currentTimeMillis();
-		SeekingProjectile p = new SeekingProjectile(g.map);
-		p.target = new Point2D.Double(target.pos.getX(), target.pos.getY());
-		p.firedBy = this;
-		p.firedFrom = new Point2D.Double(pos.getX(), pos.getY());
-		p.team = this.team;
-		p.pos = new Point2D.Double(pos.getX(), pos.getY());
-		p.mover.setTarget(p.target.getX(), p.target.getY());
-		p.targetObject = target;
-		return p;
+    public int getDeathTime() {
+        return this.deathTime;
+    }
 
-	}
+    public void setRespawnTime() {
+        respawnTime = System.currentTimeMillis() + (deathTime * 1000);
+    }
+
+    public long getRespawnTime() {
+        return this.respawnTime;
+    }
+
+    public SeekingProjectile attackTarget(GameObject target, Game g) {
+        lastAttackTime = System.currentTimeMillis();
+        SeekingProjectile p = new SeekingProjectile(g.map);
+        p.target = new Point2D.Double(target.pos.getX(), target.pos.getY());
+        p.firedBy = this;
+        p.firedFrom = new Point2D.Double(pos.getX(), pos.getY());
+        p.team = this.team;
+        p.pos = new Point2D.Double(pos.getX(), pos.getY());
+        p.mover.setTarget(p.target.getX(), p.target.getY());
+        p.targetObject = target;
+        return p;
+
+    }
 }

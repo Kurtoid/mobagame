@@ -14,8 +14,12 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// represents a single instance of a game running on the servers,
+// with players, towers etc.
 public class ServerGame extends Game {
 	Logger logger = Logger.getLogger(ServerGame.class.getName());
+
+	// manages tick loop
 	public static MasterGameRunner runner;
 
 	public ServerGame(MainMap m) {
@@ -24,31 +28,36 @@ public class ServerGame extends Game {
 
 	@Override
 	public void update() {
-		// System.out.println("updating game");
+		// run player states
 		for (InGamePlayer player : players) {
 			player.mover.update();
 			if (player.mover.atTarget()) {
 				logger.log(Level.INFO, "player reached target");
 			}
 
+			// player continuously attacks nearest opponent object unless
+			// an attack is in progress or another ability is active
 			if (player.canAttack()) {
 				GameObject target = player.getAttackTarget(map.width / 20);
 				if (target != null) {
+					// launch a projectile
 					SeekingProjectile p = player.attackTarget(target, this);
 					p.update();
-					System.out.println("projectile fired " + p.projectileID);
+					logger.log(Level.FINEST, "projectile fired by {}", player.getPlayerID());
 					projectiles.add(p);
 					notifyPlayersAboutProjectileFired(p);
 				}
 			}
+			// kill player if health reaches 0
 			if (player.getCurrentHealth() <= 0 && !player.isDead()) {
-				player.setDeathTime();
-				player.setRespawnTime();
-				player.setDead(true);
+				player.kill();
+				// and send the player offscreen
 				player.pos = new Point2D.Double(Math.random() * 1000 + 1000000, Math.random() * 1000 + 1000000);
 
 			} else if (player.isDead()) {
+				// if proper respawn time has passed
 				if (System.currentTimeMillis() <= player.getRespawnTime()) {
+					// respawn the player
 					player.setCurrentHealth(player.getMaxHealth());
 					player.pos = new Point2D.Double(player.team.spawnPoint.getX(), player.team.spawnPoint.getY());
 					player.setCurrentMana(player.getMaxMana());
@@ -56,9 +65,10 @@ public class ServerGame extends Game {
 				}
 			}
 		}
-		for(Tower t : map.towers) {
+		// run tower states
+		for (Tower t : map.towers) {
 			if (t.canFire()) {
-				GameObject player = getClosestPlayer(t.pos, map.width/10, GameTeams.getOppositeTeam(t.team));
+				GameObject player = getClosestPlayer(t.pos, map.width / 10, GameTeams.getOppositeTeam(t.team));
 				if (player != null) {
 					Projectile p = (t.fire(player, this));
 					p.update();
@@ -67,66 +77,65 @@ public class ServerGame extends Game {
 					notifyPlayersAboutProjectileFired(p);
 				}
 			}
-			if (t.id == 0 && t.health <= 0){
+			if (t.id == 0 && t.health <= 0) {
 				System.out.println("Bottom team wins");
 				endGame();
 			}
-			if (t.id == 5 && t.health <= 0){
+			if (t.id == 5 && t.health <= 0) {
 				System.out.println("Top team wins");
 				endGame();
 			}
 		}
-		{
-			Iterator<Projectile> iter = projectiles.iterator();
-			while (iter.hasNext()) {
-				Projectile p = iter.next();
-				p.update();
-				if (!p.active) {
-					iter.remove();
-					System.out.println("deactivated projectile " + p.projectileID);
-					notifyPlayersAboutProjectileRemoved(p);
-				} else {
-					if (p instanceof SeekingProjectile) {
-						if(p.pos.equals(((SeekingProjectile) p).targetObject.pos)) {
-							if (((SeekingProjectile) p).targetObject instanceof InGamePlayer) {
-								InGamePlayer player = (InGamePlayer) ((SeekingProjectile) p).targetObject;
-//				System.out.println("damaged player");
-								p.active = false;
-								if(p.getFiredBy() instanceof InGamePlayer) {
-									InGamePlayer firingPlayer = (InGamePlayer) p.getFiredBy();
-									player.setCurrentHealth(player.getCurrentHealth() - (int) (firingPlayer.getPhyPow() - player.getArmor()));
-								}else {
-									player.setCurrentHealth(player.getCurrentHealth() - (int) (p.damage - player.getArmor()));
-								}
-								if(player.getCurrentHealth() <= 0) {
-									if(p.getFiredBy() instanceof InGamePlayer) {
-										InGamePlayer firingPlayer = (InGamePlayer) p.getFiredBy();
-										firingPlayer.setGoldAmount(firingPlayer.getGoldAmount() + 300);
-									}
-								}
-//							notifyClientAboutPlayerHealth(player);
-
-							} else if (((SeekingProjectile) p).targetObject instanceof Tower) {
-								Tower tower = (Tower) ((SeekingProjectile) p).targetObject;
-//				System.out.println("damaged player");
-								p.active = false;
-								if(p.getFiredBy() instanceof InGamePlayer) {
-									InGamePlayer firingPlayer = (InGamePlayer) p.getFiredBy();
-									tower.health = tower.health - (int) firingPlayer.getPhyPow();
-									if(tower.health <= 0) {
-										firingPlayer.setGoldAmount(firingPlayer.getGoldAmount() + 150);
-									}
-								}
-								notifyClientAboutTowerHealth(tower);
+		Iterator<Projectile> iter = projectiles.iterator();
+		while (iter.hasNext()) {
+			Projectile p = iter.next();
+			p.update();
+			if (!p.active) {
+				iter.remove();
+				System.out.println("deactivated projectile " + p.projectileID);
+				notifyPlayersAboutProjectileRemoved(p);
+			} else {
+				if (p instanceof SeekingProjectile) {
+					if (p.pos.equals(((SeekingProjectile) p).targetObject.pos)) {
+						if (((SeekingProjectile) p).targetObject instanceof InGamePlayer) {
+							InGamePlayer player = (InGamePlayer) ((SeekingProjectile) p).targetObject;
+							// System.out.println("damaged player");
+							p.active = false;
+							if (p.getFiredBy() instanceof InGamePlayer) {
+								InGamePlayer firingPlayer = (InGamePlayer) p.getFiredBy();
+								player.setCurrentHealth(
+										player.getCurrentHealth() - (int) (firingPlayer.getPhyPow() - player.getArmor()));
+							} else {
+								player.setCurrentHealth(player.getCurrentHealth() - (int) (p.damage - player.getArmor()));
 							}
+							if (player.getCurrentHealth() <= 0) {
+								if (p.getFiredBy() instanceof InGamePlayer) {
+									InGamePlayer firingPlayer = (InGamePlayer) p.getFiredBy();
+									firingPlayer.setGoldAmount(firingPlayer.getGoldAmount() + 300);
+								}
+							}
+							// notifyClientAboutPlayerHealth(player);
+
+						} else if (((SeekingProjectile) p).targetObject instanceof Tower) {
+							Tower tower = (Tower) ((SeekingProjectile) p).targetObject;
+							// System.out.println("damaged player");
+							p.active = false;
+							if (p.getFiredBy() instanceof InGamePlayer) {
+								InGamePlayer firingPlayer = (InGamePlayer) p.getFiredBy();
+								tower.health = tower.health - (int) firingPlayer.getPhyPow();
+								if (tower.health <= 0) {
+									firingPlayer.setGoldAmount(firingPlayer.getGoldAmount() + 150);
+								}
+							}
+							notifyClientAboutTowerHealth(tower);
 						}
-
-					} else {
-
 					}
-				}
 
+				} else {
+
+				}
 			}
+
 		}
 	}
 
@@ -138,8 +147,9 @@ public class ServerGame extends Game {
 		NotifyTowerHealth pkt = new NotifyTowerHealth();
 		pkt.towerID = tower.id;
 		pkt.health = tower.health;
-		for(InGamePlayer player : players){
-//			System.out.println("sending projectile fire to player " + player.getPlayerID());
+		for (InGamePlayer player : players) {
+			// System.out.println("sending projectile fire to player " +
+			// player.getPlayerID());
 			runner.conn.send(runner.conn.playerToConnection.get(player), pkt.getBytes().array());
 		}
 	}
@@ -148,8 +158,9 @@ public class ServerGame extends Game {
 		NotifyProjectileRemovedPacket pkt = new NotifyProjectileRemovedPacket();
 		pkt.projectileID = p.projectileID;
 		pkt.teamIDFiredFrom = GameTeams.gameTeamsLookup.indexOf(p.team);
-		for(InGamePlayer player : players){
-//			System.out.println("sending projectile fire to player " + player.getPlayerID());
+		for (InGamePlayer player : players) {
+			// System.out.println("sending projectile fire to player " +
+			// player.getPlayerID());
 			runner.conn.send(runner.conn.playerToConnection.get(player), pkt.getBytes().array());
 		}
 
@@ -159,12 +170,12 @@ public class ServerGame extends Game {
 		NotifyProjectileFiredPacket pkt = new NotifyProjectileFiredPacket();
 		pkt.projectileID = p.projectileID;
 		pkt.teamIDFiredFrom = GameTeams.gameTeamsLookup.indexOf(p.team);
-		for(InGamePlayer player : players){
-//			System.out.println("sending projectile fire to player " + player.getPlayerID());
+		for (InGamePlayer player : players) {
+			// System.out.println("sending projectile fire to player " +
+			// player.getPlayerID());
 			runner.conn.send(runner.conn.playerToConnection.get(player), pkt.getBytes().array());
 		}
 	}
-
 
 	public void sendToClients(ConnectionListener conn) {
 		for (InGamePlayer p : players) {
@@ -178,13 +189,13 @@ public class ServerGame extends Game {
 				conn.send(runner.conn.playerToConnection.get(player), posPak.getBytes().array());
 			}
 		}
-		for(Projectile p : projectiles){
+		for (Projectile p : projectiles) {
 			ProjectilePositionPacket posPak = new ProjectilePositionPacket();
 			posPak.x = p.getX();
 			posPak.y = p.getY();
 			posPak.projectileID = p.projectileID;
 			for (InGamePlayer player : players) {
-//				logger.log(Level.INFO, "sending projectile packet" + posPak.toString());
+				// logger.log(Level.INFO, "sending projectile packet" + posPak.toString());
 				conn.send(runner.conn.playerToConnection.get(player), posPak.getBytes().array());
 			}
 
@@ -293,13 +304,13 @@ public class ServerGame extends Game {
 							switch (item.getType()[z]) {
 							case Health:
 								user.setMaxHealth(user.getMaxHealth() - item.getEffectPoints()[z]);
-								if(user.getCurrentHealth() > user.getMaxHealth()) {
+								if (user.getCurrentHealth() > user.getMaxHealth()) {
 									user.setCurrentHealth(user.getMaxHealth());
 								}
 								break;
 							case Mana:
 								user.setMaxMana(user.getMaxMana() - item.getEffectPoints()[z]);
-								if(user.getCurrentMana() > user.getMaxMana()) {
+								if (user.getCurrentMana() > user.getMaxMana()) {
 									user.setCurrentMana(user.getMaxMana());
 								}
 								break;
