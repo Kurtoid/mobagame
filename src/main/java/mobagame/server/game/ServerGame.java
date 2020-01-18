@@ -42,27 +42,18 @@ public class ServerGame extends Game {
 				}
 			}
 			if (player.getCurrentHealth() <= 0 && !player.isDead()) {
-
 				player.setDeathTime();
-
 				player.setRespawnTime();
-
 				player.setDead(true);
-
 				player.pos = new Point2D.Double(Math.random() * 1000 + 1000000, Math.random() * 1000 + 1000000);
 
 			} else if (player.isDead()) {
 
 				if (System.currentTimeMillis() <= player.getRespawnTime()) {
-
 					player.setCurrentHealth(player.getMaxHealth());
-
 					player.pos = new Point2D.Double(player.team.spawnPoint.getX(), player.team.spawnPoint.getY());
-
 					player.setCurrentMana(player.getMaxMana());
-
 					player.setDead(false);
-
 				}
 			}
 		}
