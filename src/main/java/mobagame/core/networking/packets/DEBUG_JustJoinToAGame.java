@@ -7,7 +7,6 @@ public class DEBUG_JustJoinToAGame extends Packet {
 	public DEBUG_JustJoinToAGame(ByteBuffer chunkBuf) {
 		super();
 		readData(chunkBuf);
-		// fucking do nothing
 	}
 
 	public DEBUG_JustJoinToAGame(int id) {
